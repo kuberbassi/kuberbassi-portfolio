@@ -3,4 +3,4 @@ User-agent: *
 Disallow:
 
 # Provide the location of the sitemap.
-Sitemap: https://kuberbassi.vercel.app/sitemap.xml
+Sitemap: https://kuberbassi.com/sitemap.xml

@@ -2,59 +2,60 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>https://kuberbassi.vercel.app/</loc>
-    <lastmod>2025-09-16</lastmod>
-    <changefreq>yearly</changefreq>
+    <loc>https://kuberbassi.com/</loc>
+    <lastmod>2026-01-07</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
 
+  <!-- Developer Portfolio (dev.kuberbassi.com) -->
   <url>
-    <loc>https://kuberbassi.vercel.app/dev-portfolio/</loc>
-    <lastmod>2025-09-16</lastmod>
+    <loc>https://dev.kuberbassi.com/</loc>
+    <lastmod>2026-01-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://kuberbassi.vercel.app/dev-portfolio/#about</loc>
-    <lastmod>2025-09-16</lastmod>
+    <loc>https://dev.kuberbassi.com/#about</loc>
+    <lastmod>2026-01-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://kuberbassi.vercel.app/dev-portfolio/#works</loc>
-    <lastmod>2025-09-16</lastmod>
+    <loc>https://dev.kuberbassi.com/#works</loc>
+    <lastmod>2026-01-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-    <url>
-    <loc>https://kuberbassi.vercel.app/dev-portfolio/#contact</loc>
-    <lastmod>2025-09-16</lastmod>
+  <url>
+    <loc>https://dev.kuberbassi.com/#contact</loc>
+    <lastmod>2026-01-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
-
+  <!-- Music Portfolio (music.kuberbassi.com) -->
   <url>
-    <loc>https://kuberbassi.vercel.app/music-portfolio/</loc>
-    <lastmod>2025-09-16</lastmod>
+    <loc>https://music.kuberbassi.com/</loc>
+    <lastmod>2026-01-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://kuberbassi.vercel.app/music-portfolio/#videos</loc>
-    <lastmod>2025-09-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-    <url>
-    <loc>https://kuberbassi.vercel.app/music-portfolio/#music</loc>
-    <lastmod>2025-09-16</lastmod>
+    <loc>https://music.kuberbassi.com/#videos</loc>
+    <lastmod>2026-01-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://kuberbassi.vercel.app/music-portfolio/#contact</loc>
-    <lastmod>2025-09-16</lastmod>
+    <loc>https://music.kuberbassi.com/#music</loc>
+    <lastmod>2026-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://music.kuberbassi.com/#contact</loc>
+    <lastmod>2026-01-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

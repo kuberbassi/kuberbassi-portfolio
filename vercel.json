@@ -1,0 +1,33 @@
+{
+  "rewrites": [
+    {
+      "has": [
+        {
+          "type": "host",
+          "value": "dev.kuberbassi.com"
+        }
+      ],
+      "source": "/:path*",
+      "destination": "/dev-portfolio/:path*"
+    },
+    {
+      "has": [
+        {
+          "type": "host",
+          "value": "music.kuberbassi.com"
+        }
+      ],
+      "source": "/:path*",
+      "destination": "/music-portfolio/:path*"
+    },
+    {
+        "source": "/dev",
+        "destination": "/dev-portfolio/index.html"
+    },
+     {
+        "source": "/music",
+        "destination": "/music-portfolio/index.html"
+    }
+
+  ]
+}

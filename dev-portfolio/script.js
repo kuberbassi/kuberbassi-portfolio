@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- SETUP FUNCTIONS ---
     setupInteractiveText();
     setupMobileNav(); // <-- New function for the mobile menu
-    fetchGitHubRepos();
+    renderProjects();
     setupInteractiveImage();
     setupScrollBasedAnimations();
     setupCustomCursor();
@@ -122,50 +122,86 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function setupKineticProjects() {
-        document.querySelectorAll('.project-item').forEach(item => {
-            const title = item.querySelector('.project-title');
-            item.addEventListener('mousemove', (e) => {
-                const rect = item.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                gsap.to(title, { duration: 1, x: x * 0.05, y: y * 0.05, ease: 'power3.out' });
-            });
-            item.addEventListener('mouseleave', () => {
-                gsap.to(title, { duration: 0.5, x: 0, y: 0, ease: 'elastic.out(1, 0.5)' });
-            });
+
+
+    function renderProjects() {
+        const projects = [
+            {
+                title: "MCD HRMS",
+                description: "An enterprise-grade HR management system for tracking employee attendance, payroll, and performance metrics.",
+                image: "/dev-portfolio/images/projects/mcd-hrms.png",
+                link: "https://mcd-hrms.web.app",
+                github: "https://github.com/kuberbassi/mcd-hrms",
+                tags: ["Enterprise", "HR Tech", "System"]
+            },
+            {
+                title: "AcadHub",
+                description: "A comprehensive academic management system dashboard for streamlining educational workflows and student data tracking.",
+                image: "/dev-portfolio/images/projects/acadhub.png",
+                link: "https://acadhub.kuberbassi.com",
+                github: "https://github.com/kuberbassi/acadhub",
+                tags: ["Dashboard", "Management", "Education"]
+            },
+            {
+                title: "IndiaOnRoaming",
+                description: "A vibrant travel portal showcasing diverse Indian landscapes and simplifying travel bookings with a modern interface.",
+                image: "/dev-portfolio/images/projects/indiaonroaming.png",
+                link: "https://indiaonroaming.com",
+                github: null, // No GitHub link provided
+                tags: ["Travel", "Portal", "UX/UI"]
+            },
+            {
+                title: "Sugandhmaya",
+                description: "A premium e-commerce platform for a luxury fragrance brand, featuring an elegant design and seamless shopping experience.",
+                image: "/dev-portfolio/images/projects/sugandhmaya.png",
+                link: "https://sugandhmaya.com",
+                github: "https://github.com/kuberbassi/sugandhmaya.com",
+                tags: ["E-commerce", "Luxury", "Design"]
+            }
+        ];
+
+        const projectContainer = document.querySelector('.projects-grid');
+        if (!projectContainer) return;
+
+        projectContainer.innerHTML = '';
+
+        projects.forEach((project, index) => {
+            const githubLink = project.github
+                ? `<a href="${project.github}" target="_blank" rel="noopener noreferrer" class="card-link"><i class="fab fa-github"></i> Code</a>`
+                : '';
+
+            const cardHTML = `
+                <article class="project-card reveal-fade-up">
+                    <div class="card-image-wrapper">
+                        <img src="${project.image}" alt="${project.title}" class="card-image" loading="lazy">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-number">0${index + 1}</span>
+                        <h3 class="card-title">${project.title}</h3>
+                        <p class="card-description">${project.description}</p>
+                        <div class="card-links">
+                            <a href="${project.link}" target="_blank" rel="noopener noreferrer" class="card-link"><i class="fas fa-external-link-alt"></i> Live Site</a>
+                            ${githubLink}
+                        </div>
+                    </div>
+                </article>
+            `;
+            projectContainer.innerHTML += cardHTML;
         });
+
+        // Initialize hover effects for new cards
+        setupCardHoverEffects();
     }
 
-    async function fetchGitHubRepos() {
-        const GITHUB_USERNAME = "kuberbassi";
-        const projectList = document.querySelector('.project-list');
-        const viewAllContainer = document.getElementById('view-all-container');
-        try {
-            const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos`);
-            if (!response.ok) throw new Error('Network response was not ok');
-            const repos = await response.json();
-            const sortedRepos = repos.filter(repo => !repo.fork).sort((a, b) => new Date(b.pushed_at) - new Date(a.pushed_at));
-            const topRepos = sortedRepos.slice(0, 4);
-            projectList.innerHTML = '';
-            topRepos.forEach((repo, index) => {
-                const titleHTML = repo.name.replace(/[-_]/g, ' ').split(' ').map(word => `<span>${word}</span>`).join(' ');
-                const projectItem = `<a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="project-item">
-                        <div class="project-number">0${index + 1}</div>
-                        <h3 class="project-title">${titleHTML}</h3>
-                        <p class="project-description">${repo.description || 'A project on my GitHub.'}</p>
-                        <div class="project-arrow">&rarr;</div>
-                    </a>`;
-                projectList.innerHTML += projectItem;
+    function setupCardHoverEffects() {
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, { y: -10, duration: 0.4, ease: 'power3.out' });
             });
-            if (sortedRepos.length > 4) {
-                viewAllContainer.innerHTML = `<a href="https://github.com/${GITHUB_USERNAME}?tab=repositories" target="_blank" rel="noopener noreferrer" class="view-all-button">View All Projects</a>`;
-            }
-            setupKineticProjects();
-        } catch (error) {
-            console.error("Fetch error:", error);
-            projectList.innerHTML = `<p class="error-message">Could not fetch projects from GitHub.</p>`;
-        }
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, { y: 0, duration: 0.4, ease: 'power3.out' });
+            });
+        });
     }
 
     function setupHeaderInversion() {
