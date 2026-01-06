@@ -1649,5 +1649,77 @@ html {
 } */
 
 /* ==========================================================================
+   10. MOBILE & TABLET OPTIMIZATIONS (PROJECTS)
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+    .projects-grid {
+        gap: 2rem;
+        padding: 0 3vw;
+    }
+
+    .card-title {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .projects-grid {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0 1.5rem;
+        gap: 2rem;
+        box-sizing: border-box;
+    }
+
+    .project-card {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 16px;
+        /* Slightly easier on eyes than 12 */
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-image-wrapper {
+        height: auto;
+        padding-top: 56.25%;
+        /* 16:9 Aspect Ratio */
+        width: 100%;
+    }
+
+    .card-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .card-content {
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-description {
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        -webkit-line-clamp: 4;
+        line-clamp: 4;
+        /* Standard property */
+    }
+
+    /* Disable hover effects that stick on mobile */
+    .project-card:hover {
+        transform: none;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    }
+}
+
+/* ==========================================================================
    END OF STYLES
    ========================================================================== */
