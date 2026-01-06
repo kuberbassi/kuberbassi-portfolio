@@ -7,8 +7,28 @@
           "value": "dev.kuberbassi.com"
         }
       ],
+      "source": "/",
+      "destination": "/dev-portfolio/index.html"
+    },
+    {
+      "has": [
+        {
+          "type": "host",
+          "value": "dev.kuberbassi.com"
+        }
+      ],
       "source": "/:path*",
       "destination": "/dev-portfolio/:path*"
+    },
+    {
+      "has": [
+        {
+          "type": "host",
+          "value": "music.kuberbassi.com"
+        }
+      ],
+      "source": "/",
+      "destination": "/music-portfolio/index.html"
     },
     {
       "has": [
@@ -21,13 +41,12 @@
       "destination": "/music-portfolio/:path*"
     },
     {
-        "source": "/dev",
-        "destination": "/dev-portfolio/index.html"
+      "source": "/dev",
+      "destination": "/dev-portfolio/index.html"
     },
-     {
-        "source": "/music",
-        "destination": "/music-portfolio/index.html"
+    {
+      "source": "/music",
+      "destination": "/music-portfolio/index.html"
     }
-
   ]
 }
