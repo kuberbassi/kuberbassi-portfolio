@@ -1,43 +1,23 @@
 {
   "rewrites": [
     {
-      "has": [
-        {
-          "type": "host",
-          "value": "dev.kuberbassi.com"
-        }
-      ],
-      "source": "/",
-      "destination": "/dev-portfolio/index.html"
-    },
-    {
-      "has": [
-        {
-          "type": "host",
-          "value": "dev.kuberbassi.com"
-        }
-      ],
       "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "dev.kuberbassi.com"
+        }
+      ],
       "destination": "/dev-portfolio/:path*"
     },
     {
-      "has": [
-        {
-          "type": "host",
-          "value": "music.kuberbassi.com"
-        }
-      ],
-      "source": "/",
-      "destination": "/music-portfolio/index.html"
-    },
-    {
-      "has": [
-        {
-          "type": "host",
-          "value": "music.kuberbassi.com"
-        }
-      ],
       "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "music.kuberbassi.com"
+        }
+      ],
       "destination": "/music-portfolio/:path*"
     },
     {
