@@ -1,24 +1,22 @@
 {
-  "rewrites": [
+  "headers": [
     {
-      "source": "/:path((?!dev-portfolio|music-portfolio).*)",
-      "has": [
+      "source": "/(.*)",
+      "headers": [
         {
-          "type": "host",
-          "value": "dev.kuberbassi.com"
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
         }
-      ],
-      "destination": "/dev-portfolio/:path*"
+      ]
     },
     {
-      "source": "/:path((?!dev-portfolio|music-portfolio).*)",
-      "has": [
+      "source": "/assets/(.*)",
+      "headers": [
         {
-          "type": "host",
-          "value": "music.kuberbassi.com"
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
-      ],
-      "destination": "/music-portfolio/:path*"
+      ]
     }
   ]
 }
