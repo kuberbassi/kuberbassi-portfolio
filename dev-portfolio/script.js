@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 title: "MCD HRMS",
                 description: "An enterprise-grade HR management system for tracking employee attendance, payroll, and performance metrics.",
-                image: "/dev-portfolio/images/projects/mcd-hrms.png",
+                image: "images/projects/mcd-hrms.png",
                 link: "https://mcd-hrms.web.app",
                 github: "https://github.com/kuberbassi/mcd-hrms",
                 tags: ["Enterprise", "HR Tech", "System"]
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 title: "AcadHub",
                 description: "A comprehensive academic management system dashboard for streamlining educational workflows and student data tracking.",
-                image: "/dev-portfolio/images/projects/acadhub.png",
+                image: "images/projects/acadhub.png",
                 link: "https://acadhub.kuberbassi.com",
                 github: "https://github.com/kuberbassi/acadhub",
                 tags: ["Dashboard", "Management", "Education"]
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 title: "IndiaOnRoaming",
                 description: "A vibrant travel portal showcasing diverse Indian landscapes and simplifying travel bookings with a modern interface.",
-                image: "/dev-portfolio/images/projects/indiaonroaming.png",
+                image: "images/projects/indiaonroaming.png",
                 link: "https://indiaonroaming.com",
                 github: null, // No GitHub link provided
                 tags: ["Travel", "Portal", "UX/UI"]
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 title: "Sugandhmaya",
                 description: "A premium e-commerce platform for a luxury fragrance brand, featuring an elegant design and seamless shopping experience.",
-                image: "/dev-portfolio/images/projects/sugandhmaya.png",
+                image: "images/projects/sugandhmaya.png",
                 link: "https://sugandhmaya.com",
                 github: "https://github.com/kuberbassi/sugandhmaya.com",
                 tags: ["E-commerce", "Luxury", "Design"]
