@@ -1,4 +1,16 @@
 {
+  "redirects": [
+    {
+      "source": "/dev-portfolio/:path*",
+      "destination": "https://dev.kuberbassi.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/music-portfolio/:path*",
+      "destination": "https://music.kuberbassi.com/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/:path*",
@@ -19,14 +31,6 @@
         }
       ],
       "destination": "/music-portfolio/:path*"
-    },
-    {
-      "source": "/dev",
-      "destination": "/dev-portfolio/index.html"
-    },
-    {
-      "source": "/music",
-      "destination": "/music-portfolio/index.html"
     }
   ]
 }
