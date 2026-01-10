@@ -109,7 +109,17 @@ const KineticLandingPage = () => {
 
         const tl = gsap.timeline({
             onComplete: () => {
-                navigate(path);
+                // Check environment
+                const isLocal = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1');
+
+                if (isLocal) {
+                    navigate(path);
+                } else {
+                    // Production: Redirect to subdomains
+                    if (path === '/dev') window.location.href = 'https://dev.kuberbassi.com';
+                    else if (path === '/music') window.location.href = 'https://music.kuberbassi.com';
+                    else navigate(path);
+                }
             }
         });
 
