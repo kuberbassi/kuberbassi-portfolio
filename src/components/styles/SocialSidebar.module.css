@@ -1,0 +1,172 @@
+.sidebarLeft {
+    position: fixed;
+    left: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    z-index: 1000;
+    /* High Z-index to stay on top */
+    mix-blend-mode: difference;
+    /* Ensure visibility on light/dark backgrounds */
+}
+
+.socialIcon {
+    color: #F2F2F2;
+    font-size: 1.2rem;
+    transition: color 0.3s;
+}
+
+.socialIcon:hover {
+    color: #ff3333;
+}
+
+.sidebarRight {
+    position: fixed;
+    /* Fixed instead of absolute */
+    right: 2rem;
+    bottom: 2rem;
+    z-index: 1000;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    mix-blend-mode: difference;
+}
+
+/* Bottom Left - Liquid Bar */
+.sidebarBottomLeft {
+    position: fixed;
+    left: 2rem;
+    bottom: 2rem;
+    z-index: 1000;
+    display: flex;
+    /* Horizontal like Sound On? Or Vertical? Sound On is Vertical. Let's make this vertical too to match symmetry. */
+    /* Label bottom, liquid top? Or Label top? Let's match Sound On usually label is below or aligned. */
+    align-items: center;
+    gap: 1rem;
+    mix-blend-mode: difference;
+    writing-mode: vertical-rl;
+    /* Vertical Mirror */
+    text-orientation: mixed;
+}
+
+.liquidContainer {
+    width: 14px;
+    height: 40px;
+    /* Small sleek rectangle */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    /* Pill shape */
+    overflow: hidden;
+    position: relative;
+    backdrop-filter: blur(2px);
+}
+
+.liquid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    /* Fill level */
+    background: #ff3333;
+    box-shadow: 0 0 10px #ff3333;
+    animation: liquidMove 3s infinite ease-in-out;
+}
+
+.liquid::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -10px;
+    width: 40px;
+    height: 20px;
+    background: #ff3333;
+    border-radius: 40%;
+    opacity: 0.8;
+    animation: wave 4s linear infinite;
+}
+
+.audioLabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: #f2f2f2;
+    transform: rotate(180deg);
+    /* Fix vertical text direction if needed, but vertical-rl handles it. */
+}
+
+@keyframes wave {
+    0% {
+        transform: translateX(0) rotate(0deg);
+    }
+
+    100% {
+        transform: translateX(-50%) rotate(360deg);
+    }
+}
+
+@keyframes liquidMove {
+
+    0%,
+    100% {
+        height: 60%;
+    }
+
+    50% {
+        height: 75%;
+    }
+}
+
+.soundToggle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #f2f2f2;
+}
+
+.soundIndicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ff3333;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebarLeft {
+        left: 1rem;
+        bottom: 1rem;
+        top: auto;
+        transform: none;
+        flex-direction: row;
+    }
+
+    .sidebarRight {
+        right: 1rem;
+        bottom: 1rem;
+        writing-mode: horizontal-tb;
+    }
+}

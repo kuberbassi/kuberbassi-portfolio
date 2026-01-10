@@ -15,11 +15,28 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  /* Force scrollbar */
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--color-dark);
   color: var(--color-light);
   overflow-x: hidden;
+  /* Ensure snappy feel */
+  height: 100vh;
+  width: 100%;
+}
+
+/* Snap individual sections */
+section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  /* Force stop at each section */
 }
 
 a {

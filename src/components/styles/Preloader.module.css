@@ -1,0 +1,193 @@
+.preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: #050505;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #f2f2f2;
+    overflow: hidden;
+}
+
+/* Vignette Background */
+.preloader::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 0%, #000 100%);
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+/* The Main Stage */
+.stage {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
+    transform-origin: center center;
+}
+
+/* 1. Status Display (Minimalist) */
+.status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: #444;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.statusDot {
+    width: 6px;
+    height: 6px;
+    background: #333;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.statusDotActive {
+    background: #ff3333;
+    box-shadow: 0 0 10px #ff3333;
+}
+
+.statusTextActive {
+    color: #fff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* 2. The Master Knob (Photorealistic) */
+.knobWrapper {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    /* Subtle outer glow */
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Tick Marks Ring */
+.ticksRing {
+    position: absolute;
+    inset: -20px;
+    width: 260px;
+    height: 260px;
+}
+
+.tick {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 10px;
+    background: #222;
+    transform-origin: bottom center;
+    /* Pivot from center of the ring */
+    /* JS will set Rotation */
+}
+
+.tickActive {
+    background: #f2f2f2;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    height: 12px;
+}
+
+/* The Physical Knob */
+.knobBody {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    /* Brushed Metal Gradient */
+    background: conic-gradient(from 0deg,
+            #1a1a1a 0%,
+            #2a2a2a 10%,
+            #111 20%,
+            #333 30%,
+            #111 40%,
+            #2a2a2a 50%,
+            #111 60%,
+            #333 70%,
+            #111 80%,
+            #2a2a2a 90%,
+            #1a1a1a 100%);
+    box-shadow:
+        15px 15px 40px rgba(0, 0, 0, 0.8),
+        /* Drop shadow */
+        -2px -2px 5px rgba(255, 255, 255, 0.1) inset;
+    /* Top-left highlight */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border: 1px solid #000;
+}
+
+/* Top Cap (Shiny) */
+.knobCap {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #111, #000);
+    box-shadow:
+        0 5px 10px rgba(0, 0, 0, 0.5),
+        0 1px 0 rgba(255, 255, 255, 0.05) inset;
+    position: relative;
+    /* This element ROTATES */
+}
+
+/* The Indicator Line */
+.indicator {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 30px;
+    background: #444;
+    border-radius: 2px;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 1);
+}
+
+.indicatorActive {
+    background: #ff3333;
+    box-shadow: 0 0 10px #ff3333, 0 0 20px #ff3333;
+}
+
+/* Numerical Value (Subtle) */
+.value {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Anton', sans-serif;
+    font-size: 1.5rem;
+    color: #333;
+    letter-spacing: 0.1em;
+}
+
+.valueActive {
+    color: #fff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+/* 3. The Input Cable REMOVED */
+/* Previously here: .cableContainer, .jackHead, .plugBody, .cableWire */
+
+/* Overlay for fade out */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10001;
+}
