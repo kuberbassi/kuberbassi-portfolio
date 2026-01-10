@@ -1,0 +1,215 @@
+/* FLUID LANDING V2 */
+
+.fluid-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+    cursor: none;
+    /* We might add a custom cursor later */
+}
+
+/* --- LAYERS --- */
+.layer-dev,
+.layer-music {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    will-change: clip-path;
+}
+
+.layer-dev {
+    background-color: #020202;
+    /* Slightly lighter than pure black for depth */
+    background-image:
+        linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+}
+
+.layer-music {
+    background-color: #000;
+    /* Soften the red significantly - more ambient, less "rectangle" */
+    background: radial-gradient(circle at 75% 50%, #2a000d 0%, #000 80%);
+    z-index: 2;
+    /* clip-path is applied inline via JS */
+}
+
+/* --- CONTENT --- */
+.content-wrap {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50%;
+    /* Only take up half width roughly */
+    text-align: center;
+    pointer-events: none;
+    /* Let clicks pass to layer */
+}
+
+.left-align {
+    left: 0;
+}
+
+.right-align {
+    right: 0;
+}
+
+h1 {
+    font-family: 'Anton', sans-serif;
+    font-size: 15vw;
+    /* MASSIVE */
+    line-height: 0.8;
+    color: #fff;
+    text-transform: uppercase;
+    margin: 0;
+    mix-blend-mode: overlay;
+    /* Blends with background */
+    opacity: 0.9;
+}
+
+.landing-text-dev {
+    color: #3b82f6;
+    text-shadow: 0 0 30px rgba(59, 130, 246, 0.8);
+    /* Stronger glow */
+}
+
+.landing-text-music {
+    color: #ff0033;
+    text-shadow: 0 0 30px rgba(255, 0, 51, 0.6);
+}
+
+.sub-tag {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2rem;
+    letter-spacing: 0.5rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 2rem;
+}
+
+/* --- BACKGROUND FX --- */
+.bg-grid-warp {
+    position: absolute;
+    inset: -50%;
+    background-image:
+        linear-gradient(rgba(59, 130, 246, 0.4) 1px, transparent 1px),
+        /* Much more visible */
+        linear-gradient(90deg, rgba(59, 130, 246, 0.4) 1px, transparent 1px);
+    background-size: 100px 100px;
+    transform: perspective(1000px) rotateX(60deg);
+    animation: grid-fly 10s linear infinite;
+    opacity: 0.6;
+    /* Boosted from 0.3 */
+}
+
+.bg-nebula-warp {
+    position: absolute;
+    inset: 0;
+    background: url('https://grainy-gradients.vercel.app/noise.svg');
+    opacity: 0.1;
+    filter: contrast(150%) brightness(100%);
+    animation: grain 1s steps(5) infinite;
+}
+
+@keyframes grid-fly {
+    0% {
+        transform: perspective(1000px) rotateX(60deg) translateY(0);
+    }
+
+    100% {
+        transform: perspective(1000px) rotateX(60deg) translateY(100px);
+    }
+}
+
+@keyframes grain {
+
+    0%,
+    100% {
+        transform: translate(0, 0)
+    }
+
+    10% {
+        transform: translate(-5%, -10%)
+    }
+
+    20% {
+        transform: translate(-15%, 5%)
+    }
+
+    30% {
+        transform: translate(7%, -25%)
+    }
+
+    40% {
+        transform: translate(-5%, 25%)
+    }
+
+    50% {
+        transform: translate(-15%, 10%)
+    }
+
+    60% {
+        transform: translate(15%, 0%)
+    }
+
+    70% {
+        transform: translate(0%, 15%)
+    }
+
+    80% {
+        transform: translate(3%, 35%)
+    }
+
+    90% {
+        transform: translate(-10%, 10%)
+    }
+}
+
+/* --- CENTER HINT --- */
+.center-hint {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.4);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    z-index: 10;
+    pointer-events: none;
+    text-transform: uppercase;
+}
+
+/* Mobile Fallback (Simpler Stack) */
+@media (max-width: 768px) {
+    .content-wrap {
+        width: 100%;
+        height: 50%;
+        /* Top half / Bottom half */
+        top: auto;
+        transform: none;
+    }
+
+    .left-align {
+        top: 0;
+    }
+
+    .right-align {
+        bottom: 0;
+    }
+
+    h1 {
+        font-size: 20vw;
+    }
+
+    /* We might need to disable the fancy SVG clip on mobile and use standard stacking */
+}

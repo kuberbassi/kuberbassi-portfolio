@@ -48,7 +48,20 @@ const MainHeader = () => {
             fontWeight: 500
         }}>
 
-            <Link to="/" className="logo">KUBER BASSI<span style={{ color: '#ff3333' }}>*</span></Link>
+            <a
+                href="#"
+                className="logo"
+                style={{ cursor: 'pointer', pointerEvents: 'auto' }}
+                onClick={(e) => {
+                    e.preventDefault();
+                    console.log('Scroll to top triggered');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
+                    document.body.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+            >
+                KUBER BASSI<span style={{ color: '#ff3333' }}>*</span>
+            </a>
 
             <div className="status-widget">
                 <div className="visualizer">

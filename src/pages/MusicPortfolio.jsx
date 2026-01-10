@@ -12,10 +12,13 @@ import StatsSection from '../components/StatsSection';
 import NewsletterSection from '../components/NewsletterSection';
 import InteractiveDotGrid from '../components/InteractiveDotGrid';
 import SocialSidebar from '../components/SocialSidebar';
+import FloatingBackButton from '../components/FloatingBackButton';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
+
+import KineticCursor from '../components/KineticCursor'; // Import Cursor
 
 const MusicPortfolio = () => {
     // Smart Preloader Logic: Session-based (Per Tab)
@@ -140,9 +143,10 @@ const MusicPortfolio = () => {
     }, []);
 
     return (
-        <div style={{ backgroundColor: '#050505', minHeight: '100vh', color: '#fff', overflow: 'hidden' }}>
+        <div style={{ backgroundColor: '#050505', minHeight: '100vh', color: '#fff', overflow: 'hidden', cursor: 'none' }}>
+            <KineticCursor />
 
-            <GlitchCanvas />
+            {/* GlitchCanvas Removed for cleaner look */}
             <InteractiveDotGrid />
 
             {/* Global Fixed UI Layer - Outside the transform wrapper to stay Sticky */}
@@ -150,6 +154,7 @@ const MusicPortfolio = () => {
                 <MainHeader />
                 <DotNav />
                 <SocialSidebar />
+                <FloatingBackButton />
             </div>
 
             {/* Main Content - Always mounted, initially hidden via GSAP */}
@@ -163,11 +168,6 @@ const MusicPortfolio = () => {
                     <StatsSection />
                     <NewsletterSection />
                 </main>
-
-                {/* Custom Cursor */}
-                <div className="cursor" style={{
-                    position: 'fixed', width: '12px', height: '12px', backgroundColor: '#fff', borderRadius: '50%', pointerEvents: 'none', zIndex: 9999, mixBlendMode: 'difference', transform: 'translate(-50%, -50%)', display: 'none'
-                }}></div>
             </div>
 
             {/* Preloader - Overlays everything */}
@@ -177,26 +177,8 @@ const MusicPortfolio = () => {
                     onComplete={handlePreloaderComplete}
                 />
             )}
-
-            <EffectCursor />
         </div>
     );
 };
-
-// Sub-component for cursor
-const EffectCursor = () => {
-    useEffect(() => {
-        const cursor = document.querySelector('.cursor');
-        if (window.matchMedia("(pointer: fine)").matches && cursor) {
-            cursor.style.display = 'block';
-            const moveCursor = (e) => {
-                gsap.to(cursor, { duration: 0.3, x: e.clientX, y: e.clientY, ease: 'power2.out' });
-            };
-            window.addEventListener('mousemove', moveCursor);
-            return () => window.removeEventListener('mousemove', moveCursor);
-        }
-    }, []);
-    return null;
-}
 
 export default MusicPortfolio;

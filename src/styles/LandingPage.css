@@ -1,205 +1,219 @@
-.split-container {
-    display: flex;
-    width: 100vw;
-    height: 100vh;
+/* --- KINETIC SPLIT LANDING PAGE --- */
+:root {
+    --color-dev: #3b82f6;
+    /* Electric Blue */
+    --color-artist: #ff0033;
+    /* Neon Red */
+    --split-angle: 15deg;
+    /* The diagonal skew */
 }
 
+.landing-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+    visibility: visible !important;
+    /* Override global main hidden */
+}
+
+/* The Panels */
 .split-panel {
-    flex: 1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 65%;
+    /* Overlap slightly */
+    height: 100%;
+    overflow: hidden;
+    will-change: width, transform;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
-    overflow: hidden;
-    will-change: opacity, transform;
-    transition: flex 0.8s cubic-bezier(0.8, 0, 0.2, 1), opacity 0.6s, background 0.6s;
-    background-color: var(--color-dark);
-    /* Fallback */
-}
-
-.split-panel::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-color: var(--color-dark);
-    z-index: 0;
-}
-
-.split-panel a {
-    text-decoration: none;
-    color: var(--color-light);
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem;
     cursor: pointer;
 }
 
-#dev-background,
-#artist-background {
+/* --- BACKGROUND GFX --- */
+.panel-bg-gfx {
     position: absolute;
-    inset: 0;
-    z-index: 1;
-}
-
-.dev-grid-line {
-    position: absolute;
-    background-color: rgba(59, 130, 246, 0.1);
-    transition: background-color 0.3s ease;
-}
-
-.dev-grid-line.vertical {
-    width: 1px;
-    height: 100%;
-    left: var(--left);
-}
-
-.dev-grid-line.horizontal {
-    height: 1px;
+    top: 0;
+    left: 0;
     width: 100%;
-    top: var(--top);
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.3;
 }
 
-.panel-heading {
-    font-family: var(--font-heading);
-    font-size: clamp(2.5rem, 8vw, 5.5rem);
-    font-weight: 700;
-    text-align: center;
+.dev-gfx {
+    background:
+        linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+        linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transform: perspective(500px) rotateX(60deg);
+    animation: grid-scroll 2s linear infinite;
+}
+
+.artist-gfx {
+    background: radial-gradient(circle at center, #ff0033 0%, transparent 70%);
+    filter: blur(40px);
+    opacity: 0.4;
+    animation: pulse-bass 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes grid-scroll {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 0 40px;
+    }
+}
+
+@keyframes pulse-bass {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: scale(1.2);
+        opacity: 0.5;
+    }
+}
+
+/* Developer (Left) */
+.panel-dev {
+    left: 0;
+    background: #050505;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+    /* Diagonal Cut */
+    z-index: 10;
+}
+
+/* Artist (Right) */
+.panel-artist {
+    right: 0;
+    background: #080808;
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+    /* Diagonal Cut */
+    z-index: 10;
+}
+
+/* Content Wrapper to "Un-Skew" or maintain center */
+.panel-content {
     position: relative;
-    z-index: 10;
-    transition: transform 0.3s ease, letter-spacing 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
-    white-space: nowrap;
-    /* Prevent wrap during animation */
+    z-index: 20;
+    text-align: center;
+    pointer-events: none;
+    /* Let the panel handle hover */
+    transition: transform 0.4s ease-out;
 }
 
-.artist-panel {
-    background: linear-gradient(135deg, #161616 60%, #1a0b2a 100%);
-}
-
-#artist-background {
-    background: radial-gradient(circle at 50% 50%, #1a0b2a 0%, transparent 70%);
-    opacity: 0.7;
-    transition: opacity 0.6s;
-}
-
-.glowing-orb {
-    position: absolute;
-    border-radius: 50%;
-    will-change: transform;
-}
-
-.panel-subtext {
+/* Typography */
+.landing-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 8vw;
+    line-height: 0.9;
+    color: #fff;
+    text-transform: uppercase;
+    position: relative;
     display: block;
-    font-family: var(--font-body);
-    font-size: clamp(0.9rem, 2vw, 1rem);
-    color: var(--color-muted);
+    mix-blend-mode: exclusion;
+    transition: transform 0.3s ease, letter-spacing 0.3s ease;
+}
+
+/* Subtext */
+.landing-subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: rgba(255, 255, 255, 0.6);
     margin-top: 1rem;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
+    opacity: 0.8;
+    display: block;
 }
 
-.landing-footer {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--color-muted);
-    font-size: 0.85rem;
-    z-index: 10;
+/* --- BACKGROUND FX --- */
+.bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.2;
+    /* Subtle */
+    pointer-events: none;
+    transition: opacity 0.5s;
 }
 
-/* --- HOVER EFFECTS (FOR DESKTOP ONLY) --- */
-@media (hover: hover) and (pointer: fine) {
-    .split-container.active:hover .split-panel {
-        filter: blur(2px) grayscale(50%);
+/* --- INTERACTION STATES (Desktop) --- */
+@media (hover: hover) {
+
+    /* Hover Developer -> Expands Left */
+    .landing-container.hover-dev .panel-dev {
+        width: 80%;
+        clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+        /* Less angled */
     }
 
-    .split-container.active .split-panel:hover {
-        flex: 1.5;
-        filter: blur(0px) grayscale(0%);
+    .landing-container.hover-dev .panel-artist {
+        width: 30%;
+        clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
+        /* More angled/squeezed */
     }
 
-    .split-panel:hover .panel-subtext {
-        opacity: 1;
-        transform: translateY(0);
+    /* Hover Artist -> Expands Right */
+    .landing-container.hover-artist .panel-artist {
+        width: 80%;
+        clip-path: polygon(5% 0, 100% 0, 100% 100%, 0 100%);
     }
 
-    .dev-panel:hover .panel-heading {
-        transform: scale(1.05);
+    .landing-container.hover-artist .panel-dev {
+        width: 30%;
+        clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+    }
+
+    /* Text Effects */
+    .hover-dev .panel-dev .landing-title {
+        color: var(--color-dev);
+        transform: scale(1.1);
         letter-spacing: 0.05em;
-        color: var(--color-accent-dev);
-        text-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
     }
 
-    .artist-panel:hover .panel-heading {
-        transform: scale(1.05);
+    .hover-artist .panel-artist .landing-title {
+        color: var(--color-artist);
+        transform: scale(1.1);
         letter-spacing: 0.05em;
-        color: var(--color-accent-artist);
-        text-shadow: 0 0 15px var(--color-light), 0 0 30px var(--color-accent-artist);
-    }
-
-    .dev-panel:hover .dev-grid-line {
-        background-color: rgba(59, 130, 246, 0.3);
     }
 }
 
-/* --- RESPONSIVE ADJUSTMENTS --- */
-@media (max-width: 900px) {
-    .split-container {
-        flex-direction: column;
-    }
-
-    .split-panel {
-        min-height: 40vh;
-    }
-
-    .panel-heading {
-        font-size: clamp(2rem, 8vw, 3.5rem);
-    }
-
-    .panel-subtext {
-        font-size: 0.95rem;
-    }
-
-    .landing-footer {
-        font-size: 0.75rem;
-        bottom: 1rem;
-    }
-}
-
+/* --- MOBILE --- */
 @media (max-width: 768px) {
-    .split-container {
-        flex-direction: column;
+    .panel-dev {
+        position: absolute;
+        width: 100%;
+        height: 55%;
+        left: 0;
+        top: 0;
+        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
     }
 
-    .landing-footer {
-        font-size: 0.75rem;
-        bottom: 1rem;
+    .panel-artist {
+        position: absolute;
+        width: 100%;
+        height: 55%;
+        left: 0;
+        bottom: 0;
+        top: auto;
+        right: auto;
+        clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
     }
 
-    /* Show subtext on mobile by default */
-    .panel-subtext {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@media (max-width: 600px) {
-    .split-panel a {
-        padding: 1rem;
-    }
-
-    .panel-heading {
-        font-size: clamp(1.2rem, 7vw, 2.2rem);
-    }
-
-    .panel-subtext {
-        font-size: 0.85rem;
-    }
-
-    .landing-footer {
-        font-size: 0.7rem;
+    .landing-title {
+        font-size: 15vw;
     }
 }

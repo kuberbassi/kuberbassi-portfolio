@@ -45,9 +45,9 @@ a {
     color: inherit;
 }
 
-main {
-    visibility: hidden;
-}
+
+/* Removed global main visibility hidden */
+
 
 /* Hide Scrollbar */
 body::-webkit-scrollbar {

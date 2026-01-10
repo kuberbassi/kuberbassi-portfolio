@@ -18,20 +18,16 @@ const InteractiveDotGrid = () => {
         // Initialize particles with organic random positions
         const initParticles = () => {
             particlesRef.current = [];
-            const particleCount = Math.floor((width * height) / 15000); // Less dense, more airy
-
+            const particleCount = Math.floor((width * height) / 8000); // More particles for better texture
             for (let i = 0; i < particleCount; i++) {
                 particlesRef.current.push({
                     x: Math.random() * width,
                     y: Math.random() * height,
-                    baseX: Math.random() * width, // For returning tendency
-                    baseY: Math.random() * height,
-                    size: Math.random() * 2 + 0.5, // Varied sizes
-                    density: (Math.random() * 30) + 1,
-                    vx: (Math.random() - 0.5) * 0.2, // Gentle drift
-                    vy: (Math.random() - 0.5) * 0.2,
-                    alpha: Math.random() * 0.5 + 0.1,
-                    pulseSpeed: 0.02 + Math.random() * 0.03, // For twinkling
+                    vx: (Math.random() - 0.5) * 0.5, // Faster, smoother drift
+                    vy: (Math.random() - 0.5) * 0.5,
+                    size: Math.random() * 1.5 + 0.2, // Smaller, finer dust
+                    alpha: Math.random() * 0.4 + 0.1, // Subtler
+                    pulseSpeed: 0.01 + Math.random() * 0.02,
                     pulseOffset: Math.random() * Math.PI * 2
                 });
             }
@@ -66,39 +62,33 @@ const InteractiveDotGrid = () => {
             const interactionRadius = 200;
 
             particlesRef.current.forEach((p) => {
-                // Organic movement
+                // Smooth Drift
                 p.x += p.vx;
                 p.y += p.vy;
 
-                // Gentle sine wave motion (floating music note feel)
-                p.x += Math.sin(time + p.density) * 0.1;
-
-                // Mouse interaction - gentle push
+                // Mouse interaction - simple fluid repulsion
                 const dx = mouse.x - p.x;
                 const dy = mouse.y - p.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < interactionRadius) {
-                    const forceDirectionX = dx / distance;
-                    const forceDirectionY = dy / distance;
-                    const force = (interactionRadius - distance) / interactionRadius;
+                if (distance < 150) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (150 - distance) / 150;
+                    const pushX = Math.cos(angle) * force * 1;
+                    const pushY = Math.sin(angle) * force * 1;
 
-                    // Push away gently
-                    const directionX = forceDirectionX * force * p.density * 0.6;
-                    const directionY = forceDirectionY * force * p.density * 0.6;
-
-                    p.x -= directionX;
-                    p.y -= directionY;
+                    p.x -= pushX;
+                    p.y -= pushY;
                 }
 
-                // Wrap around screen for continuous flow
-                if (p.x < -20) p.x = width + 20;
-                if (p.x > width + 20) p.x = -20;
-                if (p.y < -20) p.y = height + 20;
-                if (p.y > height + 20) p.y = -20;
+                // Wrap around edges nicely
+                if (p.x < -10) p.x = width + 10;
+                if (p.x > width + 10) p.x = -10;
+                if (p.y < -10) p.y = height + 10;
+                if (p.y > height + 10) p.y = -10;
 
-                // Twinkle effect (breathing)
-                const breathing = Math.sin(time * 2 + p.pulseOffset) * 0.1;
+                // Breathing Alpha
+                const breathing = Math.sin(time + p.pulseOffset) * 0.1;
                 const currentAlpha = p.alpha + breathing;
 
                 // Draw

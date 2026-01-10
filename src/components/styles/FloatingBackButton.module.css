@@ -1,0 +1,70 @@
+.container {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    pointer-events: none;
+    /* Container doesn't block, bubble does */
+    mix-blend-mode: difference;
+}
+
+.bubble {
+    pointer-events: auto;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.bubble:hover {
+    transform: scale(1.1);
+    background: rgba(255, 0, 51, 0.2);
+    /* Red tint on hover */
+    border-color: rgba(255, 0, 51, 0.4);
+    box-shadow: 0 0 20px rgba(255, 0, 51, 0.3);
+}
+
+.icon {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2rem;
+    color: #f2f2f2;
+    transition: transform 0.3s;
+}
+
+.bubble:hover .icon {
+    transform: rotate(90deg);
+}
+
+/* Tooltip */
+.tooltip {
+    position: absolute;
+    bottom: 120%;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.2s;
+    pointer-events: none;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bubble:hover .tooltip {
+    opacity: 1;
+    transform: translateY(0);
+}

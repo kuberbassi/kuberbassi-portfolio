@@ -1,0 +1,263 @@
+/* KINETIC LANDING V3 */
+
+.kinetic-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Anton', sans-serif;
+    user-select: none;
+}
+
+/* --- SECTIONS --- */
+/* Both sections are full screen, stacked. 
+   We use CLIP-PATH to reveal them. */
+
+.section-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    will-change: clip-path;
+}
+
+/* CODE LAYER (LEFT) */
+.section-code {
+    background-color: #050505;
+    z-index: 2;
+    /* Diagonal Clip: Top-Right at 55%, Bottom-Right at 45% */
+    /* This creates the 10-15 degree slant */
+    clip-path: polygon(0 0, 55% 0, 45% 100%, 0 100%);
+}
+
+/* MUSIC LAYER (RIGHT) */
+.section-music {
+    background-color: #050002;
+    z-index: 1;
+    /* Full screen, underneath. The Code layer covers the left side. */
+}
+
+/* --- BACKGROUNDS --- */
+.bg-grid-cyber {
+    position: absolute;
+    inset: -50%;
+    background-image:
+        linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform: perspective(1000px) rotateX(60deg) translateY(0);
+    opacity: 0.3;
+    animation: cyber-grid-scroll 20s linear infinite;
+}
+
+.bg-nebula-deep {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 70% 50%, #2a000d 0%, #000 80%);
+    opacity: 0.8;
+}
+
+.noise-overlay {
+    position: absolute;
+    inset: 0;
+    background: url('https://grainy-gradients.vercel.app/noise.svg');
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+/* --- CONTENT --- */
+.kinetic-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    transition: transform 0.1s ease-out;
+    /* Parallax smoothing */
+}
+
+.title-huge {
+    font-size: 15vw;
+    line-height: 0.8;
+    margin: 0;
+    color: #fff;
+    text-transform: uppercase;
+    opacity: 0.9;
+    mix-blend-mode: overlay;
+}
+
+.subtitle-mono {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    letter-spacing: 0.5rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* Special Colors */
+.text-code {
+    color: #00ff88;
+    text-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+}
+
+.text-music {
+    color: #ff0044;
+    text-shadow: 0 0 30px rgba(255, 0, 68, 0.4);
+}
+
+/* --- GLASS SEPARATOR (THE SLASH) --- */
+.glass-separator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
+    /* Between layers? No, above Code to catch light */
+    pointer-events: none;
+    background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 48%,
+            rgba(255, 255, 255, 0.1) 50%,
+            /* The shard logic */
+            rgba(255, 255, 255, 0) 52%);
+    /* Match the clip angle roughly */
+    /* Wait, styling a div to match a dynamic clip path is hard.
+       Better used as a border on the top layer?
+       Or a separate div with the same clip-path but slight offset?
+       
+       We will control this div via JS to follow the split line.
+       It will be a thin strip.
+    */
+    width: 20px;
+    /* Width of the glass strip */
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    /* Rotate to match the slant. 
+       If Polygon is (55,0) to (45,100), the math:
+       dx = 10vw. dy = 100vh.
+       Angle = atan(10vw / 100vh). 
+       This varies by screen size.
+       
+       Better approach: The JS will handle the separator DOM geometry.
+    */
+    transform-origin: center;
+    overflow: hidden;
+    /* For the sheen */
+}
+
+/* SHEEN ANIMATION (Best Best Best Polish) */
+.glass-separator::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 0;
+    width: 100%;
+    height: 200%;
+    background: linear-gradient(to bottom,
+            transparent 0%,
+            rgba(255, 255, 255, 0.4) 50%,
+            transparent 100%);
+    transform: translateY(-100%);
+    animation: sheen-travel 3s ease-in-out infinite;
+}
+
+@keyframes sheen-travel {
+    0% {
+        transform: translateY(-100%);
+    }
+
+    50% {
+        transform: translateY(100%);
+    }
+
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+/* MOBILE RESPONSIVE (Stack Vertically) */
+@media (max-width: 768px) {
+    .section-layer {
+        flex-direction: column;
+    }
+
+    .section-code {
+        /* On mobile, Code is TOP half? 
+           Let's use a horizontal diagonal split. 
+           Top-Left to Bottom-Right roughly. */
+        clip-path: polygon(0 0, 100% 0, 100% 45%, 0 55%);
+        z-index: 2;
+    }
+
+    .glass-separator {
+        width: 100vw;
+        height: 20px;
+        /* Re-orient for horizontal split */
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%) rotate(-5deg);
+        /* The JS logic will need to adapt or be disabled on mobile.
+           For now, let's keep it simple CSS here. */
+    }
+
+    .title-huge {
+        font-size: 20vw;
+    }
+
+    .kinetic-container {
+        cursor: auto;
+        /* Default cursor on touch */
+    }
+}
+
+/* --- ANIMATIONS --- */
+@keyframes cyber-grid-scroll {
+    0% {
+        transform: perspective(1000px) rotateX(60deg) translateY(0);
+    }
+
+    100% {
+        transform: perspective(1000px) rotateX(60deg) translateY(100px);
+    }
+}
+
+/* Hover States */
+.section-layer:hover .title-huge {
+    opacity: 1;
+    filter: brightness(1.2);
+}
+
+/* Center Hint */
+.center-hint-v3 {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.4);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2rem;
+    z-index: 20;
+    pointer-events: none;
+    text-transform: uppercase;
+}
+
+/* Footer for Kinetic */
+.kinetic-footer {
+    position: absolute;
+    bottom: 0.5rem;
+    width: 100%;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.2);
+    z-index: 20;
+    pointer-events: none;
+}

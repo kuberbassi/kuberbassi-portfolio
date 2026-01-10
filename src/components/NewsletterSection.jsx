@@ -64,7 +64,7 @@ const NewsletterSection = () => {
 
                 {/* Footer */}
                 <div className={styles.footer}>
-                    <p>© 2025 Kuber Bassi. Forged in Chords & Soul 🔥</p>
+                    <p>© 2025-{new Date().getFullYear()} Kuber Bassi. Forged in Chords & Soul 🔥</p>
                 </div>
             </div>
         </section>

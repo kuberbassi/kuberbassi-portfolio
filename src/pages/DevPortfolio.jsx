@@ -218,7 +218,7 @@ const DevPortfolio = () => {
                             <a href="https://linkedin.com/in/kuberbassi" className="social-icon"><i className="fab fa-linkedin-in"></i></a>
                             <a href="https://github.com/kuberbassi" className="social-icon"><i className="fab fa-github"></i></a>
                         </div>
-                        <p className="footer-note">&copy; 2025 Kuber Bassi.</p>
+                        <p className="footer-note">&copy; 2025-{new Date().getFullYear()} Kuber Bassi.</p>
                     </footer>
                 </section>
             </main>
