@@ -1,0 +1,205 @@
+.split-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.split-panel {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    will-change: opacity, transform;
+    transition: flex 0.8s cubic-bezier(0.8, 0, 0.2, 1), opacity 0.6s, background 0.6s;
+    background-color: var(--color-dark);
+    /* Fallback */
+}
+
+.split-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-dark);
+    z-index: 0;
+}
+
+.split-panel a {
+    text-decoration: none;
+    color: var(--color-light);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    cursor: pointer;
+}
+
+#dev-background,
+#artist-background {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.dev-grid-line {
+    position: absolute;
+    background-color: rgba(59, 130, 246, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.dev-grid-line.vertical {
+    width: 1px;
+    height: 100%;
+    left: var(--left);
+}
+
+.dev-grid-line.horizontal {
+    height: 1px;
+    width: 100%;
+    top: var(--top);
+}
+
+.panel-heading {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    font-weight: 700;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    transition: transform 0.3s ease, letter-spacing 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+    white-space: nowrap;
+    /* Prevent wrap during animation */
+}
+
+.artist-panel {
+    background: linear-gradient(135deg, #161616 60%, #1a0b2a 100%);
+}
+
+#artist-background {
+    background: radial-gradient(circle at 50% 50%, #1a0b2a 0%, transparent 70%);
+    opacity: 0.7;
+    transition: opacity 0.6s;
+}
+
+.glowing-orb {
+    position: absolute;
+    border-radius: 50%;
+    will-change: transform;
+}
+
+.panel-subtext {
+    display: block;
+    font-family: var(--font-body);
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    color: var(--color-muted);
+    margin-top: 1rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
+}
+
+.landing-footer {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--color-muted);
+    font-size: 0.85rem;
+    z-index: 10;
+}
+
+/* --- HOVER EFFECTS (FOR DESKTOP ONLY) --- */
+@media (hover: hover) and (pointer: fine) {
+    .split-container.active:hover .split-panel {
+        filter: blur(2px) grayscale(50%);
+    }
+
+    .split-container.active .split-panel:hover {
+        flex: 1.5;
+        filter: blur(0px) grayscale(0%);
+    }
+
+    .split-panel:hover .panel-subtext {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .dev-panel:hover .panel-heading {
+        transform: scale(1.05);
+        letter-spacing: 0.05em;
+        color: var(--color-accent-dev);
+        text-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+    }
+
+    .artist-panel:hover .panel-heading {
+        transform: scale(1.05);
+        letter-spacing: 0.05em;
+        color: var(--color-accent-artist);
+        text-shadow: 0 0 15px var(--color-light), 0 0 30px var(--color-accent-artist);
+    }
+
+    .dev-panel:hover .dev-grid-line {
+        background-color: rgba(59, 130, 246, 0.3);
+    }
+}
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
+@media (max-width: 900px) {
+    .split-container {
+        flex-direction: column;
+    }
+
+    .split-panel {
+        min-height: 40vh;
+    }
+
+    .panel-heading {
+        font-size: clamp(2rem, 8vw, 3.5rem);
+    }
+
+    .panel-subtext {
+        font-size: 0.95rem;
+    }
+
+    .landing-footer {
+        font-size: 0.75rem;
+        bottom: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .split-container {
+        flex-direction: column;
+    }
+
+    .landing-footer {
+        font-size: 0.75rem;
+        bottom: 1rem;
+    }
+
+    /* Show subtext on mobile by default */
+    .panel-subtext {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+    .split-panel a {
+        padding: 1rem;
+    }
+
+    .panel-heading {
+        font-size: clamp(1.2rem, 7vw, 2.2rem);
+    }
+
+    .panel-subtext {
+        font-size: 0.85rem;
+    }
+
+    .landing-footer {
+        font-size: 0.7rem;
+    }
+}

@@ -1,0 +1,251 @@
+.hero {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    background-color: transparent;
+    color: #F2F2F2;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.canvasWrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    /* Behind content but above background */
+    opacity: 0.8;
+    /* Subtle visibility */
+}
+
+/* Grain Overlay */
+.grain {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 50;
+    mix-blend-mode: overlay;
+}
+
+/* Central Composition */
+.centerStage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.imageLayer {
+    position: absolute;
+    bottom: -10%;
+    /* Lower the image slightly */
+    height: 95%;
+    /* Make image larger */
+    z-index: 5;
+    /* Behind text */
+    pointer-events: none;
+    filter: grayscale(100%) contrast(120%) brightness(0.9);
+    display: flex;
+    justify-content: center;
+    mix-blend-mode: luminosity;
+    opacity: 0.9;
+}
+
+.imageLayer img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    mask-image: linear-gradient(to top, black 50%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);
+}
+
+.textLayer {
+    position: absolute;
+    z-index: 20;
+    /* Front of image */
+    /* Request: "Overlap slightly... create depth". 
+       Usually Text behind Subject is cool. 
+       Let's try Text behind. */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    mix-blend-mode: normal;
+    /* Standard */
+}
+
+.slogan {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(4rem, 13vw, 14rem);
+    /* Massive */
+    line-height: 0.82;
+    text-transform: uppercase;
+    color: #dfdfdf;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    letter-spacing: -0.02em;
+}
+
+.smallLabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    color: #ff3333;
+    margin-bottom: 1rem;
+    display: block;
+    font-weight: 700;
+}
+
+.sloganLine {
+    display: block;
+    position: relative;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Accent Color */
+.accent {
+    color: #ff3333;
+    /* Deep Orange/Red */
+}
+
+/* Interaction */
+.interactiveText {
+    cursor: default;
+}
+
+/* Sidebar Elements - Fixed while scrolling */
+.sidebarLeft {
+    position: fixed;
+    left: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    z-index: 100;
+}
+
+.socialIcon {
+    color: #F2F2F2;
+    font-size: 1.2rem;
+    transition: color 0.3s;
+}
+
+.socialIcon:hover {
+    color: #ff3333;
+}
+
+.sidebarRight {
+    position: absolute;
+    right: 2rem;
+    bottom: 2rem;
+    z-index: 20;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.soundToggle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.soundIndicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ff3333;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
+}
+
+/* Footer Info */
+.footerInfo {
+    position: absolute;
+    bottom: 2rem;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4rem;
+    /* Inside sidebars */
+    z-index: 20;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: #a3a3a3;
+}
+
+.footerCol h5 {
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+}
+
+.footerCol ul {
+    list-style: none;
+}
+
+.footerCol li {
+    margin-bottom: 0.2rem;
+    color: #F2F2F2;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .imageLayer {
+        height: 60%;
+        bottom: 5rem;
+    }
+
+    .slogan {
+        font-size: clamp(3rem, 15vw, 6rem);
+    }
+
+    .footerInfo {
+        display: none;
+        /* Hide on mobile to clean up */
+    }
+
+    .sidebarLeft {
+        left: 1rem;
+        bottom: 1rem;
+        flex-direction: row;
+    }
+
+    .sidebarRight {
+        right: 1rem;
+        bottom: 1rem;
+        writing-mode: horizontal-tb;
+    }
+}

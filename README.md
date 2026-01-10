@@ -1,44 +1,16 @@
-# 🚀 Kuber Bassi Portfolio
+# React + Vite
 
-This repository features a personal portfolio website, designed to be fully responsive across various devices. The website is a showcase of my design work, projects, and provides a way to get in touch with me. Built with a focus on clean design and user experience, it serves as a central hub to explore my work as a developer and artist.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
------
+Currently, two official plugins are available:
 
-### ✨ Features
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-  * **Responsive Design:** Optimized for seamless viewing on desktops, tablets, and mobile devices.
-  * **Showcase Projects:** Dedicated sections to highlight key projects with descriptions and links.
-  * **Contact Information:** Provides a clear way for visitors to reach out.
-  * **Clean and Modern UI:** A sleek and minimalist user interface to put the focus on the content.
+## React Compiler
 
------
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-### 💻 Technologies Used
+## Expanding the ESLint configuration
 
-The portfolio is built using standard web technologies:
-
-  * **HTML:** For structuring the content of the website.
-  * **CSS:** For styling and creating the responsive layout.
-  * **JavaScript:** For interactive elements and enhanced user experience.
-
------
-
-### 🚀 Getting Started
-
-This is a static website, so you can easily view it on your local machine without any server setup.
-
-1.  **Clone the repository:**
-
-    ```bash
-    git clone https://github.com/kuberbassi/kuber-bassi-portfolio.git
-    cd kuber-bassi-portfolio
-    ```
-
-2.  **Open the website:**
-    Simply open the `index.html` file in your preferred web browser to view the portfolio.
-
------
-
-### 📄 License
-
-This project is licensed under the **MIT License**. For more details, see the `LICENSE` file in the repository.
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

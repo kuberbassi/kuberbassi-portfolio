@@ -1,0 +1,69 @@
+.navContainer {
+    position: fixed;
+    z-index: 100;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: fit-content;
+    padding: 1rem 0.6rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.dotLink {
+    display: block;
+    width: 12px;
+    height: 12px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transition: all 0.4s cubic-bezier(0.2, 1, 0.2, 1);
+    position: relative;
+    cursor: pointer;
+}
+
+.dotLink::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 50%;
+    right: 200%;
+    transform: translateY(-50%) translateX(10px);
+    background: rgba(255, 255, 255, 0.95);
+    color: #000;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    font-weight: 600;
+    font-size: 0.8rem;
+    font-family: 'Space Grotesk', sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dotLink:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* Active class handling done via JS usually, we need to ensure specificity or use !important if inline styles persist in parent logic, but best to rely on class */
+.active {
+    background-color: #ff0033 !important;
+    transform: scale(1.5);
+    box-shadow: 0 0 10px rgba(255, 0, 51, 0.5);
+}
