@@ -563,6 +563,7 @@ body {
     -webkit-text-fill-color: transparent;
     -webkit-mask-image: linear-gradient(to bottom, white 60%, transparent);
     mask-image: linear-gradient(to bottom, white 60%, transparent);
+    mask: linear-gradient(to bottom, white 60%, transparent);
 }
 
 .v4-cardText {
