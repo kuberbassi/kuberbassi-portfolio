@@ -29,6 +29,36 @@ const MusicPortfolio = () => {
     });
 
     useEffect(() => {
+        // Set comprehensive SEO metadata
+        document.title = "KUβER βΔSSI | Guitarist & Producer";
+
+        // Update meta description for SEO
+        let metaDescription = document.querySelector('meta[name="description"]');
+        if (!metaDescription) {
+            metaDescription = document.createElement('meta');
+            metaDescription.name = 'description';
+            document.head.appendChild(metaDescription);
+        }
+        metaDescription.content = "KUβER βΔSSI - Professional guitarist, music producer, and artist creating original soundscapes. Stream my music on Spotify, Apple Music, and all platforms.";
+
+        // Update keywords for music profile
+        let metaKeywords = document.querySelector('meta[name="keywords"]');
+        if (!metaKeywords) {
+            metaKeywords = document.createElement('meta');
+            metaKeywords.name = 'keywords';
+            document.head.appendChild(metaKeywords);
+        }
+        metaKeywords.content = "KUβER βΔSSI, Kuber Bassi, Guitarist, Music Producer, Artist, Producer, Musician, Original Music, Spotify Artist, Music Portfolio, Guitar Music, Electronic Music, Sound Design";
+
+        // Update OG tags for social sharing
+        let ogTitle = document.querySelector('meta[property="og:title"]');
+        if (!ogTitle) {
+            ogTitle = document.createElement('meta');
+            ogTitle.setAttribute('property', 'og:title');
+            document.head.appendChild(ogTitle);
+        }
+        ogTitle.content = "KUβER βΔSSI | Guitarist & Producer";
+
         // Mark session as active immediately
         sessionStorage.setItem('session_active', 'true');
 

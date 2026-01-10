@@ -16,9 +16,16 @@ const KineticLandingPage = () => {
     const mouse = useRef({ x: 0.5 }); // 0.0 to 1.0
     const splitState = useRef({ val: 50 }); // 0 to 100 (Percentage)
 
+    // FORCE DARK BACKGROUND
     useLayoutEffect(() => {
+        // Set page title - matches format
+        document.title = "KUBER BASSI | Choose Your Path";
+
         document.body.style.backgroundColor = '#000';
         document.documentElement.style.backgroundColor = '#000';
+        return () => {
+            // Cleanup if needed
+        };
     }, []);
 
     useEffect(() => {

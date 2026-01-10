@@ -12,6 +12,9 @@ const LandingPage = () => {
 
     // FORCE DARK BACKGROUND (Fix white flash on reload)
     useLayoutEffect(() => {
+        // Set page title - matches format
+        document.title = "KUBER BASSI | Choose Your Path";
+
         document.body.style.backgroundColor = '#000';
         document.documentElement.style.backgroundColor = '#000';
         return () => {
