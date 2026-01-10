@@ -6,7 +6,7 @@ const FALLBACK_VIDEOS = [
     {
         id: "jBvW6Q9t0Gk",
         title: "Rock Band | Farewell 2024 | New Era Public School",
-        thumbnail: "https://img.youtube.com/vi/jBvW6Q9t0Gk/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/jBvW6Q9t0Gk/hqdefault.jpg",
         views: "12K views",
         viewCount: "12543",
         date: "Dec 2024"
@@ -14,7 +14,7 @@ const FALLBACK_VIDEOS = [
     {
         id: "YdQo4DVrPfg",
         title: "Chhaap Tilak | Dillagi | Amity International School | Band Cover",
-        thumbnail: "https://img.youtube.com/vi/YdQo4DVrPfg/maxresdefault.jpg",
+        thumbnail: "https://img.youtube.com/vi/YdQo4DVrPfg/hqdefault.jpg",
         views: "8.5K views",
         viewCount: "8521",
         date: "Nov 2024"

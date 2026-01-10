@@ -9,6 +9,21 @@ const DotNav = () => {
     const handleClick = (id) => {
         const el = document.getElementById(id);
         if (el) el.scrollIntoView({ behavior: 'smooth' });
+
+        // Manual Update for Instant Feedback
+        document.querySelectorAll('.dot-link').forEach(link => {
+            link.classList.remove('active');
+            link.style.backgroundColor = '#a3a3a3';
+            link.style.transform = 'scale(1)';
+        });
+
+        // Find the specific link and activate it
+        const activeLink = document.querySelector(`.dot-link[data-section="${id}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+            activeLink.style.backgroundColor = '#ff0033';
+            activeLink.style.transform = 'scale(1.5)';
+        }
     };
 
     return (

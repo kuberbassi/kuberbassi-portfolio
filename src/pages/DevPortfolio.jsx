@@ -302,21 +302,32 @@ const EnhancedFooter = () => (
         </div>
 
         {/* BACK TO HUB BUBBLE */}
-        <Link to="/" style={{
-            position: 'fixed', bottom: '2rem', left: '50%', transform: 'translateX(-50%)',
-            width: '60px', height: '60px', borderRadius: '50%',
-            background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#fff', fontSize: '1.2rem', textDecoration: 'none',
-            zIndex: 100, transition: 'all 0.3s ease',
-            boxShadow: '0 0 20px rgba(0,0,0,0.5)'
-        }}
+        {/* BACK TO HUB BUBBLE */}
+        <a href="/"
+            onClick={(e) => {
+                e.preventDefault();
+                const isLocal = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1');
+                if (isLocal) {
+                    window.location.href = '/';
+                } else {
+                    window.location.href = 'https://kuberbassi.com';
+                }
+            }}
+            style={{
+                position: 'fixed', bottom: '2rem', left: '50%', transform: 'translateX(-50%)',
+                width: '60px', height: '60px', borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#fff', fontSize: '1.2rem', textDecoration: 'none',
+                zIndex: 100, transition: 'all 0.3s ease',
+                boxShadow: '0 0 20px rgba(0,0,0,0.5)'
+            }}
             onMouseOver={(e) => { e.currentTarget.style.transform = 'translateX(-50%) scale(1.1)'; e.currentTarget.style.background = 'rgba(59, 130, 246, 0.8)'; }}
             onMouseOut={(e) => { e.currentTarget.style.transform = 'translateX(-50%) scale(1)'; e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'; }}
         >
             <i className="fas fa-home"></i>
-        </Link>
+        </a>
     </footer>
 );
 
