@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import GlitchCanvas from '../components/GlitchCanvas';
 import Preloader from '../components/Preloader';
 import MainHeader from '../components/MainHeader';
 import DotNav from '../components/DotNav';

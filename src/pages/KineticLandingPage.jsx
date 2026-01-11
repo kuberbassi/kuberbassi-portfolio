@@ -34,6 +34,19 @@ const KineticLandingPage = () => {
         const updatePhysics = () => {
             if (isTransitioning.current) return;
 
+            // Check for Mobile/Tablet (Vertical Layout)
+            // If screen is narrow, we disable the horizontal split logic
+            // and let CSS handle the static or responsive layout.
+            if (window.innerWidth <= 1024) {
+                // Optional: We could implement vertical split logic here (Y-axis)
+                // For now, let's clear the inline styles so CSS applies
+                if (codeLayerRef.current) codeLayerRef.current.style.clipPath = '';
+                if (separatorRef.current) separatorRef.current.style.clipPath = '';
+
+                animationFrameId = requestAnimationFrame(updatePhysics);
+                return;
+            }
+
             // Target split is based on mouse X
             // Center is 50.
             // Mouse Left (0.0) -> Push split right (reveal more Code? No, Code is Left layer.)
@@ -68,12 +81,23 @@ const KineticLandingPage = () => {
 
             // Internal Parallax for Text
             // Move text slightly OPPOSITE to mouse to create depth
-            const pX = (mouse.current.x - 0.5) * 50;
-            gsap.to('.text-code-container', { x: pX, duration: 1, ease: 'power2.out' });
-            gsap.to('.text-music-container', { x: -pX, duration: 1, ease: 'power2.out' });
+            if (window.innerWidth > 768) {
+                const pX = (mouse.current.x - 0.5) * 50;
+                gsap.to('.text-code-container', { x: pX, duration: 1, ease: 'power2.out' });
+                gsap.to('.text-music-container', { x: -pX, duration: 1, ease: 'power2.out' });
+            } else {
+                // Reset on mobile
+                gsap.to('.text-code-container', { x: 0, duration: 1 });
+                gsap.to('.text-music-container', { x: 0, duration: 1 });
+            }
         };
 
         window.addEventListener('mousemove', onMouseMove);
+        // Also listen for resize to clear styles immediately if crossing threshold
+        window.addEventListener('resize', () => {
+            // Let the loop handle it
+        });
+
         updatePhysics();
 
         return () => {
@@ -124,44 +148,57 @@ const KineticLandingPage = () => {
         });
 
         // HIDE UI
-        tl.to('.center-hint-v3, .kinetic-footer', { opacity: 0, duration: 0.3 }, 0);
+        tl.to('.center-hint-v3, .kinetic-footer, .glass-separator', { opacity: 0, duration: 0.3 }, 0);
+
+        // Responsive Animation Logic
+        const isMobile = window.innerWidth <= 1024;
 
         if (path === '/dev') {
-            // GOING TO CODE (Left)
-            // Interaction: "Slash" moves to the RIGHT (100%), filling screen with Code.
+            // GOING TO CODE
 
             // 1. Zoom/Scale Effect
             tl.to('.text-code', { scale: 1.2, x: 0, duration: 1, ease: 'expo.inOut' }, 0);
-            tl.to('.text-music', { x: 100, opacity: 0, duration: 0.5 }, 0); // Bye Music
+            tl.to('.text-music', { x: isMobile ? 0 : 100, opacity: 0, duration: 0.5 }, 0); // Bye Music
 
             // 2. The Slash Wipe
-            const obj = { val: splitState.current.val };
-            tl.to(obj, {
-                val: 120, // Verify far right (clear screen)
-                duration: 0.8,
-                ease: 'expo.inOut',
-                onUpdate: () => applySplit(obj.val)
-            }, 0);
+            if (!isMobile) {
+                const obj = { val: splitState.current.val };
+                tl.to(obj, {
+                    val: 120, // Verify far right (clear screen)
+                    duration: 0.8,
+                    ease: 'expo.inOut',
+                    onUpdate: () => applySplit(obj.val)
+                }, 0);
+            } else {
+                // Mobile wipe (Vertical) ? Or just fade?
+                // Simple fade/reveal for mobile stability
+                tl.to('.section-music', { opacity: 0, duration: 0.5 }, 0);
+                tl.to('.section-code', { clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)', duration: 0.8, ease: 'expo.inOut' }, 0);
+            }
 
             // 3. Grid Flash
             tl.to('.bg-grid-cyber', { opacity: 0.8, scale: 1.1, duration: 0.8 }, 0);
 
         } else {
-            // GOING TO MUSIC (Right)
-            // Interaction: "Slash" moves to the LEFT (-20%), revealing full Music.
+            // GOING TO MUSIC
 
             // 1. Zoom Effect
             tl.to('.text-music', { scale: 1.2, x: 0, duration: 1, ease: 'expo.inOut' }, 0);
-            tl.to('.text-code', { x: -100, opacity: 0, duration: 0.5 }, 0); // Bye Code
+            tl.to('.text-code', { x: isMobile ? 0 : -100, opacity: 0, duration: 0.5 }, 0); // Bye Code
 
             // 2. The Slash Wipe
-            const obj = { val: splitState.current.val };
-            tl.to(obj, {
-                val: -20, // Way left (Code layer clipped to nothing)
-                duration: 0.8,
-                ease: 'expo.inOut',
-                onUpdate: () => applySplit(obj.val)
-            }, 0);
+            if (!isMobile) {
+                const obj = { val: splitState.current.val };
+                tl.to(obj, {
+                    val: -20, // Way left (Code layer clipped to nothing)
+                    duration: 0.8,
+                    ease: 'expo.inOut',
+                    onUpdate: () => applySplit(obj.val)
+                }, 0);
+            } else {
+                // Mobile wipe
+                tl.to('.section-code', { opacity: 0, duration: 0.5 }, 0);
+            }
 
             // 3. Nebula Brighten
             tl.to('.bg-nebula-deep', { opacity: 1, scale: 1.2, duration: 0.8 }, 0);
@@ -181,7 +218,7 @@ const KineticLandingPage = () => {
                     {/* Offset text to the right so it's centered in the visible space?
                          Actually, standard center is fine, the user will "uncover" it.
                          But let's nudge it slightly Right. */}
-                    <div style={{ transform: 'translateX(25vw)' }}>
+                    <div className="text-offset-right">
                         <h1 className="title-huge text-music">MUSIC</h1>
                         <span className="subtitle-mono">ARTIST</span>
                     </div>
@@ -193,7 +230,7 @@ const KineticLandingPage = () => {
                 <div className="bg-grid-cyber"></div>
                 <div className="kinetic-content text-code-container">
                     {/* Nudge Left for visual balance */}
-                    <div style={{ transform: 'translateX(-25vw)' }}>
+                    <div className="text-offset-left">
                         <h1 className="title-huge text-code">CODE</h1>
                         <span className="subtitle-mono">ARCHITECT</span>
                     </div>

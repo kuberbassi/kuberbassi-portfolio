@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Observer from 'gsap/Observer'; // Fixed Default Import
+import Observer from 'gsap/observer'; // Fixed Default Import
 import '../styles/DevPortfolioV4.css'; // Global CSS (No Modules)
 import KineticCursor from '../components/KineticCursor';
 
@@ -54,20 +54,6 @@ const TiltCard = ({ children, className }) => {
             {children}
         </div>
     );
-};
-
-const LiveClock = () => {
-    const [time, setTime] = useState(new Date());
-
-    useEffect(() => {
-        const timer = setInterval(() => setTime(new Date()), 1000);
-        return () => clearInterval(timer);
-    }, []);
-
-    const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-    const timeString = time.toLocaleTimeString('en-US', options);
-
-    return <h2 className="v4-cardTitle">{timeString}</h2>;
 };
 
 const TechMarquee = () => {
@@ -314,14 +300,25 @@ const EnhancedFooter = () => (
                 }
             }}
             style={{
-                position: 'fixed', bottom: '2rem', left: '50%', transform: 'translateX(-50%)',
-                width: '60px', height: '60px', borderRadius: '50%',
-                background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)',
+                position: 'fixed',
+                bottom: 'max(3rem, env(safe-area-inset-bottom, 3rem))', /* Safe area support */
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '70px', /* Increased from 60px */
+                height: '70px',
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(10px)',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#fff', fontSize: '1.2rem', textDecoration: 'none',
-                zIndex: 100, transition: 'all 0.3s ease',
-                boxShadow: '0 0 20px rgba(0,0,0,0.5)'
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#fff',
+                fontSize: '1.4rem', /* Slightly larger icon */
+                textDecoration: 'none',
+                zIndex: 9999,
+                transition: 'all 0.3s ease',
+                boxShadow: '0 0 25px rgba(0,0,0,0.6)'
             }}
             onMouseOver={(e) => { e.currentTarget.style.transform = 'translateX(-50%) scale(1.1)'; e.currentTarget.style.background = 'rgba(59, 130, 246, 0.8)'; }}
             onMouseOut={(e) => { e.currentTarget.style.transform = 'translateX(-50%) scale(1)'; e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'; }}
@@ -408,7 +405,7 @@ const TerminalNavigator = () => {
     };
 
     return (
-        <nav style={{
+        <nav className="v4-terminalNav" style={{
             position: 'fixed',
             right: '1rem',
             top: '50%',

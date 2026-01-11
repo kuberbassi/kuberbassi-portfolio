@@ -530,6 +530,7 @@ body {
     padding: 2px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 50%, rgba(59, 130, 246, 0.2));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
@@ -1000,15 +1001,115 @@ body {
     }
 }
 
-/* --- RESPONSIVE --- */
-@media (max-width: 1024px) {
-    .v4-monolithText {
-        font-size: 18vw;
+/* ... previous styles ... */
+
+/* --- RESPONSIVE REFINEMENTS --- */
+
+/* TABLET (Portrait/Landscape) - 769px to 1024px */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .v4-bentoGrid {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 Columns is better for tablet */
+        grid-template-rows: auto;
+        gap: 20px;
     }
 
+    .v4-span2 {
+        grid-column: span 2;
+        /* Allow spanning across 2 cols */
+    }
+
+    .v4-spanRow2 {
+        grid-row: span 1;
+        /* Reset row span to avoid height issues, or keep if content fits */
+    }
+
+    .v4-monolithText {
+        font-size: 14vw;
+    }
+
+    .v4-glassCard {
+        padding: 2rem;
+        /* Save space */
+    }
+
+    .v4-cardTitle {
+        font-size: 2.5rem;
+    }
+
+    /* Cinematic Project - Tablet can likely handle vertical stack or smaller horizontal */
+    .v4-cinematicProject {
+        flex-direction: column;
+        height: auto;
+        width: 100%;
+    }
+
+    .v4-cineImage {
+        height: 400px;
+        border-right: none;
+        border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    }
+}
+
+/* MOBILE - Below 768px */
+@media (max-width: 768px) {
+    .v4-container {
+        overflow-x: hidden;
+        padding: 0 1.5rem 150px 1.5rem;
+        /* Side padding + bottom clearance */
+    }
+
+    .v4-terminalNav {
+        display: none !important;
+    }
+
+    /* Hide bottom HUD corners to declutter mobile */
+    .v4-hudCorner.bottom-left,
+    .v4-hudCorner.bottom-right {
+        display: none !important;
+    }
+
+    /* Scale down top corners for less intrusion */
+    .v4-hudCorner.top-left,
+    .v4-hudCorner.top-right {
+        transform: scale(0.7);
+        font-size: 0.7rem;
+    }
+
+    /* Hide 3D Cube - Too complex for mobile */
+    .v4-artifactWrapper,
+    .v4-cube {
+        display: none !important;
+    }
+
+    /* Hide Terminal Widget - Adds clutter */
+    .v4-terminalWidget {
+        display: none !important;
+    }
+
+    /* TYPOGRAPHY SYSTEM */
+
+    /* Section Headings - Premium sizing */
+    .v4-bentoSection h2,
+    .v4-coreSection h2,
+    .v4-deckSection h2 {
+        font-size: 2rem;
+        line-height: 1.2;
+        margin-bottom: 2rem;
+        padding: 0;
+    }
+
+    /* Override Bento Grid to Single Column */
     .v4-bentoGrid {
         grid-template-columns: 1fr;
         grid-template-rows: auto;
+        gap: 2rem;
+        /* Increased from 20px */
+        margin-top: 3rem;
+        max-width: 500px;
+        /* Constrain width for better readability */
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .v4-span2,
@@ -1017,24 +1118,147 @@ body {
         grid-row: span 1;
     }
 
-    .v4-projectCard {
-        width: 90vw;
-        height: 65vh;
-        flex-direction: column-reverse;
+    /* Adjust Card Padding - More breathing room */
+    .v4-glassCard {
+        padding: 2rem;
+        /* Increased from 1.5rem */
+        border-radius: 24px;
+        min-height: auto;
+        /* Let content dictate height */
     }
 
-    .v4-projectInfo {
-        padding: 1.5rem;
-        flex: 0.6;
+    .v4-cardTitle {
+        font-size: 1.5rem;
+        line-height: 1.2;
+        /* Better readability */
+        word-break: break-word;
+        margin-bottom: 1rem;
     }
 
-    .v4-projectImage {
-        flex: 1;
-        border-left: none;
-        border-bottom: 1px solid #222;
+    .v4-cardText {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        /* Much better readability */
     }
 
-    .v4-projectTitle {
+    /* Hero Section - Prevent Overflow */
+    .v4-heroSection {
+        overflow: hidden;
+        padding: 0 1rem;
+    }
+
+    /* Hero Text - Premium Typography */
+    .v4-monolithText {
+        font-size: 12vw;
+        /* Dramatically reduced for elegance */
+        line-height: 1.1;
+        overflow: hidden;
+        word-wrap: break-word;
+        hyphens: auto;
+    }
+
+    .v4-monolithSub {
+        font-size: 0.7rem;
+        letter-spacing: 0.15rem;
+        padding: 0.75rem 1.5rem;
+        /* More breathing room */
+    }
+
+    /* Section Spacing - Generous */
+    .v4-bentoSection,
+    .v4-coreSection,
+    .v4-deckSection {
+        padding: 4rem 0;
+        /* Increased vertical, horizontal handled by container */
+    }
+
+    /* Cinematic Project - Add margins and bottom clearance */
+    .v4-cinematicProject {
+        flex-direction: column;
+        width: calc(100% - 2rem);
+        /* Horizontal margins */
+        margin: 0 1rem 3rem 1rem;
+        /* Left/right spacing + reduced bottom */
+        height: auto;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        /* Re-enable border for definition */
+        background: rgba(5, 5, 5, 0.95);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border-radius: 16px;
+        padding-bottom: 2rem;
+        /* Extra internal bottom padding */
+    }
+
+    /* Cinematic Image - Optimized height */
+    .v4-cineImage {
+        height: 250px;
+        /* Reduced from 300px */
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .v4-cineOverlay {
+        border-radius: 12px;
+    }
+
+    .v4-cineContent {
+        padding: 0;
+        /* Remove padding as it's transparent/stacked */
+        background: transparent;
+    }
+
+    .v4-cineContent::before {
+        display: none;
+    }
+
+    .v4-cineTitle {
+        font-size: 1.75rem;
+        /* Refined for mobile */
+        line-height: 1.1;
+        word-break: break-word;
+        margin-bottom: 1.5rem;
+    }
+
+    .v4-cineDesc {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    .v4-megaLink {
         font-size: 2.5rem;
+        /* Reduced for mobile elegance */
+        line-height: 1.1;
+    }
+
+    /* Terminal Widget - Already hidden above */
+
+    /* Footer Spacing */
+    footer {
+        padding: 3rem 0 1rem !important;
+    }
+
+    /* Footer Social Icons - Touch Optimized */
+    .v4-footerIcon {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 1.5rem !important;
+    }
+
+    /* Hide some HUD elements on really small screens if needed */
+    .v4-hudCorner {
+        transform: scale(0.8);
+    }
+
+    /* Ensure Particles don't lag */
+    .v4-particleCanvas {
+        opacity: 0.3;
+        /* Reduce visibility for performance */
+    }
+
+    /* Project Hover Image disable on touch */
+    .project-hover-image {
+        display: none !important;
     }
 }

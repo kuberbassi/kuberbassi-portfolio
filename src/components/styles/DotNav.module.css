@@ -61,9 +61,18 @@
     transform: translateY(-50%) translateX(0);
 }
 
+/* ... previous styles ... */
+
 /* Active class handling done via JS usually, we need to ensure specificity or use !important if inline styles persist in parent logic, but best to rely on class */
 .active {
     background-color: #ff0033 !important;
     transform: scale(1.5);
     box-shadow: 0 0 10px rgba(255, 0, 51, 0.5);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .navContainer {
+        display: none;
+    }
 }

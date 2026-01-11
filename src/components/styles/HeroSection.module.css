@@ -28,7 +28,8 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     opacity: 0.04;
     pointer-events: none;
-    z-index: 50;
+    z-index: 15;
+    /* Push behind text (z-20) for clarity */
     mix-blend-mode: overlay;
 }
 
@@ -156,6 +157,14 @@
 }
 
 /* Responsiveness */
+/* Tablet & Mobile Optimization */
+@media (max-width: 1024px) {
+    .grain {
+        opacity: 0.02;
+        /* Reduce noise on small screens for better clarity */
+    }
+}
+
 @media (max-width: 768px) {
     .imageLayer {
         height: 60%;
@@ -163,11 +172,18 @@
     }
 
     .slogan {
-        font-size: clamp(3rem, 15vw, 6rem);
+        font-size: clamp(2.5rem, 10vw, 4rem);
+        padding: 0 1rem;
+        /* Add breathing room */
     }
 
     .footerInfo {
         display: none;
         /* Hide on mobile to clean up */
+    }
+
+    /* Ensure image doesn't block text readability if they overlap */
+    .imageLayer {
+        opacity: 0.8;
     }
 }
