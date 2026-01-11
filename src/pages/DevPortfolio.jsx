@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Observer from 'gsap/observer'; // Fixed Default Import
+import { ScrollTrigger, Observer } from 'gsap/all';
 import '../styles/DevPortfolioV4.css'; // Global CSS (No Modules)
 import KineticCursor from '../components/KineticCursor';
 
