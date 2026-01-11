@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger, Observer } from 'gsap/all';
 import '../styles/DevPortfolioV4.css'; // Global CSS (No Modules)
 import KineticCursor from '../components/KineticCursor';
+import SEO from '../components/SEO';
 
 gsap.registerPlugin(ScrollTrigger, Observer);
 
@@ -750,8 +751,8 @@ const DevPortfolio = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Set page title - matches format
-        document.title = "KUBER BASSI | System Architect";
+        // Set page title via SEO component
+        // document.title handled by SEO component
 
         if (loading) return; // Wait for loader
 
@@ -861,6 +862,13 @@ const DevPortfolio = () => {
 
     return (
         <div className="v4-container" ref={mainRef}>
+            <SEO
+                title="KUBER BASSI | System Architect & Developer"
+                description="Full-stack developer specializing in React, Node.js, and modern web technologies. Explore my projects showcasing cutting-edge development and system design."
+                keywords="Kuber Bassi, developer, software engineer, full-stack, React, Node.js, Python, web development, system architect"
+                ogType="website"
+                url="https://dev.kuberbassi.com"
+            />
             {/* SCROLL PROGRESS BAR */}
             <ScrollProgress />
 

@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import '../styles/KineticLanding.css';
 
 import KineticCursor from '../components/KineticCursor';
+import SEO from '../components/SEO';
 
 const KineticLandingPage = () => {
     const navigate = useNavigate();
@@ -207,6 +208,13 @@ const KineticLandingPage = () => {
 
     return (
         <div className="kinetic-container" ref={containerRef} style={{ cursor: 'none' }}>
+            <SEO
+                title="KUBER BASSI | Choose Your Path"
+                description="Explore my creative worlds - immersive guitar instrumentals or cutting-edge development projects. Choose your interface: Music or Code."
+                keywords="Kuber Bassi, portfolio, musician, developer, guitarist, software engineer, music producer, full-stack developer"
+                ogType="website"
+                url="https://kuberbassi.com"
+            />
             <KineticCursor />
 
             {/* --- LAYERS --- */}

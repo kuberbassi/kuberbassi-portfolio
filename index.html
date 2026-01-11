@@ -6,32 +6,9 @@
   <link rel="icon" type="image/png" href="/dev-portfolio/images/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Primary Meta Tags -->
-  <title>KUβER βΔSSI | Guitarist & Producer</title>
-  <meta name="title" content="KUβER βΔSSI | Guitarist & Producer">
-  <meta name="description"
-    content="Rock guitarist, music producer & sound designer crafting high-energy instrumentals. Stream on Spotify, Apple Music & YouTube. Unique blend of technical mastery and creative expression.">
-  <meta name="keywords"
-    content="Kuber Bassi, KUβER βΔSSI, KUBER BASSI, KuberB, rock guitar, instrumental music, music producer, sound designer, guitarist, electric guitar, music production">
-  <meta name="author" content="Kuber Bassi">
-  <meta name="robots" content="index, follow">
-
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="profile">
-  <meta property="og:url" content="https://kuberbassi.com">
-  <meta property="og:title" content="KUβER βΔSSI | Guitarist & Producer">
-  <meta property="og:description"
-    content="Stream my latest guitar instrumentals and rock productions on all platforms. High-energy instrumentals and cinematic soundscapes.">
-  <meta property="og:image" content="https://kuberbassi.com/og-image.jpg">
-  <meta property="profile:username" content="KuberB">
-
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://kuberbassi.com">
-  <meta property="twitter:title" content="KUβER βΔSSI | Guitarist & Producer">
-  <meta property="twitter:description"
-    content="Rock guitarist, music producer & sound designer. Stream on all platforms.">
-  <meta property="twitter:image" content="https://kuberbassi.com/twitter-card.jpg">
+  <!--  Default meta tags - will be dynamically replaced by react-helmet-async -->
+  <title>KUBER BASSI</title>
+  <meta name="description" content="Kuber Bassi - Musician and Developer" />
 
   <!-- Music-specific Metadata -->
   <meta property="music:musician" content="https://kuberbassi.com">
@@ -62,7 +39,7 @@
     href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:wght@700&family=Roboto+Mono:wght@400&family=Space+Grotesk:wght@400;500;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  
+
   <!-- SERVICE WORKER KILLER: Fix for stale localhost PWA caches -->
   <script>
     if ('serviceWorker' in navigator) {
@@ -72,7 +49,7 @@
           registration.unregister();
         }
       });
-      caches.keys().then(function(names) {
+      caches.keys().then(function (names) {
         for (let name of names) caches.delete(name);
       });
     }
