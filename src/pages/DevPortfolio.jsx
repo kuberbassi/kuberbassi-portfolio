@@ -828,31 +828,31 @@ const DevPortfolio = () => {
     const projects = [
         {
             title: "MCD HRMS",
-            desc: "Enterprise HR System for Government Municipal Corporation. Payroll, Attendance, and Performance tracking for 5000+ employees.",
-            tech: ["Python", "Django", "PostgreSQL"],
+            desc: "Enterprise HR System MVP. Streamlined payroll, attendance, and performance tracking architecture.",
+            tech: ["React", "Vite", "Firebase"],
             img: "/dev-portfolio/images/projects/mcd-hrms.png",
             link: "https://mcd-hrms.web.app",
-            stat: "5000+ Users"
+            stat: "MVP Status"
         },
         {
             title: "AcadHub",
-            desc: "Academic Management Dashboard. Streamlined workflows for students and faculty with real-time data sync.",
-            tech: ["React", "Node.js", "Firebase"],
+            desc: "Academic Management Dashboard. Comprehensive workflow solution for students and faculty.",
+            tech: ["TypeScript", "Vite", "Python", "Flask"],
             img: "/dev-portfolio/images/projects/acadhub.png",
             link: "https://acadhub.kuberbassi.com",
             stat: "Real-time Sync"
         },
         {
             title: "IndiaOnRoaming",
-            desc: "Travel Portal for Indian Tourism. High-performance booking engine with immersive visual storytelling.",
-            tech: ["React", "Next.js", "Tailwind"],
+            desc: "Travel Portal for Indian Tourism. High-performance booking interface with immersive visual storytelling.",
+            tech: ["React", "Vite", "Tailwind"],
             img: "/dev-portfolio/images/projects/indiaonroaming.png",
             link: "https://indiaonroaming.com"
         },
         {
             title: "Sugandhmaya",
-            desc: "Luxury E-Commerce for Fragrances. Custom Shopify theme architecture with premium animations.",
-            tech: ["Shopify", "Liquid", "JS"],
+            desc: "Luxury E-Commerce for Fragrances. Custom full-stack architecture with premium animations.",
+            tech: ["Node.js", "MongoDB", "Vanilla JS", "Tailwind"],
             img: "/dev-portfolio/images/projects/sugandhmaya.png",
             link: "https://sugandhmaya.com"
         }

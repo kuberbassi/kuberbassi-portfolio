@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 
 const SEO = ({
   title = "KUβER βΔSSI | Guitarist & Producer",
@@ -10,13 +11,15 @@ const SEO = ({
   url = "https://kuberbassi.com"
 }) => {
   return (
-    <>
+    <Helmet>
+      {/* Basic Metadata */}
       <title>{title}</title>
       <meta name="title" content={title} />
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <meta name="author" content="Kuber Bassi" />
       <meta name="robots" content="index, follow" />
+      <link rel="canonical" href={url} />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={ogType} />
@@ -32,7 +35,7 @@ const SEO = ({
       <meta property="twitter:title" content={title} />
       <meta property="twitter:description" content={description} />
       <meta property="twitter:image" content={ogImage} />
-    </>
+    </Helmet>
   );
 };
 
