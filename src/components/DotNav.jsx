@@ -44,7 +44,11 @@ const DotNav = () => {
                     return (
                         <li key={section}>
                             <a
-                                onClick={() => handleClick(section)}
+                                href={`#${section}`}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleClick(section);
+                                }}
                                 className={`dot-link ${styles.dotLink}`}
                                 data-tooltip={labels[section]}
                                 data-section={section}

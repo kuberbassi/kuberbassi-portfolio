@@ -141,10 +141,11 @@
     color: #a3a3a3;
 }
 
-.footerCol h5 {
+.footerCol h3 {
     color: #666;
     margin-bottom: 0.5rem;
     font-weight: 400;
+    font-size: 0.75rem; /* Explicitly set size to match previous appearance if needed, though parent has it too */
 }
 
 .footerCol ul {

@@ -48,16 +48,16 @@ const NewsletterSection = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.4 }}
                 >
-                    <a href="https://www.youtube.com/channel/UCcw12FyihnsK7TEHFBVHApw" target="_blank" rel="noopener noreferrer" className={styles.socialIcon}>
+                    <a href="https://www.youtube.com/channel/UCcw12FyihnsK7TEHFBVHApw" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="YouTube">
                         <i className="fab fa-youtube"></i>
                     </a>
-                    <a href="https://www.instagram.com/kuberbassi.music/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon}>
+                    <a href="https://www.instagram.com/kuberbassi.music/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="Instagram">
                         <i className="fab fa-instagram"></i>
                     </a>
-                    <a href="https://www.facebook.com/kuberbassi.music/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon}>
+                    <a href="https://www.facebook.com/kuberbassi.music/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="Facebook">
                         <i className="fab fa-facebook"></i>
                     </a>
-                    <a href="mailto:kuberbassi2007@gmail.com" className={styles.socialIcon}>
+                    <a href="mailto:kuberbassi2007@gmail.com" className={styles.socialIcon} aria-label="Email">
                         <i className="fas fa-envelope"></i>
                     </a>
                 </motion.div>

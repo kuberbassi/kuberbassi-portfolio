@@ -61,7 +61,7 @@ const HeroSection = () => {
 
             <div className={styles.footerInfo}>
                 <div className={styles.footerCol}>
-                    <h5>WHAT I DO</h5>
+                    <h3>WHAT I DO</h3>
                     <ul>
                         <li>GUITARIST</li>
                         <li>MUSIC PRODUCER</li>
@@ -69,7 +69,7 @@ const HeroSection = () => {
                     </ul>
                 </div>
                 <div className={styles.footerCol} style={{ textAlign: 'right' }}>
-                    <h5>EXPERTISE</h5>
+                    <h3>EXPERTISE</h3>
                     <ul>
                         <li>TONE CRAFTING</li>
                         <li>FULL PRODUCTION</li>
