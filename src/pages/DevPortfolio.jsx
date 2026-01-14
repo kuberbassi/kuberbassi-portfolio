@@ -168,7 +168,7 @@ const InteractiveParticles = () => {
 
         const initParticles = () => {
             particles = [];
-            const count = Math.floor(width * height / 20000); // Optimized Density
+            const count = Math.min(Math.floor(width * height / 35000), 60); // Optimized Density & Hard Cap
             for (let i = 0; i < count; i++) {
                 particles.push({
                     x: Math.random() * width,
@@ -777,25 +777,9 @@ const DevPortfolio = () => {
             // 3. BENTO REVEAL
             gsap.from('.v4-glassCard', { scrollTrigger: { trigger: '.v4-bentoSection', start: 'top 80%' }, y: 100, opacity: 0, duration: 1.2, stagger: 0.08, ease: "power3.out" });
 
-            // 5. GLOBAL AGGRESSIVE SCROLL SKEW ( GOD MODE )
-            let proxy = { skew: 0 },
-                skewSetter = gsap.quickSetter(".v4-container", "skewY", "deg"),
-                clamp = gsap.utils.clamp(-10, 10);
-
-            ScrollTrigger.create({
-                onUpdate: (self) => {
-                    let skew = clamp(self.getVelocity() / -100);
-                    if (Math.abs(skew) > 0.1) {
-                        gsap.to(proxy, {
-                            skew: skew,
-                            duration: 1,
-                            ease: "power3",
-                            overwrite: true,
-                            onUpdate: () => skewSetter(proxy.skew)
-                        });
-                    }
-                }
-            });
+            // 5. GLOBAL AGGRESSIVE SCROLL SKEW ( GOD MODE ) - REMOVED FOR PERFORMANCE
+            // The skew effect caused significant layout shifts and repaints. 
+            // Disabling it improves scrolling performance and CLS score.
 
             // 6. CINEMATIC PARALLAX PROJECTS
             gsap.utils.toArray('.v4-cinematicProject').forEach(card => {
@@ -858,153 +842,155 @@ const DevPortfolio = () => {
         }
     ];
 
-    if (loading) return <BiosLoader onComplete={handleIntroComplete} />;
-
     return (
-        <div className="v4-container" ref={mainRef}>
-            <SEO
-                title="KUBER BASSI | System Architect & Developer"
-                description="Full-stack developer specializing in React, Node.js, and modern web technologies. Explore my projects showcasing cutting-edge development and system design."
-                keywords="Kuber Bassi, developer, software engineer, full-stack, React, Node.js, Python, web development, system architect"
-                ogType="website"
-                url="https://dev.kuberbassi.com"
-            />
-            {/* SCROLL PROGRESS BAR */}
-            <ScrollProgress />
+        <>
+            {loading && <BiosLoader onComplete={handleIntroComplete} />}
+            <div className="v4-container" ref={mainRef} style={{ visibility: loading ? 'hidden' : 'visible', height: loading ? '100vh' : 'auto', overflow: 'hidden' }}>
+                <SEO
+                    title="KUBER BASSI | System Architect & Developer"
+                    description="Full-stack developer specializing in React, Node.js, and modern web technologies. Explore my projects showcasing cutting-edge development and system design."
+                    keywords="Kuber Bassi, developer, software engineer, full-stack, React, Node.js, Python, web development, system architect"
+                    ogType="website"
+                    url="https://dev.kuberbassi.com"
+                />
+                {/* SCROLL PROGRESS BAR */}
+                <ScrollProgress />
 
-            {/* TERMINAL SIDE NAVIGATOR */}
-            <TerminalNavigator />
+                {/* TERMINAL SIDE NAVIGATOR */}
+                <TerminalNavigator />
 
-            <KineticCursor />
-            <InteractiveParticles />
-            <CyberOverlay />
-            <div className="v4-noise"></div>
-            <div className="v4-bgGrid"></div>
+                <KineticCursor />
+                <InteractiveParticles />
+                <CyberOverlay />
+                <div className="v4-noise"></div>
+                <div className="v4-bgGrid"></div>
 
-            {/* HERO */}
-            <section id="hero" className="v4-heroSection">
-                <div className="v4-artifactWrapper" ref={artifactRef}>
-                    <div className="v4-cube">
-                        <div className="v4-face v4-faceFront"></div>
-                        <div className="v4-face v4-faceBack"></div>
-                        <div className="v4-face v4-faceRight"></div>
-                        <div className="v4-face v4-faceLeft"></div>
-                        <div className="v4-face v4-faceTop"></div>
-                        <div className="v4-face v4-faceBottom"></div>
-                    </div>
-                </div>
-                <div className="v4-heroContent" ref={heroTextRef}>
-                    <h1 className="v4-monolithText"><HyperText text="SYSTEM" /></h1>
-                    <h1 className="v4-monolithText" style={{ color: '#3b82f6' }}><HyperText text="ARCHITECT" /></h1>
-                    <span className="v4-monolithSub">AI-Native // Python // System Design</span>
-                </div>
-                <TerminalWidget />
-            </section>
-
-            {/* BENTO LAYOUT */}
-            <section id="arsenal" className="v4-bentoSection">
-                <div className="v4-bentoGrid">
-                    <TiltCard className="v4-span2">
-                        <div style={{ position: 'absolute', right: '-20px', bottom: '-20px', fontSize: '10rem', opacity: 0.05, transform: 'rotate(-20deg)', pointerEvents: 'none' }}>
-                            <i className="fas fa-drafting-compass"></i>
+                {/* HERO */}
+                <section id="hero" className="v4-heroSection">
+                    <div className="v4-artifactWrapper" ref={artifactRef}>
+                        <div className="v4-cube">
+                            <div className="v4-face v4-faceFront"></div>
+                            <div className="v4-face v4-faceBack"></div>
+                            <div className="v4-face v4-faceRight"></div>
+                            <div className="v4-face v4-faceLeft"></div>
+                            <div className="v4-face v4-faceTop"></div>
+                            <div className="v4-face v4-faceBottom"></div>
                         </div>
-                        <h2 className="v4-cardTitle"><HyperText text="THE ARCHITECT" /></h2>
-                        <p className="v4-cardText">
-                            I don't just write code; I <strong style={{ color: '#fff' }}>engineer ecosystems</strong>.
-                            Specializing in <strong>AI-Native Workflows, Encrypted DNS Security</strong>, and
-                            <strong> Cloudflare Zero Trust</strong> architectures.
-                        </p>
-                    </TiltCard>
-
-                    <TiltCard className="v4-spanRow2">
-                        <h2 className="v4-cardTitle" style={{ marginBottom: '1.5rem', fontSize: '2.5rem' }}><HyperText text="ARSENAL" /></h2>
-                        <TechMarquee />
-                        <div style={{ marginTop: '2rem' }}>
-                            <span className="v4-sticker accent">Node.js</span>
-                            <span className="v4-sticker">Docker & K8s</span>
-                            <span className="v4-sticker accent">AWS Cloud</span>
-                            <span className="v4-sticker">PostgreSQL</span>
-                            <span className="v4-sticker accent">AI-Native Dev</span>
-                            <span className="v4-sticker">Prompt Engineering</span>
-                            <span className="v4-sticker">Firebase</span>
-                            <span className="v4-sticker accent">React Ecosystem</span>
-                            <span className="v4-sticker">UI/UX Design</span>
-                            <span className="v4-sticker">GSAP</span>
-                        </div>
-                    </TiltCard>
-
-                    <TiltCard>
-                        <h2 className="v4-cardTitle" style={{ color: '#3b82f6', fontSize: '2.5rem' }}><HyperText text="AI-NATIVE" /></h2>
-                        <p className="v4-cardText">Prompt Eng. Expert</p>
-                    </TiltCard>
-
-                    <TiltCard>
-                        <h2 className="v4-cardTitle" style={{ fontSize: '2.5rem' }}><HyperText text="CONNECT" /></h2>
-                        <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
-                            <a href="https://github.com/kuberbassi" target="_blank" className="v4-sticker" style={{ margin: 0, padding: '0.8rem' }}><i className="fab fa-github"></i></a>
-                            <a href="https://www.linkedin.com/in/kuberbassi/" target="_blank" className="v4-sticker" style={{ margin: 0, padding: '0.8rem' }}><i className="fab fa-linkedin"></i></a>
-                            <a href="https://www.instagram.com/kuber.bassi/" target="_blank" className="v4-sticker" style={{ margin: 0, padding: '0.8rem' }}><i className="fab fa-instagram"></i></a>
-                        </div>
-                        <a href="mailto:kuberbassi2007@gmail.com" style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#666', fontFamily: 'JetBrains Mono', display: 'block', textDecoration: 'none' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#666'}>kuberbassi2007@gmail.com</a>
-                    </TiltCard>
-                </div>
-            </section>
-
-            {/* --- SYSTEM CORE (PRINCIPLES) --- */}
-            <section className="v4-coreSection" id="about">
-                <h2 className="v4-monolithText" style={{ fontSize: '5rem', marginBottom: '4rem', textAlign: 'center' }}><HyperText text="SYSTEM CORE" /></h2>
-                <div className="v4-coreGrid">
-                    <div className="v4-holoCard">
-                        <div className="v4-holoIcon">⚡</div>
-                        <h3 style={{ fontFamily: 'Anton', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem' }}>VELOCITY</h3>
-                        <p style={{ color: '#aaa', lineHeight: 1.6 }}>Optimized for sub-millisecond latency. Every interaction is fluid, instant, and lighter than air.</p>
                     </div>
-                    <div className="v4-holoCard">
-                        <div className="v4-holoIcon">🛡️</div>
-                        <h3 style={{ fontFamily: 'Anton', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem' }}>SECURITY</h3>
-                        <p style={{ color: '#aaa', lineHeight: 1.6 }}>Fortress-grade architecture. Data integrity and user privacy are engineered into the DNA.</p>
+                    <div className="v4-heroContent" ref={heroTextRef}>
+                        <h1 className="v4-monolithText"><HyperText text="SYSTEM" /></h1>
+                        <h1 className="v4-monolithText" style={{ color: '#3b82f6' }}><HyperText text="ARCHITECT" /></h1>
+                        <span className="v4-monolithSub">AI-Native // Python // System Design</span>
                     </div>
-                    <div className="v4-holoCard">
-                        <div className="v4-holoIcon">💎</div>
-                        <h3 style={{ fontFamily: 'Anton', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem' }}>AESTHETICS</h3>
-                        <p style={{ color: '#aaa', lineHeight: 1.6 }}>Beauty is a function of utility. Minimalist design that serves the user's intent without distraction.</p>
-                    </div>
-                </div>
-            </section>
+                    <TerminalWidget />
+                </section>
 
-            {/* --- PROJECT DECK (CINEMATIC SCROLL) --- */}
-            <section className="v4-deckSection" id="projects">
-                {projects.map((proj, i) => (
-                    <div className="v4-cinematicProject" key={i}>
-                        <div className="v4-cineImage" style={{ backgroundImage: `url(${proj.img})` }}>
-                            <div className="v4-cineOverlay"></div>
-                        </div>
-                        <div className="v4-cineContent">
-                            <div className="v4-cineHeader">
-                                <span className="v4-cineIndex">0{i + 1}</span>
-                                <div className="v4-cineLine"></div>
-                                <span className="v4-cineStat">{proj.stat || 'SYSTEM ONLINE'}</span>
+                {/* BENTO LAYOUT */}
+                <section id="arsenal" className="v4-bentoSection">
+                    <div className="v4-bentoGrid">
+                        <TiltCard className="v4-span2">
+                            <div style={{ position: 'absolute', right: '-20px', bottom: '-20px', fontSize: '10rem', opacity: 0.05, transform: 'rotate(-20deg)', pointerEvents: 'none' }}>
+                                <i className="fas fa-drafting-compass"></i>
                             </div>
-                            <h2 className="v4-cineTitle"><HyperText text={proj.title.toUpperCase()} /></h2>
-                            <p className="v4-cineDesc">{proj.desc}</p>
-                            <div className="v4-cineTech">
-                                {proj.tech.map((t, j) => (
-                                    <span key={j} className="v4-techTag">{t}</span>
-                                ))}
+                            <h2 className="v4-cardTitle"><HyperText text="THE ARCHITECT" /></h2>
+                            <p className="v4-cardText">
+                                I don't just write code; I <strong style={{ color: '#fff' }}>engineer ecosystems</strong>.
+                                Specializing in <strong>AI-Native Workflows, Encrypted DNS Security</strong>, and
+                                <strong> Cloudflare Zero Trust</strong> architectures.
+                            </p>
+                        </TiltCard>
+
+                        <TiltCard className="v4-spanRow2">
+                            <h2 className="v4-cardTitle" style={{ marginBottom: '1.5rem', fontSize: '2.5rem' }}><HyperText text="ARSENAL" /></h2>
+                            <TechMarquee />
+                            <div style={{ marginTop: '2rem' }}>
+                                <span className="v4-sticker accent">Node.js</span>
+                                <span className="v4-sticker">Docker & K8s</span>
+                                <span className="v4-sticker accent">AWS Cloud</span>
+                                <span className="v4-sticker">PostgreSQL</span>
+                                <span className="v4-sticker accent">AI-Native Dev</span>
+                                <span className="v4-sticker">Prompt Engineering</span>
+                                <span className="v4-sticker">Firebase</span>
+                                <span className="v4-sticker accent">React Ecosystem</span>
+                                <span className="v4-sticker">UI/UX Design</span>
+                                <span className="v4-sticker">GSAP</span>
                             </div>
-                            <a href={proj.link} target="_blank" className="v4-sticker" style={{ marginTop: '2rem', background: '#3b82f6', color: '#fff', border: 'none' }}>
-                                VIEW SYSTEM
-                            </a>
+                        </TiltCard>
+
+                        <TiltCard>
+                            <h2 className="v4-cardTitle" style={{ color: '#3b82f6', fontSize: '2.5rem' }}><HyperText text="AI-NATIVE" /></h2>
+                            <p className="v4-cardText">Prompt Eng. Expert</p>
+                        </TiltCard>
+
+                        <TiltCard>
+                            <h2 className="v4-cardTitle" style={{ fontSize: '2.5rem' }}><HyperText text="CONNECT" /></h2>
+                            <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
+                                <a href="https://github.com/kuberbassi" target="_blank" className="v4-sticker" style={{ margin: 0, padding: '0.8rem' }}><i className="fab fa-github"></i></a>
+                                <a href="https://www.linkedin.com/in/kuberbassi/" target="_blank" className="v4-sticker" style={{ margin: 0, padding: '0.8rem' }}><i className="fab fa-linkedin"></i></a>
+                                <a href="https://www.instagram.com/kuber.bassi/" target="_blank" className="v4-sticker" style={{ margin: 0, padding: '0.8rem' }}><i className="fab fa-instagram"></i></a>
+                            </div>
+                            <a href="mailto:kuberbassi2007@gmail.com" style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#666', fontFamily: 'JetBrains Mono', display: 'block', textDecoration: 'none' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#666'}>kuberbassi2007@gmail.com</a>
+                        </TiltCard>
+                    </div>
+                </section>
+
+                {/* --- SYSTEM CORE (PRINCIPLES) --- */}
+                <section className="v4-coreSection" id="about">
+                    <h2 className="v4-monolithText" style={{ fontSize: '5rem', marginBottom: '4rem', textAlign: 'center' }}><HyperText text="SYSTEM CORE" /></h2>
+                    <div className="v4-coreGrid">
+                        <div className="v4-holoCard">
+                            <div className="v4-holoIcon">⚡</div>
+                            <h3 style={{ fontFamily: 'Anton', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem' }}>VELOCITY</h3>
+                            <p style={{ color: '#aaa', lineHeight: 1.6 }}>Optimized for sub-millisecond latency. Every interaction is fluid, instant, and lighter than air.</p>
+                        </div>
+                        <div className="v4-holoCard">
+                            <div className="v4-holoIcon">🛡️</div>
+                            <h3 style={{ fontFamily: 'Anton', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem' }}>SECURITY</h3>
+                            <p style={{ color: '#aaa', lineHeight: 1.6 }}>Fortress-grade architecture. Data integrity and user privacy are engineered into the DNA.</p>
+                        </div>
+                        <div className="v4-holoCard">
+                            <div className="v4-holoIcon">💎</div>
+                            <h3 style={{ fontFamily: 'Anton', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem' }}>AESTHETICS</h3>
+                            <p style={{ color: '#aaa', lineHeight: 1.6 }}>Beauty is a function of utility. Minimalist design that serves the user's intent without distraction.</p>
                         </div>
                     </div>
-                ))}
-            </section>
+                </section>
 
-            {/* Footer */}
-            <section id="contact">
-                <EnhancedFooter />
-            </section>
-        </div>
+                {/* --- PROJECT DECK (CINEMATIC SCROLL) --- */}
+                <section className="v4-deckSection" id="projects">
+                    {projects.map((proj, i) => (
+                        <div className="v4-cinematicProject" key={i}>
+                            <div className="v4-cineImage" style={{ backgroundImage: `url(${proj.img})` }}>
+                                <div className="v4-cineOverlay"></div>
+                            </div>
+                            <div className="v4-cineContent">
+                                <div className="v4-cineHeader">
+                                    <span className="v4-cineIndex">0{i + 1}</span>
+                                    <div className="v4-cineLine"></div>
+                                    <span className="v4-cineStat">{proj.stat || 'SYSTEM ONLINE'}</span>
+                                </div>
+                                <h2 className="v4-cineTitle"><HyperText text={proj.title.toUpperCase()} /></h2>
+                                <p className="v4-cineDesc">{proj.desc}</p>
+                                <div className="v4-cineTech">
+                                    {proj.tech.map((t, j) => (
+                                        <span key={j} className="v4-techTag">{t}</span>
+                                    ))}
+                                </div>
+                                <a href={proj.link} target="_blank" className="v4-sticker" style={{ marginTop: '2rem', background: '#3b82f6', color: '#fff', border: 'none' }}>
+                                    VIEW SYSTEM
+                                </a>
+                            </div>
+                        </div>
+                    ))}
+                </section>
+
+                {/* Footer */}
+                <section id="contact">
+                    <EnhancedFooter />
+                </section>
+
+            </div >
+        </>
     );
 };
 
