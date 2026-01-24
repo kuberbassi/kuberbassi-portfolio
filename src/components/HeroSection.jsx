@@ -42,7 +42,7 @@ const HeroSection = () => {
             <div className={styles.grain}></div>
 
             <div className={styles.centerStage}>
-                <div className={styles.textLayer} ref={textRef}>
+                <div className={styles.textLayer} ref={textRef} data-nosnippet>
                     <h1 className={styles.slogan}>
                         <span className={styles.smallLabel}>
                             KU<span style={{ color: '#ff3333' }}>β</span>ER <span style={{ color: '#ff3333' }}>β</span><span style={{ color: '#ff3333' }}>Δ</span>SSI PRESENTS

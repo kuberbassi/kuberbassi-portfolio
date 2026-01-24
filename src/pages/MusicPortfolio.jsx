@@ -148,7 +148,7 @@ const MusicPortfolio = () => {
         <div style={{ backgroundColor: '#050505', minHeight: '100vh', color: '#fff', overflow: 'hidden', cursor: 'none' }}>
             <SEO
                 title="KUβER βΔSSI | Guitarist & Producer"
-                description="Stream my latest guitar instrumentals and rock productions on all platforms. High-energy instrumentals and cinematic soundscapes. Professional guitarist and music producer."
+                description="Professional guitarist and music producer creating high-energy rock instrumentals."
                 keywords="KUβER βΔSSI, Kuber Bassi, guitarist, music producer, instrumentals, rock music, sound designer, Spotify artist, Apple Music, guitar music"
                 ogType="profile"
                 url="https://music.kuberbassi.com"
