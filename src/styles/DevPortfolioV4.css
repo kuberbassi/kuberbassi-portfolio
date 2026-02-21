@@ -1261,4 +1261,284 @@ body {
     .project-hover-image {
         display: none !important;
     }
+
+    /* --- NEW STACK SECTION STYLES (MOBILE) --- */
+    .v4-stackRow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .v4-stackRowLabel {
+        min-width: unset;
+        font-size: 1rem;
+    }
+
+    /* --- PROJECT CAROUSEL STYLES (MOBILE) --- */
+    .v4-projectCardNew {
+        flex: 0 0 calc(100vw - 4rem);
+        height: 380px;
+        padding: 1.5rem;
+    }
+
+    .v4-cardTitleNew {
+        font-size: 1.8rem;
+    }
+}
+
+/* --- NEW STACK SECTION STYLES --- */
+.v4-stackInner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.v4-stackHeading {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    margin: 0 0 1rem 0;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #fff 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.v4-stackSubtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    color: #3b82f6;
+    margin-bottom: 4rem;
+    opacity: 0.8;
+}
+
+.v4-stackRow {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.v4-stackRowLabel {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    min-width: 200px;
+    flex-shrink: 0;
+}
+
+.v4-stackPills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+}
+
+.v4-stackPill {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1.4rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: #fff;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.v4-stackPill img {
+    width: 20px;
+    height: 20px;
+    filter: grayscale(0.5);
+    transition: filter 0.3s ease;
+}
+
+.v4-stackPill:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.5);
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.1);
+}
+
+.v4-stackPill:hover img {
+    filter: grayscale(0);
+}
+
+.v4-stackTag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.4);
+    padding: 0.5rem 1rem;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.v4-stackTag:hover {
+    color: #3b82f6;
+    border-color: #3b82f6;
+    border-style: solid;
+    background: rgba(59, 130, 246, 0.05);
+    transform: translateY(-2px);
+}
+
+/* --- PROJECT CAROUSEL STYLES --- */
+.v4-carouselSection {
+    padding: 10rem 0;
+    overflow: hidden;
+    position: relative;
+    background: #050505;
+}
+
+.v4-carouselTrack {
+    display: flex;
+    gap: 3rem;
+    padding: 4rem 10vw;
+    width: max-content;
+}
+
+/* Credit Card Style */
+.v4-projectCardNew {
+    flex: 0 0 500px;
+    height: 320px;
+    border-radius: 32px;
+    position: relative;
+    overflow: hidden;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+}
+
+.v4-projectCardNew::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(225deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    opacity: 0.5;
+    z-index: 1;
+}
+
+.v4-projectCardNew:hover {
+    transform: translateY(-20px) scale(1.02);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+}
+
+.v4-cardContent {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.v4-cardChip {
+    width: 60px;
+    height: 42px;
+    background: linear-gradient(135deg, #ffd700, #b8860b);
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.v4-cardChip::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    background: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(0, 0, 0, 0.1) 8px, rgba(0, 0, 0, 0.1) 10px);
+}
+
+.v4-cardLogo {
+    font-family: 'Anton', sans-serif;
+    font-size: 1.8rem;
+    color: rgba(255, 255, 255, 0.1);
+    letter-spacing: 4px;
+}
+
+.v4-cardTitleNew {
+    font-family: 'Anton', sans-serif;
+    font-size: 3rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+    text-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.v4-cardTagsNew {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+.v4-cardTagNew {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    backdrop-filter: blur(5px);
+}
+
+.v4-carouselNav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 2rem;
+}
+
+.v4-carouselBtn {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    backdrop-filter: blur(10px);
+}
+
+.v4-carouselBtn:hover {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+}
+
+.v4-carouselDots {
+    display: flex;
+    gap: 1rem;
+}
+
+.v4-carouselDot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    border: none;
+    transition: all 0.4s ease;
+}
+
+.v4-carouselDot.active {
+    background: #3b82f6;
+    width: 36px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
 }

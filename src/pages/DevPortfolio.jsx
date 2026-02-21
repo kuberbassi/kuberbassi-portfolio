@@ -781,22 +781,76 @@ const DevPortfolio = () => {
             // The skew effect caused significant layout shifts and repaints. 
             // Disabling it improves scrolling performance and CLS score.
 
-            // 6. CINEMATIC PARALLAX PROJECTS
-            gsap.utils.toArray('.v4-cinematicProject').forEach(card => {
-                const img = card.querySelector('.v4-cineImage');
-                gsap.fromTo(img,
-                    { backgroundPosition: "50% 0%" },
-                    {
-                        backgroundPosition: "50% 100%",
-                        ease: "none",
-                        scrollTrigger: {
-                            trigger: card,
-                            start: "top bottom",
-                            end: "bottom top",
-                            scrub: 1.5
+            // 6. CINEMATIC PARALLAX PROJECTS (REMOVED - Switched to Carousel)
+
+            // 7. HORIZONTAL CAROUSEL
+            const track = document.querySelector('.v4-carouselTrack');
+            if (track) {
+                const totalWidth = track.scrollWidth - window.innerWidth;
+                const scrollCarousel = gsap.to(track, {
+                    x: () => -totalWidth,
+                    ease: "none",
+                    scrollTrigger: {
+                        id: "carouselTrigger",
+                        trigger: ".v4-carouselSection",
+                        start: "top top",
+                        end: () => `+=${totalWidth}`,
+                        pin: true,
+                        scrub: 1,
+                        invalidateOnRefresh: true,
+                        onUpdate: (self) => {
+                            const prog = self.progress;
+                            const index = Math.round(prog * (projects.length - 1));
+                            document.querySelectorAll('.v4-carouselDot').forEach((dot, i) => {
+                                dot.classList.toggle('active', i === index);
+                            });
                         }
                     }
-                );
+                });
+
+                // Navigation Buttons
+                const nextBtn = document.querySelector('.next-btn');
+                const prevBtn = document.querySelector('.prev-btn');
+                if (nextBtn && prevBtn) {
+                    nextBtn.onclick = () => {
+                        const st = ScrollTrigger.getById('carouselTrigger');
+                        if (st) {
+                            const nextProg = Math.min(1, st.progress + 1 / (projects.length - 1));
+                            window.scrollTo({
+                                top: st.start + nextProg * (st.end - st.start),
+                                behavior: 'smooth'
+                            });
+                        }
+                    };
+                    prevBtn.onclick = () => {
+                        const st = ScrollTrigger.getById('carouselTrigger');
+                        if (st) {
+                            const prevProg = Math.max(0, st.progress - 1 / (projects.length - 1));
+                            window.scrollTo({
+                                top: st.start + prevProg * (st.end - st.start),
+                                behavior: 'smooth'
+                            });
+                        }
+                    };
+                }
+            }
+
+            // 8. STACK REVEAL
+            const stackRows = document.querySelectorAll('.v4-stackRow');
+            stackRows.forEach((row, i) => {
+                gsap.from(row.querySelectorAll('.v4-stackPill, .v4-stackTag'), {
+                    scrollTrigger: {
+                        trigger: row,
+                        start: 'top 90%',
+                    },
+                    opacity: 0,
+                    y: 30,
+                    scale: 0.9,
+                    stagger: 0.05,
+                    duration: 0.8,
+                    ease: 'back.out(1.7)',
+                    delay: i * 0.1
+                });
             });
 
             return () => window.removeEventListener('mousemove', handleMouseMove);
@@ -811,34 +865,54 @@ const DevPortfolio = () => {
 
     const projects = [
         {
+            title: "Adhikar AI",
+            desc: "AI-powered legal assistant simplifying Indian law into plain language for every citizen.",
+            tech: ["Llama 3.3 70B", "Groq API", "React", "Serverless"],
+            img: "/dev-portfolio/images/projects/adhikar.ai.png",
+            link: "https://adhikar.ai.kuberbassi.com/",
+            gradient: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+            accent: "#a78bfa",
+            stat: "LIVE"
+        },
+        {
             title: "MCD HRMS",
             desc: "Enterprise HR System MVP. Streamlined payroll, attendance, and performance tracking architecture.",
-            tech: ["React", "Vite", "Firebase"],
+            tech: ["React", "Firebase", "Enterprise"],
             img: "/dev-portfolio/images/projects/mcd-hrms.png",
             link: "https://mcd-hrms.web.app",
-            stat: "MVP Status"
+            gradient: "linear-gradient(135deg, #0d1b2a 0%, #1b2838 50%, #1a1a2e 100%)",
+            accent: "#38bdf8",
+            stat: "STABLE"
         },
         {
             title: "AcadHub",
             desc: "Academic Management Dashboard. Comprehensive workflow solution for students and faculty.",
-            tech: ["TypeScript", "Vite", "Python", "Flask"],
+            tech: ["TypeScript", "Python", "Flask", "React"],
             img: "/dev-portfolio/images/projects/acadhub.png",
             link: "https://acadhub.kuberbassi.com",
-            stat: "Real-time Sync"
+            gradient: "linear-gradient(135deg, #0b3d2e 0%, #0d5940 50%, #062a1f 100%)",
+            accent: "#34d399",
+            stat: "PRODUCTION"
         },
         {
             title: "IndiaOnRoaming",
             desc: "Travel Portal for Indian Tourism. High-performance booking interface with immersive visual storytelling.",
             tech: ["React", "Vite", "Tailwind"],
             img: "/dev-portfolio/images/projects/indiaonroaming.png",
-            link: "https://indiaonroaming.com"
+            link: "https://indiaonroaming.com",
+            gradient: "linear-gradient(135deg, #3d1515 0%, #5c1e1e 50%, #2a0d0d 100%)",
+            accent: "#fb923c",
+            stat: "LIVE"
         },
         {
             title: "Sugandhmaya",
             desc: "Luxury E-Commerce for Fragrances. Custom full-stack architecture with premium animations.",
-            tech: ["Node.js", "MongoDB", "Vanilla JS", "Tailwind"],
+            tech: ["Node.js", "MongoDB", "Vanilla JS", "GSAP"],
             img: "/dev-portfolio/images/projects/sugandhmaya.png",
-            link: "https://sugandhmaya.com"
+            link: "https://sugandhmaya.com",
+            gradient: "linear-gradient(135deg, #2d1b00 0%, #4a2d00 50%, #1f1300 100%)",
+            accent: "#fbbf24",
+            stat: "PREMIUM"
         }
     ];
 
@@ -885,52 +959,83 @@ const DevPortfolio = () => {
                     <TerminalWidget />
                 </section>
 
-                {/* BENTO LAYOUT */}
-                <section id="arsenal" className="v4-bentoSection">
-                    <div className="v4-bentoGrid">
-                        <TiltCard className="v4-span2">
-                            <div style={{ position: 'absolute', right: '-20px', bottom: '-20px', fontSize: '10rem', opacity: 0.05, transform: 'rotate(-20deg)', pointerEvents: 'none' }}>
-                                <i className="fas fa-drafting-compass"></i>
-                            </div>
-                            <h2 className="v4-cardTitle"><HyperText text="THE ARCHITECT" /></h2>
-                            <p className="v4-cardText">
-                                I don't just write code; I <strong style={{ color: '#fff' }}>engineer ecosystems</strong>.
-                                Specializing in <strong>AI-Native Workflows, Encrypted DNS Security</strong>, and
-                                <strong> Cloudflare Zero Trust</strong> architectures.
-                            </p>
-                        </TiltCard>
+                {/* ARSENAL (STACK) SECTION */}
+                <section id="arsenal" className="v4-stackSection">
+                    <div className="v4-stackInner">
+                        <h2 className="v4-stackHeading reveal-fade-up"><HyperText text="THE ARSENAL" /></h2>
+                        <p className="v4-stackSubtitle reveal-fade-up">A full-spectrum developer — from systems to strategy.</p>
 
-                        <TiltCard className="v4-spanRow2">
-                            <h2 className="v4-cardTitle" style={{ marginBottom: '1.5rem', fontSize: '2.5rem' }}><HyperText text="ARSENAL" /></h2>
-                            <TechMarquee />
-                            <div style={{ marginTop: '2rem' }}>
-                                <span className="v4-sticker accent">Node.js</span>
-                                <span className="v4-sticker">Docker & K8s</span>
-                                <span className="v4-sticker accent">AWS Cloud</span>
-                                <span className="v4-sticker">PostgreSQL</span>
-                                <span className="v4-sticker accent">AI-Native Dev</span>
-                                <span className="v4-sticker">Prompt Engineering</span>
-                                <span className="v4-sticker">Firebase</span>
-                                <span className="v4-sticker accent">React Ecosystem</span>
-                                <span className="v4-sticker">UI/UX Design</span>
-                                <span className="v4-sticker">GSAP</span>
+                        {/* ROW 1: Languages */}
+                        <div className="v4-stackRow reveal-fade-up">
+                            <span className="v4-stackRowLabel">Languages</span>
+                            <div className="v4-stackPills">
+                                {[
+                                    { name: "JavaScript", icon: "javascript/javascript-original.svg" },
+                                    { name: "TypeScript", icon: "typescript/typescript-original.svg" },
+                                    { name: "Python", icon: "python/python-original.svg" },
+                                    { name: "C", icon: "c/c-original.svg" },
+                                    { name: "HTML5", icon: "html5/html5-original.svg" },
+                                    { name: "CSS3", icon: "css3/css3-original.svg" },
+                                    { name: "SQL", icon: "postgresql/postgresql-original.svg" }
+                                ].map(tech => (
+                                    <div className="v4-stackPill" key={tech.name}>
+                                        <img src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${tech.icon}`} alt={tech.name} />
+                                        <span>{tech.name}</span>
+                                    </div>
+                                ))}
                             </div>
-                        </TiltCard>
+                        </div>
 
-                        <TiltCard>
-                            <h2 className="v4-cardTitle" style={{ color: '#3b82f6', fontSize: '2.5rem' }}><HyperText text="AI-NATIVE" /></h2>
-                            <p className="v4-cardText">Prompt Eng. Expert</p>
-                        </TiltCard>
-
-                        <TiltCard>
-                            <h2 className="v4-cardTitle" style={{ fontSize: '2.5rem' }}><HyperText text="CONNECT" /></h2>
-                            <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
-                                <a href="https://github.com/kuberbassi" target="_blank" className="v4-sticker" style={{ margin: 0, padding: '0.8rem' }}><i className="fab fa-github"></i></a>
-                                <a href="https://www.linkedin.com/in/kuberbassi/" target="_blank" className="v4-sticker" style={{ margin: 0, padding: '0.8rem' }}><i className="fab fa-linkedin"></i></a>
-                                <a href="https://www.instagram.com/kuber.bassi/" target="_blank" className="v4-sticker" style={{ margin: 0, padding: '0.8rem' }}><i className="fab fa-instagram"></i></a>
+                        {/* ROW 2: Frameworks & Data */}
+                        <div className="v4-stackRow reveal-fade-up">
+                            <span className="v4-stackRowLabel">Frameworks &amp; Data</span>
+                            <div className="v4-stackPills">
+                                {[
+                                    { name: "React", icon: "react/react-original.svg" },
+                                    { name: "React Native", icon: "react/react-original.svg", style: { filter: "hue-rotate(180deg)" } },
+                                    { name: "Node.js", icon: "nodejs/nodejs-original.svg" },
+                                    { name: "Express", icon: "express/express-original.svg", style: { filter: "invert(1)" } },
+                                    { name: "Flask", icon: "flask/flask-original.svg", style: { filter: "invert(1)" } },
+                                    { name: "MongoDB", icon: "mongodb/mongodb-original.svg" },
+                                    { name: "PostgreSQL", icon: "postgresql/postgresql-original.svg" },
+                                    { name: "Firebase", icon: "firebase/firebase-plain.svg" }
+                                ].map(tech => (
+                                    <div className="v4-stackPill" key={tech.name}>
+                                        <img src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${tech.icon}`} alt={tech.name} style={tech.style} />
+                                        <span>{tech.name}</span>
+                                    </div>
+                                ))}
                             </div>
-                            <a href="mailto:kuberbassi2007@gmail.com" style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#666', fontFamily: 'JetBrains Mono', display: 'block', textDecoration: 'none' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#666'}>kuberbassi2007@gmail.com</a>
-                        </TiltCard>
+                        </div>
+
+                        {/* ROW 3: Infrastructure */}
+                        <div className="v4-stackRow reveal-fade-up">
+                            <span className="v4-stackRowLabel">Infrastructure</span>
+                            <div className="v4-stackPills">
+                                {[
+                                    { name: "Docker", icon: "docker/docker-original.svg" },
+                                    { name: "AWS", icon: "amazonwebservices/amazonwebservices-original-wordmark.svg", style: { filter: "invert(1)" } },
+                                    { name: "Vercel", icon: "vercel/vercel-original.svg", style: { filter: "invert(1)" } },
+                                    { name: "Git", icon: "git/git-original.svg" },
+                                    { name: "Cloudflare", icon: "cloudflare/cloudflare-original.svg" }
+                                ].map(tech => (
+                                    <div className="v4-stackPill" key={tech.name}>
+                                        <img src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${tech.icon}`} alt={tech.name} style={tech.style} />
+                                        <span>{tech.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* ROW 4: Mindset & Craft */}
+                        <div className="v4-stackRow reveal-fade-up">
+                            <span className="v4-stackRowLabel">Expertise</span>
+                            <div className="v4-stackPills">
+                                {["System Architecture", "AI Prompt Engineering", "Cybersecurity", "Zero Trust", "Legacy Optimization", "Music Production"].map(tag => (
+                                    <span key={tag} className="v4-stackTag">{tag}</span>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -956,32 +1061,55 @@ const DevPortfolio = () => {
                     </div>
                 </section>
 
-                {/* --- PROJECT DECK (CINEMATIC SCROLL) --- */}
-                <section className="v4-deckSection" id="projects">
-                    {projects.map((proj, i) => (
-                        <div className="v4-cinematicProject" key={i}>
-                            <div className="v4-cineImage" style={{ backgroundImage: `url(${proj.img})` }}>
-                                <div className="v4-cineOverlay"></div>
-                            </div>
-                            <div className="v4-cineContent">
-                                <div className="v4-cineHeader">
-                                    <span className="v4-cineIndex">0{i + 1}</span>
-                                    <div className="v4-cineLine"></div>
-                                    <span className="v4-cineStat">{proj.stat || 'SYSTEM ONLINE'}</span>
+                {/* PROJECT DECK (HORIZONTAL CAROUSEL) */}
+                <section className="v4-carouselSection" id="projects">
+                    <h2 className="v4-monolithText" style={{ fontSize: '5rem', textAlign: 'center', marginBottom: '4rem' }}>
+                        <HyperText text="DEPLOYMENTS" />
+                    </h2>
+
+                    <div className="v4-carouselContainer" style={{ overflow: 'hidden' }}>
+                        <div className="v4-carouselTrack">
+                            {projects.map((proj, i) => (
+                                <div
+                                    className="v4-projectCardNew"
+                                    key={i}
+                                    style={{ background: proj.gradient }}
+                                    onClick={() => window.open(proj.link, '_blank')}
+                                >
+                                    <div className="v4-cardContent">
+                                        <div className="v4-cardHeader">
+                                            <div className="v4-cardChip"></div>
+                                            <div className="v4-cardLogo">KB_SYS</div>
+                                        </div>
+
+                                        <div className="v4-cardBody">
+                                            <span style={{ fontFamily: 'JetBrains Mono', color: proj.accent, fontSize: '0.8rem', letterSpacing: '2px' }}>{proj.stat}</span>
+                                            <h2 className="v4-cardTitleNew">{proj.title.toUpperCase()}</h2>
+                                            <div className="v4-cardTagsNew">
+                                                {proj.tech.map((t, j) => (
+                                                    <span key={j} className="v4-cardTagNew">{t}</span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h2 className="v4-cineTitle"><HyperText text={proj.title.toUpperCase()} /></h2>
-                                <p className="v4-cineDesc">{proj.desc}</p>
-                                <div className="v4-cineTech">
-                                    {proj.tech.map((t, j) => (
-                                        <span key={j} className="v4-techTag">{t}</span>
-                                    ))}
-                                </div>
-                                <a href={proj.link} target="_blank" className="v4-sticker" style={{ marginTop: '2rem', background: '#3b82f6', color: '#fff', border: 'none' }}>
-                                    VIEW SYSTEM
-                                </a>
-                            </div>
+                            ))}
                         </div>
-                    ))}
+                    </div>
+
+                    <div className="v4-carouselNav">
+                        <button className="v4-carouselBtn prev-btn">
+                            <i className="fas fa-chevron-left"></i>
+                        </button>
+                        <div className="v4-carouselDots">
+                            {projects.map((_, i) => (
+                                <div key={i} className={`v4-carouselDot ${i === 0 ? 'active' : ''}`}></div>
+                            ))}
+                        </div>
+                        <button className="v4-carouselBtn next-btn">
+                            <i className="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
                 </section>
 
                 {/* Footer */}

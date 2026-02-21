@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- SETUP FUNCTIONS ---
     setupInteractiveText();
-    setupMobileNav(); // <-- New function for the mobile menu
+    setupMobileNav();
     renderProjects();
     setupInteractiveImage();
     setupScrollBasedAnimations();
@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNCTION DEFINITIONS ---
 
-    // NEW FUNCTION FOR MOBILE NAVIGATION
     function setupMobileNav() {
         const toggleButton = document.querySelector('.mobile-nav-toggle');
         const mobileNav = document.querySelector('.mobile-nav');
@@ -39,26 +38,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!toggleButton || !mobileNav) return;
 
-        // Function to close the menu
         const closeMenu = () => {
             toggleButton.classList.remove('is-active');
             mobileNav.classList.remove('is-active');
             document.body.classList.remove('no-scroll');
         };
 
-        // Toggle menu on button click
         toggleButton.addEventListener('click', () => {
             toggleButton.classList.toggle('is-active');
             mobileNav.classList.toggle('is-active');
             document.body.classList.toggle('no-scroll');
         });
 
-        // Close menu if a link is clicked
         navLinks.forEach(link => {
             link.addEventListener('click', closeMenu);
         });
 
-        // Close menu if the overlay (background) is clicked
         mobileNav.addEventListener('click', (e) => {
             if (e.target === mobileNav) {
                 closeMenu();
@@ -122,87 +117,218 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
+    // ──────────────────────────────────────────────────────────────────────
+    //  PROJECTS CAROUSEL
+    // ──────────────────────────────────────────────────────────────────────
 
     function renderProjects() {
         const projects = [
             {
+                title: "Adhikar AI",
+                subtitle: "Legal AI · LegalTech",
+                description: "AI-powered legal assistant simplifying Indian law into plain language for every citizen.",
+                image: "images/projects/adhikar.ai.png",
+                link: "https://adhikar.ai.kuberbassi.com/",
+                github: "https://github.com/kuberbassi/adhikar-ai",
+                tags: ["Llama 3.3 70B", "Groq API", "React", "Serverless"],
+                gradient: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+                accent: "#a78bfa"
+            },
+            {
                 title: "MCD HRMS",
-                description: "An enterprise-grade HR management system for tracking employee attendance, payroll, and performance metrics.",
+                subtitle: "Enterprise · HR Tech",
+                description: "Enterprise-grade HR management for tracking employee attendance, payroll & performance.",
                 image: "images/projects/mcd-hrms.png",
                 link: "https://mcd-hrms.web.app",
                 github: "https://github.com/kuberbassi/mcd-hrms",
-                tags: ["Enterprise", "HR Tech", "System"]
+                tags: ["Enterprise", "HR Tech", "React"],
+                gradient: "linear-gradient(135deg, #0d1b2a 0%, #1b2838 50%, #1a1a2e 100%)",
+                accent: "#38bdf8"
             },
             {
                 title: "AcadHub",
-                description: "A comprehensive academic management system dashboard for streamlining educational workflows and student data tracking.",
-                image: "images/projects/acadhub.png",
+                subtitle: "Dashboard · Education",
+                description: "Comprehensive academic management dashboard for streamlining educational workflows.",
+                image: "images/projects/mcd-hrms.png",
                 link: "https://acadhub.kuberbassi.com",
                 github: "https://github.com/kuberbassi/acadhub",
-                tags: ["Dashboard", "Management", "Education"]
+                tags: ["Dashboard", "Education", "Node.js"],
+                gradient: "linear-gradient(135deg, #0b3d2e 0%, #0d5940 50%, #062a1f 100%)",
+                accent: "#34d399"
             },
             {
                 title: "IndiaOnRoaming",
-                description: "A vibrant travel portal showcasing diverse Indian landscapes and simplifying travel bookings with a modern interface.",
+                subtitle: "Travel · Portal",
+                description: "Vibrant travel portal showcasing diverse Indian landscapes with modern UX.",
                 image: "images/projects/indiaonroaming.png",
                 link: "https://indiaonroaming.com",
-                github: null, // No GitHub link provided
-                tags: ["Travel", "Portal", "UX/UI"]
+                github: null,
+                tags: ["Travel", "Portal", "UX/UI"],
+                gradient: "linear-gradient(135deg, #3d1515 0%, #5c1e1e 50%, #2a0d0d 100%)",
+                accent: "#fb923c"
             },
             {
                 title: "Sugandhmaya",
-                description: "A premium e-commerce platform for a luxury fragrance brand, featuring an elegant design and seamless shopping experience.",
+                subtitle: "E-commerce · Luxury",
+                description: "Premium e-commerce platform for a luxury fragrance brand — elegant design, seamless UX.",
                 image: "images/projects/sugandhmaya.png",
                 link: "https://sugandhmaya.com",
                 github: "https://github.com/kuberbassi/sugandhmaya.com",
-                tags: ["E-commerce", "Luxury", "Design"]
+                tags: ["E-commerce", "Luxury", "Design"],
+                gradient: "linear-gradient(135deg, #2d1b00 0%, #4a2d00 50%, #1f1300 100%)",
+                accent: "#fbbf24"
             }
         ];
 
-        const projectContainer = document.querySelector('.projects-grid');
-        if (!projectContainer) return;
+        const section = document.querySelector('#works');
+        if (!section) return;
 
-        projectContainer.innerHTML = '';
-
-        projects.forEach((project, index) => {
-            const githubLink = project.github
-                ? `<a href="${project.github}" target="_blank" rel="noopener noreferrer" class="card-link"><i class="fab fa-github"></i> Code</a>`
-                : '';
-
-            const cardHTML = `
-                <article class="project-card reveal-fade-up">
-                    <div class="card-image-wrapper">
-                        <img src="${project.image}" alt="${project.title}" class="card-image" loading="lazy">
+        // Build carousel HTML
+        const carouselHTML = `
+            <div class="carousel-wrapper reveal-fade-up">
+                <div class="carousel-track" id="carouselTrack">
+                    ${projects.map((p, i) => buildCard(p, i)).join('')}
+                </div>
+                <div class="carousel-nav">
+                    <button class="carousel-btn prev-btn" id="prevBtn" aria-label="Previous project">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                    </button>
+                    <div class="carousel-dots" id="carouselDots">
+                        ${projects.map((_, i) => `<button class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}" aria-label="Go to project ${i + 1}"></button>`).join('')}
                     </div>
-                    <div class="card-content">
-                        <span class="card-number">0${index + 1}</span>
-                        <h3 class="card-title">${project.title}</h3>
-                        <p class="card-description">${project.description}</p>
-                        <div class="card-links">
-                            <a href="${project.link}" target="_blank" rel="noopener noreferrer" class="card-link"><i class="fas fa-external-link-alt"></i> Live Site</a>
-                            ${githubLink}
+                    <button class="carousel-btn next-btn" id="nextBtn" aria-label="Next project">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Inject carousel into the carousel-container that already exists in HTML
+        const carouselContainer = section.querySelector('.carousel-container');
+        if (!carouselContainer) return;
+        carouselContainer.innerHTML = carouselHTML;
+
+        setupCarousel(projects.length);
+    }
+
+    function buildCard(project, index) {
+        const githubBtn = project.github
+            ? `<a href="${project.github}" target="_blank" rel="noopener noreferrer" class="proj-btn github-btn">
+                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 17.07 3.633 16.7 3.633 16.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                   Code
+               </a>`
+            : '';
+
+        return `
+            <article class="project-card-new" style="--card-gradient: ${project.gradient}; --card-accent: ${project.accent};">
+                <div class="pcn-image-area">
+                    <img src="${project.image}" alt="${project.title}" loading="lazy" class="pcn-img">
+                    <div class="pcn-image-overlay"></div>
+                    <div class="pcn-chip">
+                        <span class="pcn-chip-dot"></span>
+                        ${project.subtitle}
+                    </div>
+                    <div class="pcn-number">0${index + 1}</div>
+                </div>
+                <div class="pcn-body">
+                    <div class="pcn-body-top">
+                        <h3 class="pcn-title">${project.title}</h3>
+                        <p class="pcn-desc">${project.description}</p>
+                    </div>
+                    <div class="pcn-footer">
+                        <div class="pcn-tags">
+                            ${project.tags.map(t => `<span class="pcn-tag">${t}</span>`).join('')}
+                        </div>
+                        <div class="pcn-actions">
+                            <a href="${project.link}" target="_blank" rel="noopener noreferrer" class="proj-btn live-btn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                Live
+                            </a>
+                            ${githubBtn}
                         </div>
                     </div>
-                </article>
-            `;
-            projectContainer.innerHTML += cardHTML;
-        });
-
-        // Initialize hover effects for new cards
-        setupCardHoverEffects();
+                </div>
+            </article>
+        `;
     }
 
-    function setupCardHoverEffects() {
-        document.querySelectorAll('.project-card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                gsap.to(card, { y: -10, duration: 0.4, ease: 'power3.out' });
-            });
-            card.addEventListener('mouseleave', () => {
-                gsap.to(card, { y: 0, duration: 0.4, ease: 'power3.out' });
-            });
+    function setupCarousel(count) {
+        const track = document.getElementById('carouselTrack');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const dots = document.querySelectorAll('.carousel-dot');
+        if (!track) return;
+
+        let current = 0;
+        let isDragging = false;
+        let startX = 0;
+        let scrollStart = 0;
+
+        const getCardWidth = () => {
+            const card = track.querySelector('.project-card-new');
+            if (!card) return 0;
+            return card.offsetWidth + parseInt(getComputedStyle(track).gap || '0');
+        };
+
+        const goTo = (index) => {
+            current = Math.max(0, Math.min(index, count - 1));
+            track.scrollTo({ left: current * getCardWidth(), behavior: 'smooth' });
+            dots.forEach((d, i) => d.classList.toggle('active', i === current));
+            if (prevBtn) prevBtn.disabled = current === 0;
+            if (nextBtn) nextBtn.disabled = current === count - 1;
+        };
+
+        if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1));
+        if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1));
+        dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+
+        // Drag to scroll
+        track.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.pageX;
+            scrollStart = track.scrollLeft;
+            track.style.cursor = 'grabbing';
         });
+        track.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            track.scrollLeft = scrollStart - (e.pageX - startX);
+        });
+        const stopDrag = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            track.style.cursor = 'grab';
+            const newIndex = Math.round(track.scrollLeft / getCardWidth());
+            goTo(newIndex);
+        };
+        track.addEventListener('mouseup', stopDrag);
+        track.addEventListener('mouseleave', stopDrag);
+
+        // Touch support
+        track.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].pageX;
+            scrollStart = track.scrollLeft;
+        }, { passive: true });
+        track.addEventListener('touchmove', (e) => {
+            track.scrollLeft = scrollStart - (e.touches[0].pageX - startX);
+        }, { passive: true });
+        track.addEventListener('touchend', () => {
+            const newIndex = Math.round(track.scrollLeft / getCardWidth());
+            goTo(newIndex);
+        });
+
+        // Sync dots on scroll
+        track.addEventListener('scroll', () => {
+            const idx = Math.round(track.scrollLeft / getCardWidth());
+            if (idx !== current) {
+                current = idx;
+                dots.forEach((d, i) => d.classList.toggle('active', i === current));
+            }
+        });
+
+        goTo(0);
     }
+
+    // ──────────────────────────────────────────────────────────────────────
 
     function setupHeaderInversion() {
         const mainHeader = document.querySelector('.main-header');
@@ -283,25 +409,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
         }
+
+        // Stack row animations
+        const stackRows = document.querySelectorAll('.stack-row');
+        stackRows.forEach((row, i) => {
+            gsap.from(row.querySelectorAll('.stack-pill'), {
+                scrollTrigger: { trigger: row, start: 'top 88%' },
+                opacity: 0, y: 20, scale: 0.9,
+                stagger: 0.07, duration: 0.6, ease: 'back.out(1.7)',
+                delay: i * 0.15
+            });
+        });
     }
 
     function setupCustomCursor() {
         const cursorOutline = document.querySelector('.cursor-outline');
         const cursorDot = document.querySelector('.cursor-dot');
         if (!cursorOutline || !cursorDot) return;
-        // Only run on non-touch devices
         if (window.matchMedia("(pointer: fine)").matches) {
             gsap.set([cursorOutline, cursorDot], { xPercent: -50, yPercent: -50 });
             window.addEventListener('mousemove', e => {
                 gsap.to(cursorDot, { duration: 0.2, x: e.clientX, y: e.clientY });
                 gsap.to(cursorOutline, { duration: 0.7, x: e.clientX, y: e.clientY, ease: 'power2.out' });
             });
-            document.querySelectorAll('a, button, .skill-tag').forEach(el => {
+            document.querySelectorAll('a, button, .skill-tag, .stack-pill').forEach(el => {
                 el.addEventListener('mouseenter', () => gsap.to(cursorOutline, { scale: 1.8, duration: 0.3 }));
                 el.addEventListener('mouseleave', () => gsap.to(cursorOutline, { scale: 1, duration: 0.3 }));
             });
         } else {
-            // Hide custom cursor on touch devices
             cursorOutline.style.display = 'none';
             cursorDot.style.display = 'none';
         }
