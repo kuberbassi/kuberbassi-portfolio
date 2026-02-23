@@ -18,7 +18,7 @@ const InteractiveDotGrid = () => {
         // Initialize particles with organic random positions
         const initParticles = () => {
             particlesRef.current = [];
-            const particleCount = Math.floor((width * height) / 8000); // More particles for better texture
+            const particleCount = Math.floor((width * height) / 12000); // Optimized count
             for (let i = 0; i < particleCount; i++) {
                 particlesRef.current.push({
                     x: Math.random() * width,
@@ -66,12 +66,14 @@ const InteractiveDotGrid = () => {
                 p.x += p.vx;
                 p.y += p.vy;
 
-                // Mouse interaction - simple fluid repulsion
+                // Mouse interaction - simple fluid repulsion (Optimized)
                 const dx = mouse.x - p.x;
                 const dy = mouse.y - p.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+                const distanceSq = dx * dx + dy * dy;
+                const radiusSq = 22500; // 150^2 pre-calculated
 
-                if (distance < 150) {
+                if (distanceSq < radiusSq) {
+                    const distance = Math.sqrt(distanceSq);
                     const angle = Math.atan2(dy, dx);
                     const force = (150 - distance) / 150;
                     const pushX = Math.cos(angle) * force * 1;
@@ -110,7 +112,7 @@ const InteractiveDotGrid = () => {
         };
     }, []);
 
-    return <canvas ref={canvasRef} className={styles.canvas} />;
+    return <canvas ref={canvasRef} className={styles.canvas} style={{ willChange: 'transform' }} />;
 };
 
 export default InteractiveDotGrid;

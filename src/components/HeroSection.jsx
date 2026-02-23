@@ -10,28 +10,30 @@ const HeroSection = () => {
     const [soundOn, setSoundOn] = useState(true);
 
     useGSAP(() => {
-        // TEMPORARILY DISABLED - was hiding content
-        /*
-        const tl = gsap.timeline();
+        const textLayer = textRef.current;
+        if (!textLayer) return;
 
-        tl.from(`.${styles.sloganLine}`, {
-            y: 100,
-            opacity: 0,
-            duration: 1.2,
-            stagger: 0.1,
-            ease: "power4.out"
-        })
-            .from(`.${styles.imageLayer}`, {
-                y: 50,
-                opacity: 0,
-                duration: 1.5,
+        const handleMouseMove = (e) => {
+            const { clientX, clientY } = e;
+            const { innerWidth, innerHeight } = window;
+
+            // Calculate distance from center (-0.5 to 0.5)
+            const xPos = (clientX / innerWidth) - 0.5;
+            const yPos = (clientY / innerHeight) - 0.5;
+
+            // Subtle tilt — keep values small so text stays readable
+            gsap.to(textLayer, {
+                rotateY: xPos * 8,
+                rotateX: -yPos * 8,
+                x: xPos * 15,
+                y: yPos * 15,
+                duration: 0.8,
                 ease: "power2.out"
-            }, "-=1")
-            .from(`.${styles.sidebarLeft}, .${styles.sidebarRight}, .${styles.footerInfo}`, {
-                opacity: 0,
-                duration: 1
-            }, "-=0.5");
-        */
+            });
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
     }, { scope: containerRef });
 
     return (

@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger, Observer } from 'gsap/all';
 import '../styles/DevPortfolioV4.css'; // Global CSS (No Modules)
 import KineticCursor from '../components/KineticCursor';
 import SEO from '../components/SEO';
+import { projects } from '../data/projects';
 
 gsap.registerPlugin(ScrollTrigger, Observer);
 
@@ -111,41 +112,82 @@ const HyperText = ({ text, className, style }) => {
 
 const CyberOverlay = () => {
     const [time, setTime] = useState(new Date().toLocaleTimeString());
+    const [latency, setLatency] = useState(12);
+    const [uptime, setUptime] = useState(0);
+    const [scrollPct, setScrollPct] = useState(0);
+    const [fps, setFps] = useState(60);
 
     useEffect(() => {
-        const timer = setInterval(() => setTime(new Date().toLocaleTimeString()), 1000);
-        return () => clearInterval(timer);
+        const start = Date.now();
+
+        // Clock + Uptime + Latency
+        const timer = setInterval(() => {
+            setTime(new Date().toLocaleTimeString());
+            setUptime(Math.floor((Date.now() - start) / 1000));
+            setLatency(Math.max(4, Math.min(28, 12 + Math.round((Math.random() - 0.5) * 8))));
+        }, 1000);
+
+        // Scroll depth
+        const onScroll = () => {
+            const doc = document.documentElement;
+            const pct = Math.round((doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100) || 0;
+            setScrollPct(pct);
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        // FPS counter
+        let frames = 0;
+        let lastFps = performance.now();
+        let raf;
+        const countFps = () => {
+            frames++;
+            const now = performance.now();
+            if (now - lastFps >= 1000) {
+                setFps(frames);
+                frames = 0;
+                lastFps = now;
+            }
+            raf = requestAnimationFrame(countFps);
+        };
+        raf = requestAnimationFrame(countFps);
+
+        return () => {
+            clearInterval(timer);
+            window.removeEventListener('scroll', onScroll);
+            cancelAnimationFrame(raf);
+        };
     }, []);
+
+    const fmtUptime = `${String(Math.floor(uptime / 60)).padStart(2, '0')}:${String(uptime % 60).padStart(2, '0')}`;
+    const mono = { fontFamily: 'JetBrains Mono, monospace', fontSize: '0.78rem' };
 
     return (
         <div className="v4-cyberOverlay">
             <div className="v4-scanline"></div>
 
-            {/* CORNER WIDGETS */}
+            {/* TOP LEFT — Identity */}
             <div className="v4-hudCorner top-left" style={{ padding: '10px 0 0 10px', display: 'flex', flexDirection: 'column' }}>
                 <span style={{ fontFamily: 'Anton', fontSize: '1.2rem', lineHeight: 1 }}>KUBER BASSI</span>
-                <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.7rem', opacity: 0.7 }}>SYSTEM ARCHITECT</span>
+                <span style={{ ...mono, opacity: 0.7 }}>SYSTEM ARCHITECT</span>
             </div>
 
-            <div className="v4-hudCorner top-right" style={{
-                padding: '20px 40px 0 0',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                gap: '10px'
-            }}>
-                <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>CMD: //ROOT_ACCESS</span>
-                <div style={{ width: '8px', height: '8px', background: '#22c55e', borderRadius: '50%', boxShadow: '0 0 10px #22c55e' }}></div>
+            {/* TOP RIGHT — Status */}
+            <div className="v4-hudCorner top-right" style={{ padding: '20px 40px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px' }}>
+                <span style={{ ...mono, whiteSpace: 'nowrap' }}>CMD: //ROOT_ACCESS</span>
+                <div style={{ width: '8px', height: '8px', background: '#22c55e', borderRadius: '50%', boxShadow: '0 0 10px #22c55e', animation: 'pulse 2s infinite' }}></div>
             </div>
 
-            <div className="v4-hudCorner bottom-left" style={{ padding: '0 0 10px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.8rem' }}>LOC: 28.61° N, 77.20° E</span>
-                <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.8rem', opacity: 0.7 }}>LATENCY: 12ms</span>
+            {/* BOTTOM LEFT — Telemetry */}
+            <div className="v4-hudCorner bottom-left" style={{ padding: '0 0 10px 10px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: '2px' }}>
+                <span style={mono}>LOC: 28.61° N, 77.20° E</span>
+                <span style={{ ...mono, opacity: 0.7 }}>LATENCY: {latency}ms &nbsp;|&nbsp; {fps} FPS</span>
+                <span style={{ ...mono, opacity: 0.5 }}>DEPTH: {scrollPct}% &nbsp;|&nbsp; UP {fmtUptime}</span>
             </div>
 
+            {/* BOTTOM RIGHT — Clock */}
             <div className="v4-hudCorner bottom-right" style={{ padding: '0 10px 10px 0', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                 <span style={{ fontFamily: 'JetBrains Mono', fontSize: '1.5rem', fontWeight: 'bold' }}>{time}</span>
-                <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.8rem' }}>SECURE CONNECTION</span>
+                <span style={mono}>SECURE CONNECTION</span>
             </div>
         </div>
     );
@@ -182,8 +224,8 @@ const InteractiveParticles = () => {
 
         const animate = () => {
             ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = 'rgba(59, 130, 246, 0.4)';
-            ctx.strokeStyle = 'rgba(59, 130, 246, 0.05)';
+            ctx.fillStyle = 'rgba(0, 255, 136, 0.4)';
+            ctx.strokeStyle = 'rgba(0, 255, 136, 0.05)';
 
             particles.forEach((p, i) => {
                 p.x += p.vx;
@@ -232,14 +274,14 @@ const EnhancedFooter = () => (
         position: 'relative',
         padding: '3rem 2rem 1rem',
         background: '#020202',
-        borderTop: '1px solid rgba(59, 130, 246, 0.2)',
+        borderTop: '1px solid rgba(0, 255, 136, 0.2)',
         overflow: 'hidden',
         marginTop: '3rem'
     }}>
         {/* BACKGROUND GLOW */}
         <div style={{
             position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-            width: '80%', height: '80%', background: 'radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%)',
+            width: '80%', height: '80%', background: 'radial-gradient(circle, rgba(0, 255, 136, 0.05) 0%, transparent 70%)',
             pointerEvents: 'none'
         }}></div>
 
@@ -252,7 +294,7 @@ const EnhancedFooter = () => (
 
         <div className="v4-container">
             <div style={{ textAlign: 'center', marginBottom: '3rem', position: 'relative', zIndex: 10 }}>
-                <p style={{ fontFamily: 'JetBrains Mono', color: '#3b82f6', marginBottom: '0.5rem' }}>&lt; TRANSMISSION_OPEN /&gt;</p>
+                <p style={{ fontFamily: 'JetBrains Mono', color: '#00ff88', marginBottom: '0.5rem' }}>&lt; TRANSMISSION_OPEN /&gt;</p>
                 <a href="mailto:kuberbassi2007@gmail.com" className="v4-megaLink" style={{ whiteSpace: 'nowrap' }}>
                     LET'S BUILD THE FUTURE
                 </a>
@@ -320,7 +362,7 @@ const EnhancedFooter = () => (
                 transition: 'all 0.3s ease',
                 boxShadow: '0 0 25px rgba(0,0,0,0.6)'
             }}
-            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateX(-50%) scale(1.1)'; e.currentTarget.style.background = 'rgba(59, 130, 246, 0.8)'; }}
+            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateX(-50%) scale(1.1)'; e.currentTarget.style.background = 'rgba(0, 255, 136, 0.8)'; }}
             onMouseOut={(e) => { e.currentTarget.style.transform = 'translateX(-50%) scale(1)'; e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'; }}
         >
             <i className="fas fa-home"></i>
@@ -362,7 +404,7 @@ const TerminalNavigator = () => {
     const [hoveredSection, setHoveredSection] = useState(null);
 
     const sections = [
-        { id: 'hero', label: 'INIT', icon: '>', color: '#3b82f6' },
+        { id: 'hero', label: 'INIT', icon: '>', color: '#00ff88' },
         { id: 'arsenal', label: 'STACK', icon: '$', color: '#8b5cf6' },
         { id: 'about', label: 'CORE', icon: '#', color: '#06b6d4' },
         { id: 'projects', label: 'DEPLOY', icon: '*', color: '#f59e0b' },
@@ -640,8 +682,8 @@ const BiosLoader = ({ onComplete }) => {
             {[...Array(5)].map((_, i) => (
                 <div key={`ring-${i}`} className="v4-ring" style={{
                     position: 'absolute', width: '50px', height: '50px',
-                    border: '2px solid #3b82f6', borderRadius: '50%',
-                    boxShadow: `0 0 ${20 + i * 10}px #3b82f6`
+                    border: '2px solid #00ff88', borderRadius: '50%',
+                    boxShadow: `0 0 ${20 + i * 10}px #00ff88`
                 }}></div>
             ))}
 
@@ -650,7 +692,7 @@ const BiosLoader = ({ onComplete }) => {
                 <div key={`particle-${i}`} className="v4-particle" style={{
                     position: 'absolute',
                     width: '3px', height: '3px',
-                    background: i % 3 === 0 ? '#3b82f6' : '#fff',
+                    background: i % 3 === 0 ? '#00ff88' : '#fff',
                     borderRadius: '50%',
                     left: `${Math.random() * 100}%`,
                     top: `${Math.random() * 100}%`,
@@ -665,7 +707,7 @@ const BiosLoader = ({ onComplete }) => {
                     left: `${Math.random() * 100}%`,
                     top: `${Math.random() * 100}%`,
                     fontFamily: 'JetBrains Mono',
-                    color: '#3b82f6',
+                    color: '#00ff88',
                     fontSize: '1.5rem',
                     opacity: 0.5
                 }}>
@@ -683,7 +725,7 @@ const BiosLoader = ({ onComplete }) => {
                 opacity: 0,
                 position: 'relative',
                 zIndex: 100,
-                textShadow: '0 0 30px #3b82f6, 0 0 60px #3b82f6',
+                textShadow: '0 0 30px #00ff88, 0 0 60px #00ff88',
                 transformStyle: 'preserve-3d'
             }}>
                 {'SYSTEM ARCHITECT'.split('').map((char, i) => (
@@ -699,9 +741,9 @@ const BiosLoader = ({ onComplete }) => {
                     position: 'absolute',
                     width: '100%',
                     height: '2px',
-                    background: `linear-gradient(90deg, transparent, #3b82f6, transparent)`,
+                    background: `linear-gradient(90deg, transparent, #00ff88, transparent)`,
                     top: `${40 + i * 10}%`,
-                    boxShadow: '0 0 20px #3b82f6'
+                    boxShadow: '0 0 20px #00ff88'
                 }}></div>
             ))}
 
@@ -718,8 +760,8 @@ const BiosLoader = ({ onComplete }) => {
                 <div style={{
                     width: `${progress}%`,
                     height: '100%',
-                    background: 'linear-gradient(90deg, #3b82f6, #60a5fa)',
-                    boxShadow: '0 0 20px #3b82f6',
+                    background: 'linear-gradient(90deg, #00ff88, #60ffa5)',
+                    boxShadow: '0 0 20px #00ff88',
                     transition: 'width 0.1s ease'
                 }}></div>
             </div>
@@ -730,7 +772,7 @@ const BiosLoader = ({ onComplete }) => {
                 bottom: '6%',
                 fontFamily: 'JetBrains Mono',
                 fontSize: '0.9rem',
-                color: '#3b82f6',
+                color: '#00ff88',
                 letterSpacing: '3px'
             }}>
                 INITIALIZING SYSTEM... {progress}%
@@ -745,26 +787,73 @@ const DevPortfolio = () => {
         // Show intro only if this is a new session (new tab or browser refresh)
         return !sessionStorage.getItem('portfolioVisited');
     });
+    const [flippedIndex, setFlippedIndex] = useState(null);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [projectData, setProjectData] = useState(projects);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const mainRef = useRef(null);
     const heroTextRef = useRef(null);
     const artifactRef = useRef(null);
+    const carouselRef = useRef(null);
+    const wrapperRef = useRef(null);
     const navigate = useNavigate();
 
+    // --- GitHub Metadata Automation ---
     useEffect(() => {
-        // Set page title via SEO component
-        // document.title handled by SEO component
+        const fetchGitHubData = async () => {
+            const cacheKey = 'v4_github_cache';
+            const cached = localStorage.getItem(cacheKey);
+            const now = Date.now();
 
-        if (loading) return; // Wait for loader
+            if (cached) {
+                try {
+                    const { data, timestamp } = JSON.parse(cached);
+                    if (now - timestamp < 3600000) {
+                        setProjectData(data);
+                        return;
+                    }
+                } catch (e) { console.error("Cache parse failed:", e); }
+            }
+
+            try {
+                const updatedProjects = await Promise.all(projects.map(async (proj) => {
+                    if (!proj.github) return proj;
+                    const repoBase = proj.github.replace('https://github.com/', '');
+                    const res = await fetch(`https://api.github.com/repos/${repoBase}`);
+                    if (!res.ok) return proj;
+                    const data = await res.json();
+
+                    return {
+                        ...proj,
+                        desc: data.description || proj.desc,
+                        stars: data.stargazers_count,
+                        language: data.language || (proj.tech ? proj.tech[0] : 'System')
+                    };
+                }));
+
+                setProjectData(updatedProjects);
+                localStorage.setItem(cacheKey, JSON.stringify({ data: updatedProjects, timestamp: now }));
+            } catch (err) { console.error("GitHub fetch failed:", err); }
+        };
+
+        if (!loading) fetchGitHubData();
+    }, [loading]);
+
+    useEffect(() => {
+        if (loading) return;
 
         const ctx = gsap.context(() => {
-            // 1. HERO ENTRANCE (BOUNCY FLUIDITY)
-            const tl = gsap.timeline();
+            gsap.config({ force3D: true });
+
+            // 1. HERO ENTRANCE
+            const tl = gsap.timeline({
+                onComplete: () => ScrollTrigger.refresh()
+            });
             tl.from('.v4-monolithText', { y: 150, opacity: 0, duration: 2.5, ease: "elastic.out(1, 0.4)", stagger: 0.12 })
                 .from('.v4-cube', { scale: 0, rotation: 720, opacity: 0, duration: 3, ease: "back.out(1.4)" }, "-=2");
 
             // 2. MAGNETIC TEXT EFFECT
             const handleMouseMove = (e) => {
-                if (e.target.closest('.v4-glassCard')) return;
                 const { clientX, clientY } = e;
                 const { innerWidth, innerHeight } = window;
                 const x = (clientX / innerWidth - 0.5) * 2;
@@ -774,147 +863,96 @@ const DevPortfolio = () => {
             };
             window.addEventListener('mousemove', handleMouseMove);
 
-            // 3. BENTO REVEAL
-            gsap.from('.v4-glassCard', { scrollTrigger: { trigger: '.v4-bentoSection', start: 'top 80%' }, y: 100, opacity: 0, duration: 1.2, stagger: 0.08, ease: "power3.out" });
-
-            // 5. GLOBAL AGGRESSIVE SCROLL SKEW ( GOD MODE ) - REMOVED FOR PERFORMANCE
-            // The skew effect caused significant layout shifts and repaints. 
-            // Disabling it improves scrolling performance and CLS score.
-
-            // 6. CINEMATIC PARALLAX PROJECTS (REMOVED - Switched to Carousel)
-
-            // 7. HORIZONTAL CAROUSEL
-            const track = document.querySelector('.v4-carouselTrack');
-            if (track) {
-                const totalWidth = track.scrollWidth - window.innerWidth;
-                const scrollCarousel = gsap.to(track, {
-                    x: () => -totalWidth,
-                    ease: "none",
+            // 3. GENERIC REVEAL (REVEAL-FADE-UP)
+            gsap.utils.toArray('.reveal-fade-up').forEach((el) => {
+                gsap.from(el, {
                     scrollTrigger: {
-                        id: "carouselTrigger",
-                        trigger: ".v4-carouselSection",
-                        start: "top top",
-                        end: () => `+=${totalWidth}`,
-                        pin: true,
-                        scrub: 1,
-                        invalidateOnRefresh: true,
-                        onUpdate: (self) => {
-                            const prog = self.progress;
-                            const index = Math.round(prog * (projects.length - 1));
-                            document.querySelectorAll('.v4-carouselDot').forEach((dot, i) => {
-                                dot.classList.toggle('active', i === index);
-                            });
-                        }
-                    }
-                });
-
-                // Navigation Buttons
-                const nextBtn = document.querySelector('.next-btn');
-                const prevBtn = document.querySelector('.prev-btn');
-                if (nextBtn && prevBtn) {
-                    nextBtn.onclick = () => {
-                        const st = ScrollTrigger.getById('carouselTrigger');
-                        if (st) {
-                            const nextProg = Math.min(1, st.progress + 1 / (projects.length - 1));
-                            window.scrollTo({
-                                top: st.start + nextProg * (st.end - st.start),
-                                behavior: 'smooth'
-                            });
-                        }
-                    };
-                    prevBtn.onclick = () => {
-                        const st = ScrollTrigger.getById('carouselTrigger');
-                        if (st) {
-                            const prevProg = Math.max(0, st.progress - 1 / (projects.length - 1));
-                            window.scrollTo({
-                                top: st.start + prevProg * (st.end - st.start),
-                                behavior: 'smooth'
-                            });
-                        }
-                    };
-                }
-            }
-
-            // 8. STACK REVEAL
-            const stackRows = document.querySelectorAll('.v4-stackRow');
-            stackRows.forEach((row, i) => {
-                gsap.from(row.querySelectorAll('.v4-stackPill, .v4-stackTag'), {
-                    scrollTrigger: {
-                        trigger: row,
-                        start: 'top 90%',
+                        trigger: el,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
                     },
+                    y: 50,
                     opacity: 0,
-                    y: 30,
-                    scale: 0.9,
-                    stagger: 0.05,
-                    duration: 0.8,
-                    ease: 'back.out(1.7)',
-                    delay: i * 0.1
+                    duration: 1,
+                    ease: 'power2.out'
                 });
             });
 
-            return () => window.removeEventListener('mousemove', handleMouseMove);
+            // 4. STACK PILLS REVEAL (no reveal-fade-up on rows — direct per-pill animation)
+            gsap.utils.toArray('.v4-stackPill, .v4-stackTag').forEach((pill, i) => {
+                gsap.fromTo(pill,
+                    { opacity: 0, y: 20, scale: 0.92 },
+                    {
+                        scrollTrigger: {
+                            trigger: pill,
+                            start: 'top 95%',
+                            toggleActions: 'play none none none'
+                        },
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        duration: 0.6,
+                        delay: (i % 8) * 0.04,
+                        ease: 'back.out(1.4)'
+                    }
+                );
+            });
+
         }, mainRef);
+
         return () => ctx.revert();
     }, [loading]);
+
+    // Step-based carousel navigation
+    const activeIndexRef = useRef(0);
+    activeIndexRef.current = activeIndex;
+
+    const goToCard = useCallback((idx) => {
+        if (!wrapperRef.current || !carouselRef.current || projectData.length === 0) return;
+        const clamped = Math.max(0, Math.min(idx, projectData.length - 1));
+        setActiveIndex(clamped);
+        setFlippedIndex(null); // unflip when navigating
+
+        const cards = wrapperRef.current.querySelectorAll('.v4-projectCardNew');
+        if (!cards[clamped]) return;
+
+        const containerW = carouselRef.current.offsetWidth;
+        const card = cards[clamped];
+        const cardOffset = card.offsetLeft + card.offsetWidth / 2;
+        const targetX = -(cardOffset - containerW / 2);
+
+        gsap.to(wrapperRef.current, {
+            x: targetX,
+            duration: 0.7,
+            ease: 'power3.out'
+        });
+    }, [projectData.length]);
+
+    // Keyboard navigation (uses ref to avoid re-registering on every activeIndex change)
+    useEffect(() => {
+        if (loading || projectData.length === 0) return;
+
+        const handleKey = (e) => {
+            if (e.key === 'ArrowRight') { e.preventDefault(); goToCard(activeIndexRef.current + 1); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); goToCard(activeIndexRef.current - 1); }
+        };
+        window.addEventListener('keydown', handleKey);
+        return () => window.removeEventListener('keydown', handleKey);
+    }, [loading, projectData.length, goToCard]);
+
+    // Center first card on initial load
+    useEffect(() => {
+        if (!loading && projectData.length > 0) {
+            requestAnimationFrame(() => goToCard(0));
+        }
+    }, [loading, projectData.length, goToCard]);
 
     const handleIntroComplete = () => {
         sessionStorage.setItem('portfolioVisited', 'true');
         setLoading(false);
     };
 
-    const projects = [
-        {
-            title: "Adhikar AI",
-            desc: "AI-powered legal assistant simplifying Indian law into plain language for every citizen.",
-            tech: ["Llama 3.3 70B", "Groq API", "React", "Serverless"],
-            img: "/dev-portfolio/images/projects/adhikar.ai.png",
-            link: "https://adhikar.ai.kuberbassi.com/",
-            gradient: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
-            accent: "#a78bfa",
-            stat: "LIVE"
-        },
-        {
-            title: "MCD HRMS",
-            desc: "Enterprise HR System MVP. Streamlined payroll, attendance, and performance tracking architecture.",
-            tech: ["React", "Firebase", "Enterprise"],
-            img: "/dev-portfolio/images/projects/mcd-hrms.png",
-            link: "https://mcd-hrms.web.app",
-            gradient: "linear-gradient(135deg, #0d1b2a 0%, #1b2838 50%, #1a1a2e 100%)",
-            accent: "#38bdf8",
-            stat: "STABLE"
-        },
-        {
-            title: "AcadHub",
-            desc: "Academic Management Dashboard. Comprehensive workflow solution for students and faculty.",
-            tech: ["TypeScript", "Python", "Flask", "React"],
-            img: "/dev-portfolio/images/projects/acadhub.png",
-            link: "https://acadhub.kuberbassi.com",
-            gradient: "linear-gradient(135deg, #0b3d2e 0%, #0d5940 50%, #062a1f 100%)",
-            accent: "#34d399",
-            stat: "PRODUCTION"
-        },
-        {
-            title: "IndiaOnRoaming",
-            desc: "Travel Portal for Indian Tourism. High-performance booking interface with immersive visual storytelling.",
-            tech: ["React", "Vite", "Tailwind"],
-            img: "/dev-portfolio/images/projects/indiaonroaming.png",
-            link: "https://indiaonroaming.com",
-            gradient: "linear-gradient(135deg, #3d1515 0%, #5c1e1e 50%, #2a0d0d 100%)",
-            accent: "#fb923c",
-            stat: "LIVE"
-        },
-        {
-            title: "Sugandhmaya",
-            desc: "Luxury E-Commerce for Fragrances. Custom full-stack architecture with premium animations.",
-            tech: ["Node.js", "MongoDB", "Vanilla JS", "GSAP"],
-            img: "/dev-portfolio/images/projects/sugandhmaya.png",
-            link: "https://sugandhmaya.com",
-            gradient: "linear-gradient(135deg, #2d1b00 0%, #4a2d00 50%, #1f1300 100%)",
-            accent: "#fbbf24",
-            stat: "PREMIUM"
-        }
-    ];
+
 
     return (
         <>
@@ -953,7 +991,7 @@ const DevPortfolio = () => {
                     </div>
                     <div className="v4-heroContent" ref={heroTextRef}>
                         <h1 className="v4-monolithText"><HyperText text="SYSTEM" /></h1>
-                        <h1 className="v4-monolithText" style={{ color: '#3b82f6' }}><HyperText text="ARCHITECT" /></h1>
+                        <h1 className="v4-monolithText" style={{ color: '#00ff88' }}><HyperText text="ARCHITECT" /></h1>
                         <span className="v4-monolithSub">AI-Native // Python // System Design</span>
                     </div>
                     <TerminalWidget />
@@ -962,11 +1000,11 @@ const DevPortfolio = () => {
                 {/* ARSENAL (STACK) SECTION */}
                 <section id="arsenal" className="v4-stackSection">
                     <div className="v4-stackInner">
-                        <h2 className="v4-stackHeading reveal-fade-up"><HyperText text="THE ARSENAL" /></h2>
+                        <h2 className="v4-sectionHeading reveal-fade-up" style={{ textAlign: 'left', margin: '0 0 1rem 0' }}><HyperText text="THE ARSENAL" /></h2>
                         <p className="v4-stackSubtitle reveal-fade-up">A full-spectrum developer — from systems to strategy.</p>
 
                         {/* ROW 1: Languages */}
-                        <div className="v4-stackRow reveal-fade-up">
+                        <div className="v4-stackRow">
                             <span className="v4-stackRowLabel">Languages</span>
                             <div className="v4-stackPills">
                                 {[
@@ -987,7 +1025,7 @@ const DevPortfolio = () => {
                         </div>
 
                         {/* ROW 2: Frameworks & Data */}
-                        <div className="v4-stackRow reveal-fade-up">
+                        <div className="v4-stackRow">
                             <span className="v4-stackRowLabel">Frameworks &amp; Data</span>
                             <div className="v4-stackPills">
                                 {[
@@ -1009,7 +1047,7 @@ const DevPortfolio = () => {
                         </div>
 
                         {/* ROW 3: Infrastructure */}
-                        <div className="v4-stackRow reveal-fade-up">
+                        <div className="v4-stackRow">
                             <span className="v4-stackRowLabel">Infrastructure</span>
                             <div className="v4-stackPills">
                                 {[
@@ -1017,6 +1055,7 @@ const DevPortfolio = () => {
                                     { name: "AWS", icon: "amazonwebservices/amazonwebservices-original-wordmark.svg", style: { filter: "invert(1)" } },
                                     { name: "Vercel", icon: "vercel/vercel-original.svg", style: { filter: "invert(1)" } },
                                     { name: "Git", icon: "git/git-original.svg" },
+                                    { name: "GitHub", icon: "github/github-original.svg", style: { filter: "invert(1)" } },
                                     { name: "Cloudflare", icon: "cloudflare/cloudflare-original.svg" }
                                 ].map(tech => (
                                     <div className="v4-stackPill" key={tech.name}>
@@ -1028,10 +1067,10 @@ const DevPortfolio = () => {
                         </div>
 
                         {/* ROW 4: Mindset & Craft */}
-                        <div className="v4-stackRow reveal-fade-up">
+                        <div className="v4-stackRow">
                             <span className="v4-stackRowLabel">Expertise</span>
                             <div className="v4-stackPills">
-                                {["System Architecture", "AI Prompt Engineering", "Cybersecurity", "Zero Trust", "Legacy Optimization", "Music Production"].map(tag => (
+                                {["System Architecture", "AI Prompt Engineering", "Cybersecurity", "Zero Trust", "Legacy Optimization", "Scalable UI/UX"].map(tag => (
                                     <span key={tag} className="v4-stackTag">{tag}</span>
                                 ))}
                             </div>
@@ -1041,54 +1080,107 @@ const DevPortfolio = () => {
 
                 {/* --- SYSTEM CORE (PRINCIPLES) --- */}
                 <section className="v4-coreSection" id="about">
-                    <h2 className="v4-monolithText" style={{ fontSize: '5rem', marginBottom: '4rem', textAlign: 'center' }}><HyperText text="SYSTEM CORE" /></h2>
+                    <h2 className="v4-sectionHeading reveal-fade-up"><HyperText text="SYSTEM CORE" /></h2>
                     <div className="v4-coreGrid">
-                        <div className="v4-holoCard">
-                            <div className="v4-holoIcon">⚡</div>
-                            <h3 style={{ fontFamily: 'Anton', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem' }}>VELOCITY</h3>
-                            <p style={{ color: '#aaa', lineHeight: 1.6 }}>Optimized for sub-millisecond latency. Every interaction is fluid, instant, and lighter than air.</p>
-                        </div>
-                        <div className="v4-holoCard">
-                            <div className="v4-holoIcon">🛡️</div>
-                            <h3 style={{ fontFamily: 'Anton', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem' }}>SECURITY</h3>
-                            <p style={{ color: '#aaa', lineHeight: 1.6 }}>Fortress-grade architecture. Data integrity and user privacy are engineered into the DNA.</p>
-                        </div>
-                        <div className="v4-holoCard">
-                            <div className="v4-holoIcon">💎</div>
-                            <h3 style={{ fontFamily: 'Anton', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem' }}>AESTHETICS</h3>
-                            <p style={{ color: '#aaa', lineHeight: 1.6 }}>Beauty is a function of utility. Minimalist design that serves the user's intent without distraction.</p>
-                        </div>
+                        {[
+                            {
+                                icon: "⚡",
+                                title: "FULL-STACK DEVELOPMENT",
+                                desc: "Focused on building responsive applications using modern frameworks. Currently mastering JavaScript and Backend Logic to create seamless user experiences and efficient data handling."
+                            },
+                            {
+                                icon: "🛡️",
+                                title: "SYSTEMS & AUTOMATION",
+                                desc: "Developing custom scripts to automate repetitive tasks and optimize PC workflows. Interested in System-level efficiency and creating tools that bridge the gap between hardware and software."
+                            },
+                            {
+                                icon: "💎",
+                                title: "ALGORITHMIC THINKING",
+                                desc: "Applying data-driven logic to solve complex problems in hackathons and technical challenges. Specialized in Rapid Prototyping and leading technical teams to deliver functional solutions under pressure."
+                            }
+                        ].map((core, i) => (
+                            <div
+                                className="v4-holoCard"
+                                key={i}
+                                onMouseMove={(e) => {
+                                    const rect = e.currentTarget.getBoundingClientRect();
+                                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                                    e.currentTarget.style.setProperty('--mouse-x', `${x}%`);
+                                    e.currentTarget.style.setProperty('--mouse-y', `${y}%`);
+                                }}
+                            >
+                                <div className="v4-holoIcon">{core.icon}</div>
+                                <h3 style={{ fontFamily: 'Anton', fontSize: '1.8rem', color: '#fff', marginBottom: '1rem', letterSpacing: '1px' }}>{core.title}</h3>
+                                <p style={{ color: '#aaa', lineHeight: 1.6, fontSize: '1.1rem', fontWeight: 300 }}>{core.desc}</p>
+                            </div>
+                        ))}
                     </div>
                 </section>
 
                 {/* PROJECT DECK (HORIZONTAL CAROUSEL) */}
                 <section className="v4-carouselSection" id="projects">
-                    <h2 className="v4-monolithText" style={{ fontSize: '5rem', textAlign: 'center', marginBottom: '4rem' }}>
+                    <h2 className="v4-sectionHeading reveal-fade-up">
                         <HyperText text="DEPLOYMENTS" />
                     </h2>
 
-                    <div className="v4-carouselContainer" style={{ overflow: 'hidden' }}>
-                        <div className="v4-carouselTrack">
-                            {projects.map((proj, i) => (
+                    <div className="v4-carouselContainer" ref={carouselRef}>
+                        <div className="v4-carouselTrack" ref={wrapperRef}>
+                            {projectData.map((proj, i) => (
                                 <div
-                                    className="v4-projectCardNew"
-                                    key={i}
-                                    style={{ background: proj.gradient }}
-                                    onClick={() => window.open(proj.link, '_blank')}
+                                    className={`v4-projectCardNew ${flippedIndex === i ? 'is-flipped' : ''} ${activeIndex === i ? 'is-active' : ''}`}
+                                    key={`${proj.projectId}-${i}`}
+                                    onClick={() => {
+                                        if (activeIndex !== i) { goToCard(i); }
+                                        else { setFlippedIndex(flippedIndex === i ? null : i); }
+                                    }}
                                 >
-                                    <div className="v4-cardContent">
-                                        <div className="v4-cardHeader">
-                                            <div className="v4-cardChip"></div>
-                                            <div className="v4-cardLogo">KB_SYS</div>
+                                    <div className="v4-cardInner">
+                                        {/* FRONT SIDE - Premium Credit Card */}
+                                        <div className={`v4-cardFront ${proj.cardClass}`}>
+                                            <div className="v4-cardHeader">
+                                                <div className="v4-cardProvider">{proj.title}</div>
+                                                <div className="v4-cardChip"></div>
+                                            </div>
+
+                                            <div className="v4-cardNumber">
+                                                {proj.projectId}
+                                            </div>
+
+                                            <div className="v4-cardFooter">
+                                                <div className="v4-cardHolder">
+                                                    <span className="v4-expiryLabel">LEVEL</span>
+                                                    {proj.stat}
+                                                </div>
+                                                <div className="v4-cardExpiry">
+                                                    <span className="v4-expiryLabel">BUILD</span>
+                                                    <span className="v4-expiryValue">{proj.version}</span>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <div className="v4-cardBody">
-                                            <span style={{ fontFamily: 'JetBrains Mono', color: proj.accent, fontSize: '0.8rem', letterSpacing: '2px' }}>{proj.stat}</span>
-                                            <h2 className="v4-cardTitleNew">{proj.title.toUpperCase()}</h2>
-                                            <div className="v4-cardTagsNew">
-                                                {proj.tech.map((t, j) => (
-                                                    <span key={j} className="v4-cardTagNew">{t}</span>
-                                                ))}
+                                        {/* BACK SIDE */}
+                                        <div className={`v4-cardBack ${proj.cardClass}`}>
+                                            <div className="v4-cardBackHeader">
+                                                <span className="v4-cardBackTitle">{proj.title}</span>
+                                                <span className="v4-cardBackBadge">{proj.language || proj.stat}</span>
+                                            </div>
+                                            <div className="v4-cardDesc">
+                                                <p>{proj.desc}</p>
+                                                <div className="v4-cardActions">
+                                                    <button
+                                                        className="v4-cardBtn v4-cardBtn--primary"
+                                                        onClick={(e) => { e.stopPropagation(); window.open(proj.link, '_blank'); }}
+                                                    >
+                                                        LIVE DEMO →
+                                                    </button>
+                                                    <button
+                                                        className="v4-cardBtn v4-cardBtn--ghost"
+                                                        onClick={(e) => { e.stopPropagation(); window.open(proj.github, '_blank'); }}
+                                                    >
+                                                        SOURCE
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1097,19 +1189,27 @@ const DevPortfolio = () => {
                         </div>
                     </div>
 
+                    {/* Nav Arrows + Dots */}
                     <div className="v4-carouselNav">
-                        <button className="v4-carouselBtn prev-btn">
-                            <i className="fas fa-chevron-left"></i>
+                        <button className="v4-navArrow" onClick={() => goToCard(activeIndex - 1)} disabled={activeIndex === 0} aria-label="Previous project">
+                            ←
                         </button>
                         <div className="v4-carouselDots">
-                            {projects.map((_, i) => (
-                                <div key={i} className={`v4-carouselDot ${i === 0 ? 'active' : ''}`}></div>
+                            {projectData.map((_, i) => (
+                                <button
+                                    key={i}
+                                    className={`v4-carouselDot ${activeIndex === i ? 'active' : ''}`}
+                                    onClick={() => goToCard(i)}
+                                    aria-label={`Go to project ${i + 1}`}
+                                />
                             ))}
                         </div>
-                        <button className="v4-carouselBtn next-btn">
-                            <i className="fas fa-chevron-right"></i>
+                        <button className="v4-navArrow" onClick={() => goToCard(activeIndex + 1)} disabled={activeIndex === projectData.length - 1} aria-label="Next project">
+                            →
                         </button>
                     </div>
+                    <p className="v4-carouselHint">Use ← → arrow keys or click to navigate &nbsp;·&nbsp; Click active card to flip</p>
+
                 </section>
 
                 {/* Footer */}

@@ -64,7 +64,7 @@ const LandingPage = () => {
                 ease: "elastic.out(1, 0.5)",
                 overwrite: true
             });
-            gsap.to('.panel-dev .landing-title', { scale: 1.1, color: '#3b82f6', duration: 0.5, overwrite: true });
+            gsap.to('.panel-dev .landing-title', { scale: 1.1, color: '#00ff88', duration: 0.5, overwrite: true });
         } else {
             gsap.to(artistPanelRef.current, {
                 width: '75%',

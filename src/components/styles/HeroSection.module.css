@@ -69,19 +69,11 @@
 }
 
 .textLayer {
-    position: absolute;
+    position: relative;
     z-index: 20;
-    /* Front of image */
-    /* Request: "Overlap slightly... create depth". 
-       Usually Text behind Subject is cool. 
-       Let's try Text behind. */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     width: 100%;
     text-align: center;
     mix-blend-mode: normal;
-    /* Standard */
 }
 
 .slogan {
@@ -121,7 +113,53 @@
 
 /* Interaction */
 .interactiveText {
-    cursor: default;
+    cursor: pointer;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+    position: relative;
+    display: inline-block;
+}
+
+.interactiveText:hover {
+    color: #fff;
+    text-shadow:
+        0 0 20px rgba(255, 51, 51, 0.6),
+        3px 0 0 rgba(255, 51, 51, 0.8),
+        -3px 0 0 rgba(0, 255, 255, 0.8);
+    animation: glitch-text 0.3s infinite;
+}
+
+.accent.interactiveText:hover {
+    color: #ff3333;
+    text-shadow:
+        0 0 30px rgba(255, 51, 51, 0.8),
+        2px 0 0 #fff,
+        -2px 0 0 #fff;
+}
+
+@keyframes glitch-text {
+    0% {
+        transform: translate(0);
+    }
+
+    20% {
+        transform: translate(-2px, 2px);
+    }
+
+    40% {
+        transform: translate(-2px, -2px);
+    }
+
+    60% {
+        transform: translate(2px, 2px);
+    }
+
+    80% {
+        transform: translate(2px, -2px);
+    }
+
+    100% {
+        transform: translate(0);
+    }
 }
 
 /* Footer Info */
@@ -145,7 +183,8 @@
     color: #666;
     margin-bottom: 0.5rem;
     font-weight: 400;
-    font-size: 0.75rem; /* Explicitly set size to match previous appearance if needed, though parent has it too */
+    font-size: 0.75rem;
+    /* Explicitly set size to match previous appearance if needed, though parent has it too */
 }
 
 .footerCol ul {
