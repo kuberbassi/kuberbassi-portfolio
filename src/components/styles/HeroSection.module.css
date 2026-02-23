@@ -227,3 +227,14 @@
         opacity: 0.8;
     }
 }
+
+@media (max-width: 480px) {
+    .slogan {
+        font-size: clamp(2rem, 12vw, 3rem);
+    }
+
+    .smallLabel {
+        font-size: 0.6rem;
+        letter-spacing: 0.2em;
+    }
+}

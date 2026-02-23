@@ -196,3 +196,19 @@
         width: 30px;
     }
 }
+
+@media (max-width: 480px) {
+    .item {
+        width: 180px;
+        height: 180px;
+    }
+
+    .title {
+        font-size: clamp(2rem, 15vw, 3rem);
+    }
+
+    .guidance {
+        gap: 1rem;
+        font-size: 0.65rem;
+    }
+}

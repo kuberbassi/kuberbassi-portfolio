@@ -1,62 +1,146 @@
+/**
+ * SELF-MAINTAINING PROJECT CONFIG
+ * ================================
+ * Just add a new project with `github` + `link` URLs.
+ * Everything else (title, description, tech, language, stats)
+ * is auto-fetched from the GitHub API at runtime.
+ *
+ * Optional overrides: title, desc, img, projectId, version, stat, cardClass
+ */
+
+const CARD_COLORS = ['v4-card-teal', 'v4-card-blue', 'v4-card-red', 'v4-card-green', 'v4-card-red'];
+
+/**
+ * Derives a display title from a GitHub repo name.
+ * e.g. "adhikar-ai" → "Adhikar AI", "mcd-hrms" → "MCD HRMS"
+ */
+function formatRepoName(repoName) {
+    const ACRONYMS = ['ai', 'hrms', 'mcd', 'yt', 'api', 'ui', 'ux', 'cms', 'sdk', 'cli'];
+    return repoName
+        .split(/[-_]/)
+        .map(word => ACRONYMS.includes(word.toLowerCase())
+            ? word.toUpperCase()
+            : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
+        .join(' ');
+}
+
+/**
+ * Generates a project ID from the repo name.
+ * e.g. "adhikar-ai" → "ADHK-001"
+ */
+function generateProjectId(repoName, index) {
+    const slug = repoName.replace(/[-_]/g, '').substring(0, 4).toUpperCase();
+    return `${slug}-${String((index + 1) * 101).padStart(3, '0')}`;
+}
+
+/**
+ * Returns instant defaults for all projects (no API call needed).
+ * Use this for the initial render while enrichProjects() loads.
+ */
+export function getInitialProjects(minimalProjects) {
+    return minimalProjects.map((proj, i) => {
+        const repoName = proj.github.replace('https://github.com/', '').split('/').pop();
+        return {
+            title: proj.title || formatRepoName(repoName),
+            desc: proj.desc || 'Loading from GitHub...',
+            tech: proj.tech || [],
+            language: proj.language || 'JavaScript',
+            stars: 0,
+            img: proj.img || `/dev-portfolio/images/projects/${repoName}.png`,
+            link: proj.link || '',
+            github: proj.github,
+            projectId: proj.projectId || generateProjectId(repoName, i),
+            version: proj.version || 'LATEST',
+            stat: proj.stat || (proj.link ? 'LIVE' : 'DEV'),
+            cardClass: proj.cardClass || CARD_COLORS[i % CARD_COLORS.length],
+        };
+    });
+}
+
+/**
+ * Enriches a minimal project config with data from the GitHub API.
+ * Falls back gracefully if the API call fails.
+ */
+export async function enrichProjects(minimalProjects) {
+    const enriched = await Promise.all(minimalProjects.map(async (proj, i) => {
+        const repoUrl = proj.github;
+        const repoBase = repoUrl.replace('https://github.com/', '');
+        const repoName = repoBase.split('/').pop();
+
+        // Defaults (no API needed)
+        const defaults = {
+            title: formatRepoName(repoName),
+            desc: 'Project details loading...',
+            tech: [],
+            language: 'JavaScript',
+            stars: 0,
+            img: `/dev-portfolio/images/projects/${repoName}.png`,
+            link: proj.link || '',
+            github: proj.github,
+            projectId: generateProjectId(repoName, i),
+            version: 'LATEST',
+            stat: proj.link ? 'LIVE' : 'DEV',
+            cardClass: CARD_COLORS[i % CARD_COLORS.length],
+        };
+
+        try {
+            const res = await fetch(`https://api.github.com/repos/${repoBase}`);
+            if (!res.ok) return { ...defaults, ...stripUndefined(proj) };
+            const data = await res.json();
+
+            return {
+                ...defaults,
+                title: formatRepoName(repoName),
+                desc: data.description || defaults.desc,
+                tech: data.topics?.length ? data.topics.slice(0, 4) : [data.language || 'System'],
+                language: data.language || defaults.language,
+                stars: data.stargazers_count || 0,
+                // Override with any user-specified values
+                ...stripUndefined(proj),
+            };
+        } catch {
+            return { ...defaults, ...stripUndefined(proj) };
+        }
+    }));
+
+    return enriched;
+}
+
+/** Removes undefined values so spread doesn't clobber defaults */
+function stripUndefined(obj) {
+    return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
+}
+
+/**
+ * MINIMAL PROJECT LIST
+ * ====================
+ * To add a new project: just add { github, link }.
+ * To override auto-derived fields: add title, desc, img, etc.
+ */
 export const projects = [
     {
-        title: "Adhikar AI",
-        desc: "AI-powered legal assistant simplifying Indian law into plain language for every citizen. Built for scale using Llama 3 libraries and Groq's LPUs.",
-        tech: ["Llama 3.3 70B", "Groq API", "React", "Serverless"],
-        img: "/dev-portfolio/images/projects/adhikar.ai.png",
-        link: "https://adhikar.ai.kuberbassi.com/",
         github: "https://github.com/kuberbassi/adhikar-ai",
-        cardClass: "v4-card-teal",
-        projectId: "ADHK-404-LGL-01",
-        version: "V2.1",
-        stat: "LIVE"
+        link: "https://adhikar.ai.kuberbassi.com/",
     },
     {
-        title: "MCD HRMS",
-        desc: "Enterprise HR System MVP. Streamlined payroll, attendance, and performance tracking architecture for large-scale municipalities.",
-        tech: ["React", "Firebase", "Enterprise"],
-        img: "/dev-portfolio/images/projects/mcd-hrms.png",
-        link: "https://mcd-hrms.web.app",
         github: "https://github.com/kuberbassi/mcd-hrms",
-        cardClass: "v4-card-blue",
-        projectId: "MCDA-505-SYS-02",
-        version: "BETA",
-        stat: "STABLE"
+        link: "https://mcd-hrms.web.app",
+        title: "MCD HRMS",          // override: acronym formatting
     },
     {
-        title: "AcadHub",
-        desc: "Comprehensive academic dashboard. Centralized workflow solution for student performance and faculty management.",
-        tech: ["TypeScript", "Python", "Flask", "React"],
-        img: "/dev-portfolio/images/projects/acadhub.png",
-        link: "https://acadhub.kuberbassi.com",
         github: "https://github.com/kuberbassi/acadhub",
-        cardClass: "v4-card-red",
-        projectId: "ACAD-606-EDU-03",
-        version: "LATEST",
-        stat: "PREMIUM"
+        link: "https://acadhub.kuberbassi.com",
+        title: "AcadHub",           // override: specific casing
     },
     {
-        title: "IndiaOnRoaming",
-        desc: "Full-scale travel portal. High-performance booking interface with pixel-perfect responsive architecture.",
-        tech: ["React", "Vite", "Tailwind"],
-        img: "/dev-portfolio/images/projects/indiaonroaming.png",
-        link: "https://indiaonroaming.com",
         github: "https://github.com/kuberbassi/indiaonroaming",
-        cardClass: "v4-card-green",
-        projectId: "RIOR-707-TRV-04",
-        version: "PROD",
-        stat: "LIVE"
+        link: "https://indiaonroaming.com",
+        title: "IndiaOnRoaming",    // override: brand name
     },
     {
-        title: "YT Music Scrobbler",
-        desc: "Automated scrobbling system for YouTube Music. High-accuracy song tracking and logging architecture.",
-        tech: ["React", "Firebase", "API"],
-        img: "/dev-portfolio/images/projects/yt-scrobbler.png",
-        link: "https://ytscrobbler.kuberbassi.com/",
         github: "https://github.com/kuberbassi/ytmusic-scrobbler",
-        cardClass: "v4-card-red",
-        projectId: "YTSC-808-SCR-05",
-        version: "BETA",
-        stat: "STABLE"
-    }
+        link: "https://ytscrobbler.kuberbassi.com/",
+        title: "YT Music Scrobbler", // override: readable name
+    },
 ];

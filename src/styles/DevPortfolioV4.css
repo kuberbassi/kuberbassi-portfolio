@@ -1326,15 +1326,165 @@ body {
     }
 
     /* --- PROJECT CAROUSEL STYLES (MOBILE) --- */
+    .v4-carouselSection {
+        padding: 4rem 0;
+    }
+
+    .v4-carouselTrack {
+        padding: 2rem 1rem;
+        gap: 1.5rem;
+    }
+
     .v4-projectCardNew {
-        flex: 0 0 calc(100vw - 4rem);
+        flex: 0 0 calc(100vw - 3rem);
+        height: 340px;
+        padding: 1.25rem;
+    }
+
+    .v4-carouselNav {
+        padding: 0 1rem;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .v4-navArrow {
+        width: 42px;
+        height: 42px;
+        font-size: 1rem;
+    }
+
+    .v4-carouselDot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .v4-carouselDot.active {
+        width: 20px;
+    }
+
+    /* --- SYSTEM CORE (MOBILE) --- */
+    .v4-coreGrid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0 1rem;
+    }
+
+    .v4-holoCard {
+        padding: 2rem;
+    }
+}
+
+/* --- SMALL PHONE REFINEMENTS (≤480px) --- */
+@media (max-width: 480px) {
+    .v4-monolithText {
+        font-size: 16vw;
+        /* Slightly larger relative to screen to keep punchy but avoid overflow */
+    }
+
+    .v4-monolithSub {
+        font-size: 0.6rem;
+        letter-spacing: 0.1rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .v4-hudCorner {
+        transform: scale(0.6);
+        pointer-events: none;
+        /* Prevent interference on small screens */
+    }
+
+    .v4-hudCorner.top-right {
+        display: none;
+        /* Remove redundant status on small screens to save space */
+    }
+
+    .v4-projectCardNew {
+        flex: 0 0 calc(100vw - 2rem);
         height: 380px;
-        padding: 1.5rem;
+        /* Taller for narrow text */
     }
 
     .v4-cardTitleNew {
-        font-size: 1.8rem;
+        font-size: 2.2rem;
     }
+
+    .v4-cardBack {
+        padding: 1rem;
+    }
+
+    .v4-cardDesc {
+        font-size: 0.85rem;
+    }
+
+    .v4-coreGrid {
+        gap: 1rem;
+    }
+
+    .v4-sectionHeading {
+        font-size: 2rem;
+    }
+}
+
+/* --- SYSTEM CORE STYLES --- */
+.v4-coreSection {
+    padding: 8rem 0;
+    position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.v4-coreGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 4rem;
+}
+
+.v4-holoCard {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(10px);
+}
+
+.v4-holoCard::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            rgba(0, 255, 136, 0.08),
+            transparent 40%);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.v4-holoCard:hover {
+    border-color: rgba(0, 255, 136, 0.2);
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.v4-holoCard:hover::before {
+    opacity: 1;
+}
+
+.v4-holoIcon {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    background: rgba(0, 255, 136, 0.1);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    color: #00ff88;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
 }
 
 /* --- NEW STACK SECTION STYLES --- */

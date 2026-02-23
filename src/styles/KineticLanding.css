@@ -242,11 +242,11 @@
 
     /* VITAL FIX: Move text explicitely into visible zones */
     .section-code .kinetic-content {
-        transform: translateY(-25vh) !important;
+        transform: translateY(-20vh) !important;
     }
 
     .section-music .kinetic-content {
-        transform: translateY(25vh) !important;
+        transform: translateY(20vh) !important;
     }
 
     .text-offset-right,
@@ -261,17 +261,33 @@
 
     /* UI Spacing Fix & Alignment */
     .center-hint-v3 {
-        bottom: 5rem;
-        /* Clear footer */
+        bottom: 6rem;
         width: 100%;
-        /* Force full width */
         left: 0;
         transform: none;
-        /* Remove translateX centering */
         text-align: center;
-        /* Native text centering */
         white-space: nowrap;
-        /* Prevent wrapping */
+    }
+}
+
+/* SMALL PHONES (iPhone SE, etc.) */
+@media (max-width: 480px) {
+    .title-huge {
+        font-size: 18vw;
+    }
+
+    .section-code .kinetic-content {
+        transform: translateY(-18vh) !important;
+    }
+
+    .section-music .kinetic-content {
+        transform: translateY(18vh) !important;
+    }
+
+    .center-hint-v3 {
+        bottom: 7rem;
+        font-size: 0.65rem;
+        letter-spacing: 0.15rem;
     }
 }
 

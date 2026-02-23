@@ -5,7 +5,7 @@ import { ScrollTrigger, Observer } from 'gsap/all';
 import '../styles/DevPortfolioV4.css'; // Global CSS (No Modules)
 import KineticCursor from '../components/KineticCursor';
 import SEO from '../components/SEO';
-import { projects } from '../data/projects';
+import { projects, enrichProjects, getInitialProjects } from '../data/projects';
 
 gsap.registerPlugin(ScrollTrigger, Observer);
 
@@ -568,215 +568,199 @@ const ScrollProgress = () => {
 
 const BiosLoader = ({ onComplete }) => {
     const containerRef = useRef(null);
-    const textRef = useRef(null);
-    const [progress, setProgress] = useState(0);
+    const [lines, setLines] = useState([]);
+    const [phase, setPhase] = useState(0);
+
+    const bootLines = [
+        '> BIOS v4.2.1 ... OK',
+        '> Memory check .......... 32GB',
+        '> GPU: RTX Pipeline online',
+        '> Loading kernel modules',
+        '> Mounting /dev/portfolio',
+        '> Establishing secure tunnel',
+        '> AUTH: fingerprint verified',
+        '> SYSTEM READY'
+    ];
 
     useEffect(() => {
         const ctx = gsap.context(() => {
             const tl = gsap.timeline({ onComplete });
 
-            // PHASE 1: VOID AWAKENING - Multiple expanding rings (faster)
-            tl.set(containerRef.current, { background: '#000' })
-                .from('.v4-ring', {
-                    scale: 0,
-                    opacity: 0,
-                    duration: 0.6,
-                    stagger: 0.08,
-                    ease: 'expo.out'
-                })
-                .to('.v4-ring', {
-                    scale: 30,
-                    opacity: 0,
-                    duration: 0.5,
-                    stagger: 0.05,
-                    ease: 'power2.in'
-                }, "+=0.1")
+            // P1: GRID + SCANLINE ACTIVATION
+            tl.to('.bl-grid', { opacity: 0.15, duration: 0.4, ease: 'power2.in' })
+                .to('.bl-scanline', { opacity: 1, duration: 0.2 }, 0);
 
-                // PHASE 2: PARTICLE GENESIS (faster burst)
-                .from('.v4-particle', {
-                    scale: 0,
-                    opacity: 0,
-                    x: 0,
-                    y: 0,
-                    duration: 0.8,
-                    stagger: {
-                        from: 'center',
-                        amount: 0.4,
-                        grid: [10, 10]
-                    },
-                    ease: 'power4.out'
-                }, "-=0.3")
+            // P2: TERMINAL TYPE
+            tl.call(() => setPhase(1), [], 0.3);
+            bootLines.forEach((_, i) => {
+                tl.call(() => setLines(prev => [...prev, bootLines[i]]), [], 0.3 + i * 0.18);
+            });
 
-                // PHASE 3: CODE MATRIX (quicker flash)
-                .from('.v4-codeChar', {
-                    y: -100,
-                    opacity: 0,
-                    duration: 0.4,
-                    stagger: {
-                        amount: 0.5,
-                        from: 'random'
-                    },
-                    ease: 'none'
-                }, "-=0.6")
-                .to('.v4-codeChar', {
-                    opacity: 0,
-                    duration: 0.3
-                }, "+=0.1")
+            // P3: WIREFRAME GEOMETRY
+            tl.call(() => setPhase(2), [], 1.2)
+                .from('.bl-hex', { scale: 0, rotation: -180, opacity: 0, duration: 1.0, ease: 'expo.out' }, 1.2)
+                .from('.bl-hex-inner', { scale: 0, rotation: 180, opacity: 0, duration: 0.8, ease: 'back.out(2)' }, 1.5)
+                .from('.bl-orbit', { scale: 0, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, 1.6)
 
-                // PHASE 4: TITLE EMERGENCE (punchy reveal)
-                .set(textRef.current, { opacity: 1 })
-                .from(textRef.current, {
-                    scale: 0.5,
-                    rotationX: -90,
-                    z: -1000,
-                    opacity: 0,
-                    duration: 0.8,
-                    ease: 'back.out(1.7)'
-                })
-                .from('.v4-titleChar', {
-                    y: 100,
-                    opacity: 0,
-                    rotation: 360,
-                    duration: 0.5,
-                    stagger: 0.03,
-                    ease: 'elastic.out(1, 0.5)'
-                }, "-=0.6")
+                // P4: NAME SLAM
+                .call(() => setPhase(3), [], 2.2)
+                .fromTo('.bl-name', {
+                    scale: 3, opacity: 0, letterSpacing: '40px', filter: 'blur(20px)'
+                }, {
+                    scale: 1, opacity: 1, letterSpacing: '12px', filter: 'blur(0px)',
+                    duration: 0.6, ease: 'expo.out'
+                }, 2.2)
+                .to('.bl-name', { x: -8, skewX: -10, duration: 0.05 }, 2.8)
+                .to('.bl-name', { x: 6, skewX: 8, duration: 0.05 }, 2.85)
+                .to('.bl-name', { x: 0, skewX: 0, duration: 0.05 }, 2.9)
 
-                // PHASE 5: ENERGY WAVES (quick sweep)
-                .from('.v4-wave', {
-                    scaleX: 0,
-                    opacity: 0,
-                    duration: 0.5,
-                    stagger: 0.1,
-                    ease: 'power2.out'
-                }, "-=0.4")
+                // P5: SUBTITLE
+                .fromTo('.bl-sub', {
+                    opacity: 0, y: 10, letterSpacing: '15px'
+                }, {
+                    opacity: 0.6, y: 0, letterSpacing: '6px',
+                    duration: 0.4, ease: 'power2.out'
+                }, 2.95)
 
-                // PHASE 6: FINAL COLLAPSE (fast exit)
+                // P6: IRIS WIPE EXIT
+                .to('.bl-terminal', { opacity: 0, y: -20, duration: 0.3 }, 3.2)
+                .to('.bl-geo', { scale: 0.5, opacity: 0, rotation: 90, duration: 0.4 }, 3.2)
                 .to(containerRef.current, {
                     clipPath: 'circle(0% at 50% 50%)',
-                    duration: 0.8,
-                    ease: 'power4.inOut',
-                    delay: 0.2
-                });
-
-            // Progress animation (reduced to 3 seconds total)
-            tl.to({}, {
-                duration: 3,
-                onUpdate: function () {
-                    setProgress(Math.round(this.progress() * 100));
-                }
-            }, 0);
+                    duration: 0.6, ease: 'power3.inOut'
+                }, 3.4);
 
         }, containerRef);
-
         return () => ctx.revert();
     }, [onComplete]);
 
     return (
         <div ref={containerRef} style={{
-            position: 'fixed', inset: 0, background: '#000', zIndex: 9999,
+            position: 'fixed', inset: 0, background: '#030303', zIndex: 9999,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            clipPath: 'circle(150% at 50% 50%)', perspective: '1000px'
+            clipPath: 'circle(150% at 50% 50%)', overflow: 'hidden',
+            fontFamily: 'JetBrains Mono, monospace'
         }}>
-            {/* EXPANDING RINGS */}
-            {[...Array(5)].map((_, i) => (
-                <div key={`ring-${i}`} className="v4-ring" style={{
-                    position: 'absolute', width: '50px', height: '50px',
-                    border: '2px solid #00ff88', borderRadius: '50%',
-                    boxShadow: `0 0 ${20 + i * 10}px #00ff88`
-                }}></div>
-            ))}
+            {/* BACKGROUND GRID */}
+            <div className="bl-grid" style={{
+                position: 'absolute', inset: 0, opacity: 0,
+                backgroundImage: `linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px)`,
+                backgroundSize: '60px 60px'
+            }} />
 
-            {/* PARTICLE FIELD */}
-            {[...Array(100)].map((_, i) => (
-                <div key={`particle-${i}`} className="v4-particle" style={{
-                    position: 'absolute',
-                    width: '3px', height: '3px',
-                    background: i % 3 === 0 ? '#00ff88' : '#fff',
-                    borderRadius: '50%',
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    boxShadow: '0 0 5px currentColor'
-                }}></div>
-            ))}
+            {/* SCANLINE */}
+            <div className="bl-scanline" style={{
+                position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
+                background: 'linear-gradient(90deg, transparent, #00ff88, transparent)',
+                opacity: 0, boxShadow: '0 0 30px #00ff88, 0 0 60px #00ff88',
+                animation: phase >= 1 ? 'blScanDown 2s linear infinite' : 'none'
+            }} />
 
-            {/* CODE MATRIX */}
-            {[...Array(50)].map((_, i) => (
-                <div key={`code-${i}`} className="v4-codeChar" style={{
-                    position: 'absolute',
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    fontFamily: 'JetBrains Mono',
-                    color: '#00ff88',
-                    fontSize: '1.5rem',
-                    opacity: 0.5
-                }}>
-                    {String.fromCharCode(48 + Math.floor(Math.random() * 75))}
-                </div>
-            ))}
-
-            {/* MAIN TITLE */}
-            <h1 ref={textRef} style={{
-                fontFamily: 'Anton',
-                fontSize: 'clamp(3rem, 10vw, 7rem)',
-                color: '#fff',
-                textTransform: 'uppercase',
-                letterSpacing: '10px',
-                opacity: 0,
-                position: 'relative',
-                zIndex: 100,
-                textShadow: '0 0 30px #00ff88, 0 0 60px #00ff88',
-                transformStyle: 'preserve-3d'
+            {/* TERMINAL BLOCK */}
+            <div className="bl-terminal" style={{
+                position: 'absolute', top: '8%', left: '6%',
+                display: 'flex', flexDirection: 'column', gap: '2px', maxWidth: '500px'
             }}>
-                {'SYSTEM ARCHITECT'.split('').map((char, i) => (
-                    <span key={i} className="v4-titleChar" style={{ display: 'inline-block' }}>
-                        {char === ' ' ? '\u00A0' : char}
-                    </span>
+                {lines.map((line, i) => (
+                    <div key={i} style={{
+                        fontSize: '0.72rem',
+                        color: i === lines.length - 1 ? '#00ff88' : 'rgba(0,255,136,0.4)',
+                        letterSpacing: '1px', lineHeight: 1.8,
+                        borderLeft: i === lines.length - 1 ? '2px solid #00ff88' : 'none',
+                        paddingLeft: i === lines.length - 1 ? '8px' : '0'
+                    }}>
+                        {line}
+                    </div>
                 ))}
-            </h1>
-
-            {/* ENERGY WAVES */}
-            {[0, 1, 2].map(i => (
-                <div key={`wave-${i}`} className="v4-wave" style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '2px',
-                    background: `linear-gradient(90deg, transparent, #00ff88, transparent)`,
-                    top: `${40 + i * 10}%`,
-                    boxShadow: '0 0 20px #00ff88'
-                }}></div>
-            ))}
-
-            {/* LOADING BAR */}
-            <div style={{
-                position: 'absolute',
-                bottom: '10%',
-                width: '60%',
-                height: '4px',
-                background: 'rgba(255,255,255,0.1)',
-                borderRadius: '2px',
-                overflow: 'hidden'
-            }}>
-                <div style={{
-                    width: `${progress}%`,
-                    height: '100%',
-                    background: 'linear-gradient(90deg, #00ff88, #60ffa5)',
-                    boxShadow: '0 0 20px #00ff88',
-                    transition: 'width 0.1s ease'
-                }}></div>
+                {phase >= 1 && phase < 3 && (
+                    <span style={{ display: 'inline-block', width: '8px', height: '16px', background: '#00ff88', animation: 'blBlink 0.8s step-end infinite' }} />
+                )}
             </div>
 
-            {/* LOADING TEXT */}
-            <div style={{
-                position: 'absolute',
-                bottom: '6%',
-                fontFamily: 'JetBrains Mono',
-                fontSize: '0.9rem',
-                color: '#00ff88',
-                letterSpacing: '3px'
-            }}>
-                INITIALIZING SYSTEM... {progress}%
+            {/* CENTER GEOMETRY */}
+            <div className="bl-geo" style={{ position: 'relative', width: '280px', height: '280px' }}>
+                <div className="bl-hex" style={{
+                    position: 'absolute', inset: 0,
+                    border: '1.5px solid rgba(0,255,136,0.4)', borderRadius: '50%',
+                    animation: phase >= 2 ? 'blSpin 8s linear infinite' : 'none'
+                }} />
+                <div className="bl-hex-inner" style={{
+                    position: 'absolute', inset: '30px',
+                    border: '1px solid rgba(0,255,136,0.25)', borderRadius: '50%',
+                    animation: phase >= 2 ? 'blSpin 6s linear infinite reverse' : 'none'
+                }} />
+                {[0, 60, 120, 180, 240, 300].map((deg, i) => (
+                    <div key={`orbit-${i}`} className="bl-orbit" style={{
+                        position: 'absolute', width: '6px', height: '6px',
+                        background: '#00ff88', borderRadius: '50%',
+                        top: '50%', left: '50%',
+                        transform: `rotate(${deg}deg) translateX(140px) translateY(-50%)`,
+                        boxShadow: '0 0 12px #00ff88'
+                    }} />
+                ))}
+                <div style={{ position: 'absolute', top: '50%', left: '50%', width: '20px', height: '1px', background: 'rgba(0,255,136,0.5)', transform: 'translate(-50%, -50%)' }} />
+                <div style={{ position: 'absolute', top: '50%', left: '50%', width: '1px', height: '20px', background: 'rgba(0,255,136,0.5)', transform: 'translate(-50%, -50%)' }} />
             </div>
+
+            {/* NAME + SUBTITLE */}
+            <div style={{
+                position: 'absolute', bottom: '22%', textAlign: 'center',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.8rem'
+            }}>
+                <h1 className="bl-name" style={{
+                    fontFamily: 'Anton, sans-serif',
+                    fontSize: 'clamp(2.5rem, 8vw, 5.5rem)',
+                    color: '#fff', textTransform: 'uppercase',
+                    opacity: 0, letterSpacing: '12px', lineHeight: 1,
+                    textShadow: '0 0 40px rgba(0,255,136,0.4), 0 0 80px rgba(0,255,136,0.15)',
+                    margin: 0
+                }}>KUBER BASSI</h1>
+                <span className="bl-sub" style={{
+                    fontSize: '0.85rem', color: '#00ff88',
+                    letterSpacing: '6px', textTransform: 'uppercase',
+                    opacity: 0, fontWeight: 300
+                }}>SYSTEM ARCHITECT</span>
+            </div>
+
+            {/* Bottom status */}
+            <div className="bl-status" style={{
+                position: 'absolute', bottom: '4%', left: 0, right: 0,
+                display: 'flex', justifyContent: 'center', gap: '3rem',
+                fontSize: '0.6rem', color: 'rgba(0,255,136,0.3)', letterSpacing: '2px'
+            }}>
+                <span>SEC://TLS-1.3</span>
+                <span>NODE://DELHI</span>
+                <span>BUILD://V4.2</span>
+            </div>
+
+            <style>{`
+                @keyframes blScanDown { 0% { top: -3px; } 100% { top: 100%; } }
+                @keyframes blBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+                @keyframes blSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+                @media (max-width: 768px) {
+                    .bl-terminal { 
+                        top: 5% !important; 
+                        left: 5% !important; 
+                        max-width: 80% !important; 
+                    }
+                    .bl-geo { 
+                        transform: scale(0.75); 
+                    }
+                    .bl-name { 
+                        font-size: clamp(1.8rem, 10vw, 3.5rem) !important; 
+                        letter-spacing: 6px !important; 
+                    }
+                    .bl-sub { 
+                        font-size: 0.7rem !important; 
+                        letter-spacing: 3px !important; 
+                    }
+                    .bl-status {
+                        gap: 1.5rem !important;
+                        font-size: 0.5rem !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 };
@@ -789,7 +773,7 @@ const DevPortfolio = () => {
     });
     const [flippedIndex, setFlippedIndex] = useState(null);
     const [activeIndex, setActiveIndex] = useState(0);
-    const [projectData, setProjectData] = useState(projects);
+    const [projectData, setProjectData] = useState(() => getInitialProjects(projects));
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const mainRef = useRef(null);
     const heroTextRef = useRef(null);
@@ -816,23 +800,9 @@ const DevPortfolio = () => {
             }
 
             try {
-                const updatedProjects = await Promise.all(projects.map(async (proj) => {
-                    if (!proj.github) return proj;
-                    const repoBase = proj.github.replace('https://github.com/', '');
-                    const res = await fetch(`https://api.github.com/repos/${repoBase}`);
-                    if (!res.ok) return proj;
-                    const data = await res.json();
-
-                    return {
-                        ...proj,
-                        desc: data.description || proj.desc,
-                        stars: data.stargazers_count,
-                        language: data.language || (proj.tech ? proj.tech[0] : 'System')
-                    };
-                }));
-
-                setProjectData(updatedProjects);
-                localStorage.setItem(cacheKey, JSON.stringify({ data: updatedProjects, timestamp: now }));
+                const enriched = await enrichProjects(projects);
+                setProjectData(enriched);
+                localStorage.setItem(cacheKey, JSON.stringify({ data: enriched, timestamp: now }));
             } catch (err) { console.error("GitHub fetch failed:", err); }
         };
 

@@ -139,6 +139,10 @@
 }
 
 @media (max-width: 480px) {
+    .title {
+        font-size: clamp(2rem, 15vw, 3rem);
+    }
+
     .ctaButton span {
         display: none;
     }
