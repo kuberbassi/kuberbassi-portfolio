@@ -59,7 +59,6 @@ const InteractiveDotGrid = () => {
             time += 0.01;
 
             const mouse = mouseRef.current;
-            const interactionRadius = 200;
 
             particlesRef.current.forEach((p) => {
                 // Smooth Drift

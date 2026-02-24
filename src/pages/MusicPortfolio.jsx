@@ -28,29 +28,7 @@ const MusicPortfolio = () => {
         return !sessionStorage.getItem('session_active');
     });
 
-    useEffect(() => {
-        // SEO metadata now handled by SEO component below
-
-        // Mark session as active immediately
-        sessionStorage.setItem('session_active', 'true');
-
-        // Setup Main Content Initial State (Hidden)
-        // We do this GSAP set regardless, so we can animate IT in.
-        gsap.set('#main-content-wrapper', {
-            opacity: 0,
-            scale: 1.05,
-            filter: 'blur(10px)',
-            willChange: 'transform, opacity, filter'
-        });
-        gsap.set('#global-ui-layer', { opacity: 0 });
-
-        // IF NOT LOADING (Skipped), trigger entrance immediately
-        if (!loading) {
-            handleTransitionStart();
-        }
-    }, [loading]); // Dependency on loading to ensure it runs correctly
-
-    const handleTransitionStart = () => {
+    function handleTransitionStart() {
         // FLUID PAGE ENTRANCE
         const tl = gsap.timeline();
 
@@ -78,7 +56,29 @@ const MusicPortfolio = () => {
 
         // Ensure body is visible
         document.body.style.opacity = 1;
-    };
+    }
+
+    useEffect(() => {
+        // SEO metadata now handled by SEO component below
+
+        // Mark session as active immediately
+        sessionStorage.setItem('session_active', 'true');
+
+        // Setup Main Content Initial State (Hidden)
+        // We do this GSAP set regardless, so we can animate IT in.
+        gsap.set('#main-content-wrapper', {
+            opacity: 0,
+            scale: 1.05,
+            filter: 'blur(10px)',
+            willChange: 'transform, opacity, filter'
+        });
+        gsap.set('#global-ui-layer', { opacity: 0 });
+
+        // IF NOT LOADING (Skipped), trigger entrance immediately
+        if (!loading) {
+            handleTransitionStart();
+        }
+    }, [loading]); // Dependency on loading to ensure it runs correctly
 
     const handlePreloaderComplete = () => {
         setLoading(false);

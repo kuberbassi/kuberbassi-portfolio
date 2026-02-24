@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import '../styles/LandingPage.css';
@@ -17,9 +17,6 @@ const LandingPage = () => {
 
         document.body.style.backgroundColor = '#000';
         document.documentElement.style.backgroundColor = '#000';
-        return () => {
-            // Cleanup if needed
-        };
     }, []);
 
     useLayoutEffect(() => {

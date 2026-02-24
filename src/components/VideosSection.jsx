@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import VideoCard from './VideoCard';
 import VideoModal from './VideoModal';
 import useYouTubeVideos from '../hooks/useYouTubeVideos';
@@ -10,7 +10,7 @@ const VideosSection = () => {
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     // Fetch videos from YouTube API (or use fallback)
-    const { videos, loading, error } = useYouTubeVideos(6);
+    const { videos } = useYouTubeVideos(6);
 
     const handleVideoClick = (video) => {
         const index = videos.findIndex(v => v.id === video.id);
@@ -91,14 +91,17 @@ const VideosSection = () => {
             </div>
 
             {/* Video Modal */}
-            {selectedVideo && (
-                <VideoModal
-                    video={selectedVideo}
-                    onClose={() => setSelectedVideo(null)}
-                    onNext={handleNext}
-                    onPrev={handlePrev}
-                />
-            )}
+            <AnimatePresence>
+                {selectedVideo && (
+                    <VideoModal
+                        key="video-modal"
+                        video={selectedVideo}
+                        onClose={() => setSelectedVideo(null)}
+                        onNext={handleNext}
+                        onPrev={handlePrev}
+                    />
+                )}
+            </AnimatePresence>
         </section>
     );
 };

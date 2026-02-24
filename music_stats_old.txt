@@ -1,19 +1,22 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+﻿import React, { useEffect, useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import styles from './styles/StatsSection.module.css';
 
 const StatsSection = () => {
-    const [counts, setCounts] = useState({});
+    const [counts, setCounts] = useState({
+        totalStreams: 0,
+        releases: 0,
+        monthlyListeners: 0
+    });
 
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
 
-    const stats = useMemo(() => [
-        { key: 'experience', target: 8, label: 'YEARS OF TONE', suffix: '+', icon: 'fas fa-guitar' },
-        { key: 'releases', target: 25, label: 'ORIGINAL RELEASES', suffix: '+', icon: 'fas fa-compact-disc' },
-        { key: 'streams', target: 500000, label: 'TOTAL STREAMS', suffix: '+', icon: 'fas fa-headphones' },
-        { key: 'listeners', target: 10000, label: 'MONTHLY LISTENERS', suffix: '+', icon: 'fas fa-users' }
-    ], []);
+    const stats = [
+        { key: 'totalStreams', label: 'Total Streams', target: 500000, suffix: '+', icon: 'fas fa-play' },
+        { key: 'releases', label: 'Releases', target: 25, suffix: '', icon: 'fas fa-compact-disc' },
+        { key: 'monthlyListeners', label: 'Monthly Listeners', target: 50000, suffix: '+', icon: 'fas fa-headphones' }
+    ];
 
     useEffect(() => {
         if (!isInView) return;
@@ -38,7 +41,7 @@ const StatsSection = () => {
                 }));
             }, stepDuration);
         });
-    }, [isInView, stats]);
+    }, [isInView]);
 
     const formatNumber = (num) => {
         if (num >= 1000000) {
@@ -84,7 +87,7 @@ const StatsSection = () => {
                                 <i className={stat.icon}></i>
                             </div>
                             <div className={styles.number}>
-                                {counts[stat.key] !== undefined ? formatNumber(counts[stat.key]) : '0'}{stat.suffix}
+                                {formatNumber(counts[stat.key])}{stat.suffix}
                             </div>
                             <div className={styles.label}>{stat.label}</div>
                             <div className={styles.glow}></div>

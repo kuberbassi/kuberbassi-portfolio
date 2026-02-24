@@ -2,6 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import styles from './styles/Preloader.module.css';
 
+// Ticks generation constants
+const TOTAL_TICKS = 31;
+const START_ANGLE = -140;
+const END_ANGLE = 140;
+
 const Preloader = ({ onComplete, onTransitionStart }) => {
     const containerRef = useRef(null);
     const stageRef = useRef(null);
@@ -15,11 +20,6 @@ const Preloader = ({ onComplete, onTransitionStart }) => {
     const [volumeValue, setVolumeValue] = useState(0);
     const [statusText, setStatusText] = useState('STANDBY');
 
-    // Ticks generation constants
-    const totalTicks = 31;
-    const startAngle = -140;
-    const endAngle = 140;
-
     useEffect(() => {
         const tl = gsap.timeline({
             onComplete: () => {
@@ -28,7 +28,7 @@ const Preloader = ({ onComplete, onTransitionStart }) => {
         });
 
         // Initial States
-        gsap.set(knobCapRef.current, { rotation: startAngle });
+        gsap.set(knobCapRef.current, { rotation: START_ANGLE });
         gsap.set(indicatorRef.current, { opacity: 0.3 });
 
         // --- PHASE 1: INITIALIZE ---
@@ -52,7 +52,7 @@ const Preloader = ({ onComplete, onTransitionStart }) => {
         tl.to({}, { duration: 0.3 })
             .call(() => setStatusText('INCREASING GAIN'))
             .to(knobCapRef.current, {
-                rotation: endAngle,
+                rotation: END_ANGLE,
                 duration: 2.2,
                 ease: "power2.inOut",
                 onUpdate: function () {
@@ -99,11 +99,11 @@ const Preloader = ({ onComplete, onTransitionStart }) => {
 
     const renderTicks = () => {
         const ticks = [];
-        const rotationRange = endAngle - startAngle;
+        const rotationRange = END_ANGLE - START_ANGLE;
 
-        for (let i = 0; i < totalTicks; i++) {
-            const rot = startAngle + (i * (rotationRange / (totalTicks - 1)));
-            const progress = i / (totalTicks - 1);
+        for (let i = 0; i < TOTAL_TICKS; i++) {
+            const rot = START_ANGLE + (i * (rotationRange / (TOTAL_TICKS - 1)));
+            const progress = i / (TOTAL_TICKS - 1);
             const isActive = progress <= volumeValue / 11;
 
             ticks.push(

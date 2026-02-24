@@ -24,10 +24,23 @@ const KineticLandingPage = () => {
 
         document.body.style.backgroundColor = '#000';
         document.documentElement.style.backgroundColor = '#000';
-        return () => {
-            // Cleanup if needed
-        };
     }, []);
+
+    const applySplit = (val) => {
+        if (!codeLayerRef.current) return;
+
+        // Diagonal offset (Skew amount)
+        const topX = val + 5;
+        const botX = val - 5;
+
+        // Clip Code Layer (Left Side)
+        codeLayerRef.current.style.clipPath = `polygon(0 0, ${topX}% 0, ${botX}% 100%, 0 100%)`;
+
+        // Separator Line (Thin slice)
+        if (separatorRef.current) {
+            separatorRef.current.style.clipPath = `polygon(${topX}% 0, ${topX + 0.2}% 0, ${botX + 0.2}% 100%, ${botX}% 100%)`;
+        }
+    };
 
     useEffect(() => {
         let animationFrameId;
@@ -36,35 +49,13 @@ const KineticLandingPage = () => {
             if (isTransitioning.current) return;
 
             // Check for Mobile/Tablet (Vertical Layout)
-            // If screen is narrow, we disable the horizontal split logic
-            // and let CSS handle the static or responsive layout.
             if (window.innerWidth <= 1024) {
-                // Optional: We could implement vertical split logic here (Y-axis)
-                // For now, let's clear the inline styles so CSS applies
                 if (codeLayerRef.current) codeLayerRef.current.style.clipPath = '';
                 if (separatorRef.current) separatorRef.current.style.clipPath = '';
 
                 animationFrameId = requestAnimationFrame(updatePhysics);
                 return;
             }
-
-            // Target split is based on mouse X
-            // Center is 50.
-            // Mouse Left (0.0) -> Push split right (reveal more Code? No, Code is Left layer.)
-            // Logic Check:
-            // Code is Left Layer (Top z-index).
-            // If dragging slider Right -> Show more Code.
-            // So if Mouse X is 0.9 (Right), Split should be larger (e.g. 60 or 70).
-            // If Mouse X is 0.1 (Left), Split should be smaller (e.g. 30 or 40).
-            // BUT, usually "Hovering Music (Right)" expands Music.
-            // If I hover Right, I want Music (bottom layer) to grow.
-            // So Code (Top Layer/Clip) must SHRINK.
-            // So Split must decrease.
-            // Mouse Right (0.9) -> Split Decrease -> Code Shrinks -> Music Grows.
-
-            // Map Mouse X (0..1) to Target Split (60..40)
-            // Left (0) -> 60 (More Code)
-            // Right (1) -> 40 (More Music)
 
             const targetSplit = 60 - (mouse.current.x * 20); // Range 60 to 40
 
@@ -81,24 +72,17 @@ const KineticLandingPage = () => {
             mouse.current.x = e.clientX / window.innerWidth;
 
             // Internal Parallax for Text
-            // Move text slightly OPPOSITE to mouse to create depth
             if (window.innerWidth > 768) {
                 const pX = (mouse.current.x - 0.5) * 50;
                 gsap.to('.text-code-container', { x: pX, duration: 1, ease: 'power2.out' });
                 gsap.to('.text-music-container', { x: -pX, duration: 1, ease: 'power2.out' });
             } else {
-                // Reset on mobile
                 gsap.to('.text-code-container', { x: 0, duration: 1 });
                 gsap.to('.text-music-container', { x: 0, duration: 1 });
             }
         };
 
         window.addEventListener('mousemove', onMouseMove);
-        // Also listen for resize to clear styles immediately if crossing threshold
-        window.addEventListener('resize', () => {
-            // Let the loop handle it
-        });
-
         updatePhysics();
 
         return () => {
@@ -107,40 +91,17 @@ const KineticLandingPage = () => {
         };
     }, []);
 
-    const applySplit = (val) => {
-        if (!codeLayerRef.current) return;
-
-        // Diagonal offset (Skew amount)
-        // Top point: val + 5
-        // Bottom point: val - 5
-        const topX = val + 5;
-        const botX = val - 5;
-
-        // Clip Code Layer (Left Side)
-        codeLayerRef.current.style.clipPath = `polygon(0 0, ${topX}% 0, ${botX}% 100%, 0 100%)`;
-
-        // Separator Line (Thin slice)
-        // Positioned exactly on the edge
-        if (separatorRef.current) {
-            // A thin polygon strip
-            separatorRef.current.style.clipPath = `polygon(${topX}% 0, ${topX + 0.2}% 0, ${botX + 0.2}% 100%, ${botX}% 100%)`;
-        }
-    };
-
     const handleNavigate = (path) => {
         if (isTransitioning.current) return;
         isTransitioning.current = true;
-        console.log("Navigating to:", path);
 
         const tl = gsap.timeline({
             onComplete: () => {
-                // Check environment
                 const isLocal = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1');
 
                 if (isLocal) {
                     navigate(path);
                 } else {
-                    // Production: Redirect to subdomains
                     if (path === '/dev') window.location.href = 'https://dev.kuberbassi.com';
                     else if (path === '/music') window.location.href = 'https://music.kuberbassi.com';
                     else navigate(path);
@@ -148,60 +109,45 @@ const KineticLandingPage = () => {
             }
         });
 
-        // HIDE UI
         tl.to('.center-hint-v3, .kinetic-footer, .glass-separator', { opacity: 0, duration: 0.3 }, 0);
 
-        // Responsive Animation Logic
         const isMobile = window.innerWidth <= 1024;
 
         if (path === '/dev') {
-            // GOING TO CODE
-
-            // 1. Zoom/Scale Effect
             tl.to('.text-code', { scale: 1.2, x: 0, duration: 1, ease: 'expo.inOut' }, 0);
-            tl.to('.text-music', { x: isMobile ? 0 : 100, opacity: 0, duration: 0.5 }, 0); // Bye Music
+            tl.to('.text-music', { x: isMobile ? 0 : 100, opacity: 0, duration: 0.5 }, 0);
 
-            // 2. The Slash Wipe
             if (!isMobile) {
                 const obj = { val: splitState.current.val };
                 tl.to(obj, {
-                    val: 120, // Verify far right (clear screen)
+                    val: 120,
                     duration: 0.8,
                     ease: 'expo.inOut',
                     onUpdate: () => applySplit(obj.val)
                 }, 0);
             } else {
-                // Mobile wipe (Vertical) ? Or just fade?
-                // Simple fade/reveal for mobile stability
                 tl.to('.section-music', { opacity: 0, duration: 0.5 }, 0);
                 tl.to('.section-code', { clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)', duration: 0.8, ease: 'expo.inOut' }, 0);
             }
 
-            // 3. Grid Flash
             tl.to('.bg-grid-cyber', { opacity: 0.8, scale: 1.1, duration: 0.8 }, 0);
 
         } else {
-            // GOING TO MUSIC
-
-            // 1. Zoom Effect
             tl.to('.text-music', { scale: 1.2, x: 0, duration: 1, ease: 'expo.inOut' }, 0);
-            tl.to('.text-code', { x: isMobile ? 0 : -100, opacity: 0, duration: 0.5 }, 0); // Bye Code
+            tl.to('.text-code', { x: isMobile ? 0 : -100, opacity: 0, duration: 0.5 }, 0);
 
-            // 2. The Slash Wipe
             if (!isMobile) {
                 const obj = { val: splitState.current.val };
                 tl.to(obj, {
-                    val: -20, // Way left (Code layer clipped to nothing)
+                    val: -20,
                     duration: 0.8,
                     ease: 'expo.inOut',
                     onUpdate: () => applySplit(obj.val)
                 }, 0);
             } else {
-                // Mobile wipe
                 tl.to('.section-code', { opacity: 0, duration: 0.5 }, 0);
             }
 
-            // 3. Nebula Brighten
             tl.to('.bg-nebula-deep', { opacity: 1, scale: 1.2, duration: 0.8 }, 0);
         }
     };
@@ -216,50 +162,31 @@ const KineticLandingPage = () => {
                 url="https://kuberbassi.com"
             />
             <KineticCursor />
-
-            {/* --- LAYERS --- */}
-
-            {/* 1. MUSIC (Bottom Layer - Full Screen) */}
             <div className="section-layer section-music" onClick={() => handleNavigate('/music')}>
                 <div className="bg-nebula-deep"></div>
                 <div className="kinetic-content text-music-container">
-                    {/* Offset text to the right so it's centered in the visible space?
-                         Actually, standard center is fine, the user will "uncover" it.
-                         But let's nudge it slightly Right. */}
                     <div className="text-offset-right">
                         <h1 className="title-huge text-music">MUSIC</h1>
                         <span className="subtitle-mono">ARTIST</span>
                     </div>
                 </div>
             </div>
-
-            {/* 2. CODE (Top Layer - Clipped) */}
             <div className="section-layer section-code" ref={codeLayerRef} onClick={() => handleNavigate('/dev')}>
                 <div className="bg-grid-cyber"></div>
                 <div className="kinetic-content text-code-container">
-                    {/* Nudge Left for visual balance */}
                     <div className="text-offset-left">
                         <h1 className="title-huge text-code">CODE</h1>
                         <span className="subtitle-mono">ARCHITECT</span>
                     </div>
                 </div>
             </div>
-
-            {/* 3. SEPARATOR (Glass Shard) */}
-            <div
-                className="glass-separator"
-                ref={separatorRef}
-            ></div>
-
-            {/* --- UI --- */}
+            <div className="glass-separator" ref={separatorRef}></div>
             <div className="center-hint-v3">
                 <span>SELECT INTERFACE</span>
             </div>
-
             <div className="kinetic-footer">
                 &copy; 2025-{new Date().getFullYear()} Kuber Bassi.
             </div>
-
         </div>
     );
 };

@@ -1,5 +1,32 @@
 import React, { useEffect, useRef } from 'react';
 
+class Point {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.originalX = x;
+        this.originalY = y;
+    }
+    update(mouse) {
+        const dx = this.x - mouse.x;
+        const dy = this.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < mouse.radius) {
+            const force = (mouse.radius - dist) / mouse.radius;
+            this.x += (dx / dist) * force * 2;
+            this.y += (dy / dist) * force * 2;
+        }
+        this.x += (this.originalX - this.x) * 0.1;
+        this.y += (this.originalY - this.y) * 0.1;
+
+        // Random glitch jitter
+        if (Math.random() < 0.005) {
+            this.x += (Math.random() - 0.5) * 10;
+            this.y += (Math.random() - 0.5) * 10;
+        }
+    }
+}
+
 const GlitchCanvas = () => {
     const canvasRef = useRef(null);
 
@@ -13,33 +40,6 @@ const GlitchCanvas = () => {
         let points = [];
         let mouse = { x: width / 2, y: height / 2, radius: 100 };
         let animationFrameId;
-
-        class Point {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.originalX = x;
-                this.originalY = y;
-            }
-            update() {
-                const dx = this.x - mouse.x;
-                const dy = this.y - mouse.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < mouse.radius) {
-                    const force = (mouse.radius - dist) / mouse.radius;
-                    this.x += (dx / dist) * force * 2;
-                    this.y += (dy / dist) * force * 2;
-                }
-                this.x += (this.originalX - this.x) * 0.1;
-                this.y += (this.originalY - this.y) * 0.1;
-
-                // Random glitch jitter
-                if (Math.random() < 0.005) {
-                    this.x += (Math.random() - 0.5) * 10;
-                    this.y += (Math.random() - 0.5) * 10;
-                }
-            }
-        }
 
         const initGrid = () => {
             width = canvas.width = window.innerWidth;
@@ -56,7 +56,7 @@ const GlitchCanvas = () => {
         const animateGrid = () => {
             ctx.clearRect(0, 0, width, height);
             points.forEach(p => {
-                p.update();
+                p.update(mouse);
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
 

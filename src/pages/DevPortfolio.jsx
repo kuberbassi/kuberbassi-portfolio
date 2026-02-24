@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger, Observer } from 'gsap/all';
 import '../styles/DevPortfolioV4.css'; // Global CSS (No Modules)
@@ -195,11 +194,13 @@ const CyberOverlay = () => {
 
 const InteractiveParticles = () => {
     const canvasRef = useRef(null);
+    const particlesRef = useRef([]); // Use ref for particles
+    const mouseRef = useRef({ x: 0, y: 0, radius: 100 }); // Mouse interaction
+
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         let width, height;
-        let particles = [];
         let animationFrameId; // Track animation frame for cleanup
 
         const resize = () => {
@@ -209,10 +210,10 @@ const InteractiveParticles = () => {
         };
 
         const initParticles = () => {
-            particles = [];
+            particlesRef.current = [];
             const count = Math.min(Math.floor(width * height / 35000), 60); // Optimized Density & Hard Cap
             for (let i = 0; i < count; i++) {
-                particles.push({
+                particlesRef.current.push({
                     x: Math.random() * width,
                     y: Math.random() * height,
                     vx: (Math.random() - 0.5) * 0.3,
@@ -222,24 +223,55 @@ const InteractiveParticles = () => {
             }
         };
 
+        const onMouseMove = (e) => {
+            mouseRef.current.x = e.clientX;
+            mouseRef.current.y = e.clientY;
+        };
+
+        const updatePhysics = () => {
+            const mouse = mouseRef.current;
+
+            particlesRef.current.forEach((p) => {
+                // Move particles
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // Bounce off walls
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                // Mouse repulsion
+                const dx = p.x - mouse.x;
+                const dy = p.y - mouse.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < mouse.radius) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (mouse.radius - dist) / mouse.radius;
+                    p.vx += Math.cos(angle) * force * 0.5;
+                    p.vy += Math.sin(angle) * force * 0.5;
+                }
+
+                // Dampen velocity
+                p.vx *= 0.99;
+                p.vy *= 0.99;
+            });
+        };
+
         const animate = () => {
             ctx.clearRect(0, 0, width, height);
             ctx.fillStyle = 'rgba(0, 255, 136, 0.4)';
             ctx.strokeStyle = 'rgba(0, 255, 136, 0.05)';
 
-            particles.forEach((p, i) => {
-                p.x += p.vx;
-                p.y += p.vy;
+            updatePhysics(); // Update physics before drawing
 
-                if (p.x < 0 || p.x > width) p.vx *= -1;
-                if (p.y < 0 || p.y > height) p.vy *= -1;
-
+            particlesRef.current.forEach((p, i) => {
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fill();
 
                 // Connections
-                particles.forEach((p2, j) => {
+                particlesRef.current.forEach((p2, j) => {
                     if (j > i) {
                         const dx = p.x - p2.x;
                         const dy = p.y - p2.y;
@@ -257,11 +289,13 @@ const InteractiveParticles = () => {
         };
 
         window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', onMouseMove);
         resize();
         animate();
 
         return () => {
             window.removeEventListener('resize', resize);
+            window.removeEventListener('mousemove', onMouseMove);
             cancelAnimationFrame(animationFrameId);
         };
     }, []);
@@ -403,13 +437,13 @@ const TerminalNavigator = () => {
     const [activeSection, setActiveSection] = useState('hero');
     const [hoveredSection, setHoveredSection] = useState(null);
 
-    const sections = [
+    const sections = useMemo(() => [
         { id: 'hero', label: 'INIT', icon: '>', color: '#00ff88' },
         { id: 'arsenal', label: 'STACK', icon: '$', color: '#8b5cf6' },
         { id: 'about', label: 'CORE', icon: '#', color: '#06b6d4' },
         { id: 'projects', label: 'DEPLOY', icon: '*', color: '#f59e0b' },
         { id: 'contact', label: 'LINK', icon: '@', color: '#22c55e' }
-    ];
+    ], []);
 
     useEffect(() => {
         // Use Intersection Observer for accurate section detection
@@ -435,15 +469,11 @@ const TerminalNavigator = () => {
         });
 
         return () => observer.disconnect();
-    }, []);
+    }, [sections]);
 
     const scrollToSection = (id) => {
         const element = document.getElementById(id);
         element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
-
-    const getSectionColor = (sectionId) => {
-        return sections.find(s => s.id === sectionId)?.color || '#666';
     };
 
     return (
@@ -571,7 +601,7 @@ const BiosLoader = ({ onComplete }) => {
     const [lines, setLines] = useState([]);
     const [phase, setPhase] = useState(0);
 
-    const bootLines = [
+    const bootLines = useMemo(() => [
         '> BIOS v4.2.1 ... OK',
         '> Memory check .......... 32GB',
         '> GPU: RTX Pipeline online',
@@ -580,7 +610,7 @@ const BiosLoader = ({ onComplete }) => {
         '> Establishing secure tunnel',
         '> AUTH: fingerprint verified',
         '> SYSTEM READY'
-    ];
+    ], []);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -632,7 +662,7 @@ const BiosLoader = ({ onComplete }) => {
 
         }, containerRef);
         return () => ctx.revert();
-    }, [onComplete]);
+    }, [onComplete, bootLines]);
 
     return (
         <div ref={containerRef} style={{
@@ -774,13 +804,12 @@ const DevPortfolio = () => {
     const [flippedIndex, setFlippedIndex] = useState(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [projectData, setProjectData] = useState(() => getInitialProjects(projects));
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const mainRef = useRef(null);
     const heroTextRef = useRef(null);
     const artifactRef = useRef(null);
     const carouselRef = useRef(null);
     const wrapperRef = useRef(null);
-    const navigate = useNavigate();
 
     // --- GitHub Metadata Automation ---
     useEffect(() => {
@@ -807,6 +836,10 @@ const DevPortfolio = () => {
         };
 
         if (!loading) fetchGitHubData();
+
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, [loading]);
 
     useEffect(() => {
@@ -875,7 +908,9 @@ const DevPortfolio = () => {
 
     // Step-based carousel navigation
     const activeIndexRef = useRef(0);
-    activeIndexRef.current = activeIndex;
+    useLayoutEffect(() => {
+        activeIndexRef.current = activeIndex;
+    }, [activeIndex]);
 
     const goToCard = useCallback((idx) => {
         if (!wrapperRef.current || !carouselRef.current || projectData.length === 0) return;
@@ -939,7 +974,7 @@ const DevPortfolio = () => {
                 <ScrollProgress />
 
                 {/* TERMINAL SIDE NAVIGATOR */}
-                <TerminalNavigator />
+                {!isMobile && <TerminalNavigator />}
 
                 <KineticCursor />
                 <InteractiveParticles />
@@ -949,22 +984,24 @@ const DevPortfolio = () => {
 
                 {/* HERO */}
                 <section id="hero" className="v4-heroSection">
-                    <div className="v4-artifactWrapper" ref={artifactRef}>
-                        <div className="v4-cube">
-                            <div className="v4-face v4-faceFront"></div>
-                            <div className="v4-face v4-faceBack"></div>
-                            <div className="v4-face v4-faceRight"></div>
-                            <div className="v4-face v4-faceLeft"></div>
-                            <div className="v4-face v4-faceTop"></div>
-                            <div className="v4-face v4-faceBottom"></div>
+                    {!isMobile && (
+                        <div className="v4-artifactWrapper" ref={artifactRef}>
+                            <div className="v4-cube">
+                                <div className="v4-face v4-faceFront"></div>
+                                <div className="v4-face v4-faceBack"></div>
+                                <div className="v4-face v4-faceRight"></div>
+                                <div className="v4-face v4-faceLeft"></div>
+                                <div className="v4-face v4-faceTop"></div>
+                                <div className="v4-face v4-faceBottom"></div>
+                            </div>
                         </div>
-                    </div>
+                    )}
                     <div className="v4-heroContent" ref={heroTextRef}>
                         <h1 className="v4-monolithText"><HyperText text="SYSTEM" /></h1>
                         <h1 className="v4-monolithText" style={{ color: '#00ff88' }}><HyperText text="ARCHITECT" /></h1>
                         <span className="v4-monolithSub">AI-Native // Python // System Design</span>
                     </div>
-                    <TerminalWidget />
+                    {!isMobile && <TerminalWidget />}
                 </section>
 
                 {/* ARSENAL (STACK) SECTION */}

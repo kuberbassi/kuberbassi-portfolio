@@ -1103,64 +1103,80 @@ body {
 }
 
 /* MOBILE - Below 768px */
+/* MOBILE - Below 768px */
 @media (max-width: 768px) {
     .v4-container {
         overflow-x: hidden;
-        padding: 0 1.5rem 150px 1.5rem;
-        /* Side padding + bottom clearance */
+        padding: 0 1rem 80px 1rem; /* Reduced bottom clearance as nav is gone */
     }
 
     .v4-terminalNav {
         display: none !important;
     }
 
-    /* Hide bottom HUD corners to declutter mobile */
+    /* Hide redundant HUD elements on mobile to prioritize main content */
     .v4-hudCorner.bottom-left,
-    .v4-hudCorner.bottom-right {
-        display: none !important;
-    }
-
-    /* Scale down top corners for less intrusion */
-    .v4-hudCorner.top-left,
+    .v4-hudCorner.bottom-right,
     .v4-hudCorner.top-right {
-        transform: scale(0.7);
-        font-size: 0.7rem;
-    }
-
-    /* Hide 3D Cube - Too complex for mobile */
-    .v4-artifactWrapper,
-    .v4-cube {
         display: none !important;
     }
 
-    /* Hide Terminal Widget - Adds clutter */
+    /* Consolidate Top Left HUD */
+    .v4-hudCorner.top-left {
+        top: 10px;
+        left: 10px;
+        min-width: unset;
+        min-height: unset;
+        border-width: 1px 0 0 1px;
+        padding: 5px 0 0 8px !important;
+        transform: scale(0.9);
+    }
+
+    /* Hide 3D Cube & Terminal Widget for performance and clarity */
+    .v4-artifactWrapper,
+    .v4-cube,
     .v4-terminalWidget {
         display: none !important;
     }
 
     /* TYPOGRAPHY SYSTEM */
-
-    /* Section Headings - Premium sizing */
-    .v4-bentoSection h2,
-    .v4-coreSection h2,
-    .v4-deckSection h2 {
-        font-size: 2rem;
-        line-height: 1.2;
-        margin-bottom: 2rem;
-        padding: 0;
+    .v4-sectionHeading {
+        font-size: 2.2rem;
+        margin: 3rem 0 1.5rem 0;
+        line-height: 1.1;
     }
 
-    /* Override Bento Grid to Single Column */
+    /* Hero Section */
+    .v4-heroSection {
+        height: 70vh; /* Shorter hero on mobile */
+        padding-top: 50px;
+    }
+
+    .v4-heroContent {
+        width: 100%;
+    }
+
+    .v4-monolithText {
+        font-size: 16vw; 
+        line-height: 1.0;
+        margin: 0;
+        white-space: normal; /* Allow wrapping if needed, though viewport units usually prevent this */
+    }
+
+    .v4-monolithSub {
+        font-size: 0.75rem;
+        letter-spacing: 0.1rem;
+        padding: 0.5rem 1rem;
+        margin-top: 1.5rem;
+        width: 80%;
+    }
+
+    /* Bento Grid (Arsenal) */
     .v4-bentoGrid {
         grid-template-columns: 1fr;
         grid-template-rows: auto;
-        gap: 2rem;
-        /* Increased from 20px */
-        margin-top: 3rem;
-        max-width: 500px;
-        /* Constrain width for better readability */
-        margin-left: auto;
-        margin-right: auto;
+        gap: 1.5rem;
+        margin-top: 2rem;
     }
 
     .v4-span2,
@@ -1169,208 +1185,96 @@ body {
         grid-row: span 1;
     }
 
-    /* Adjust Card Padding - More breathing room */
     .v4-glassCard {
-        padding: 2rem;
-        /* Increased from 1.5rem */
-        border-radius: 24px;
-        min-height: auto;
-        /* Let content dictate height */
+        padding: 1.5rem;
+        border-radius: 20px;
     }
 
     .v4-cardTitle {
-        font-size: 1.5rem;
-        line-height: 1.2;
-        /* Better readability */
-        word-break: break-word;
-        margin-bottom: 1rem;
+        font-size: 1.75rem;
     }
 
     .v4-cardText {
-        font-size: 0.95rem;
-        line-height: 1.6;
-        /* Much better readability */
+        font-size: 1rem;
+        line-height: 1.4;
     }
 
-    /* Hero Section - Prevent Overflow */
-    .v4-heroSection {
-        overflow: hidden;
-        padding: 0 1rem;
-    }
-
-    /* Hero Text - Premium Typography */
-    .v4-monolithText {
-        font-size: 12vw;
-        /* Dramatically reduced for elegance */
-        line-height: 1.1;
-        overflow: hidden;
-        word-wrap: break-word;
-        hyphens: auto;
-    }
-
-    .v4-monolithSub {
-        font-size: 0.7rem;
-        letter-spacing: 0.15rem;
-        padding: 0.75rem 1.5rem;
-        /* More breathing room */
-    }
-
-    /* Section Spacing - Generous */
-    .v4-bentoSection,
-    .v4-coreSection,
-    .v4-deckSection {
-        padding: 4rem 0;
-        /* Increased vertical, horizontal handled by container */
-    }
-
-    /* Cinematic Project - Add margins and bottom clearance */
-    .v4-cinematicProject {
-        flex-direction: column;
-        width: calc(100% - 2rem);
-        /* Horizontal margins */
-        margin: 0 1rem 3rem 1rem;
-        /* Left/right spacing + reduced bottom */
-        height: auto;
-        border: 1px solid rgba(59, 130, 246, 0.2);
-        /* Re-enable border for definition */
-        background: rgba(5, 5, 5, 0.95);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        border-radius: 16px;
-        padding-bottom: 2rem;
-        /* Extra internal bottom padding */
-    }
-
-    /* Cinematic Image - Optimized height */
-    .v4-cineImage {
-        height: 250px;
-        /* Reduced from 300px */
-        border-radius: 12px;
-        margin-bottom: 1.5rem;
-        border: 1px solid rgba(59, 130, 246, 0.2);
-    }
-
-    .v4-cineOverlay {
-        border-radius: 12px;
-    }
-
-    .v4-cineContent {
-        padding: 0;
-        /* Remove padding as it's transparent/stacked */
-        background: transparent;
-    }
-
-    .v4-cineContent::before {
-        display: none;
-    }
-
-    .v4-cineTitle {
-        font-size: 1.75rem;
-        /* Refined for mobile */
-        line-height: 1.1;
-        word-break: break-word;
-        margin-bottom: 1.5rem;
-    }
-
-    .v4-cineDesc {
-        font-size: 0.9rem;
-        line-height: 1.6;
-        margin-bottom: 2rem;
-    }
-
-    .v4-megaLink {
-        font-size: 2.5rem;
-        /* Reduced for mobile elegance */
-        line-height: 1.1;
-    }
-
-    /* Terminal Widget - Already hidden above */
-
-    /* Footer Spacing */
-    footer {
-        padding: 3rem 0 1rem !important;
-    }
-
-    /* Footer Social Icons - Touch Optimized */
-    .v4-footerIcon {
-        width: 48px !important;
-        height: 48px !important;
-        font-size: 1.5rem !important;
-    }
-
-    /* Hide some HUD elements on really small screens if needed */
-    .v4-hudCorner {
-        transform: scale(0.8);
-    }
-
-    /* Ensure Particles don't lag */
-    .v4-particleCanvas {
-        opacity: 0.3;
-        /* Reduce visibility for performance */
-    }
-
-    /* Project Hover Image disable on touch */
-    .project-hover-image {
-        display: none !important;
-    }
-
-    /* --- NEW STACK SECTION STYLES (MOBILE) --- */
+    /* Stack Row Layout */
     .v4-stackRow {
         flex-direction: column;
         align-items: flex-start;
-        gap: 1rem;
+        gap: 0.8rem;
+        padding: 1.5rem 0;
     }
 
     .v4-stackRowLabel {
         min-width: unset;
-        font-size: 1rem;
+        font-size: 0.9rem;
+        opacity: 0.5;
     }
 
-    /* --- PROJECT CAROUSEL STYLES (MOBILE) --- */
+    .v4-stackPills {
+        gap: 0.6rem;
+    }
+
+    .v4-stackPill {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    /* Project Carousel */
     .v4-carouselSection {
-        padding: 4rem 0;
+        padding: 3rem 0;
     }
 
     .v4-carouselTrack {
-        padding: 2rem 1rem;
         gap: 1.5rem;
+        padding: 2rem 5vw;
     }
 
     .v4-projectCardNew {
         flex: 0 0 calc(100vw - 3rem);
-        height: 340px;
-        padding: 1.25rem;
+        height: 300px;
+    }
+
+    .v4-cardFront, .v4-cardBack {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .v4-cardNumber {
+        font-size: 1.4rem;
+        margin: 1.5rem 0;
+    }
+
+    .v4-cardTitleNew {
+        font-size: 1.8rem;
+    }
+
+    .v4-cardDesc {
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
     }
 
     .v4-carouselNav {
-        padding: 0 1rem;
+        margin-top: 1rem;
         gap: 1rem;
-        margin-top: 1.5rem;
     }
 
     .v4-navArrow {
-        width: 42px;
-        height: 42px;
-        font-size: 1rem;
+        width: 40px;
+        height: 40px;
     }
 
-    .v4-carouselDot {
-        width: 8px;
-        height: 8px;
+    /* Footer */
+    .v4-megaLink {
+        font-size: 2.5rem;
+        letter-spacing: 1px;
     }
 
-    .v4-carouselDot.active {
-        width: 20px;
-    }
-
-    /* --- SYSTEM CORE (MOBILE) --- */
-    .v4-coreGrid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 0 1rem;
-    }
-
-    .v4-holoCard {
-        padding: 2rem;
+    .v4-footerIcon {
+        width: 45px;
+        height: 45px;
     }
 }
 

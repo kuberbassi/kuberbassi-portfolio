@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import styles from './styles/HeroSection.module.css';
@@ -7,7 +7,6 @@ import styles from './styles/HeroSection.module.css';
 const HeroSection = () => {
     const containerRef = useRef(null);
     const textRef = useRef(null);
-    const [soundOn, setSoundOn] = useState(true);
 
     useGSAP(() => {
         const textLayer = textRef.current;

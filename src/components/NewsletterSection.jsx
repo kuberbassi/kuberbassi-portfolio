@@ -1,24 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import styles from './styles/NewsletterSection.module.css';
 
 const NewsletterSection = () => {
-    const [email, setEmail] = useState('');
-    const [status, setStatus] = useState(''); // '', 'loading', 'success', 'error'
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setStatus('loading');
-
-        // TODO: Integrate with your email service (Mailchimp, ConvertKit, etc.)
-        // For now, just simulate success
-        setTimeout(() => {
-            setStatus('success');
-            setEmail('');
-            setTimeout(() => setStatus(''), 3000);
-        }, 1000);
-    };
-
     return (
         <section id="newsletter" className={styles.section}>
             <div className={styles.container}>

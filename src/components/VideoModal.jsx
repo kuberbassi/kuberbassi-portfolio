@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './styles/VideoModal.module.css';
 
 const VideoModal = ({ video, onClose, onNext, onPrev }) => {
-    const [mounted, setMounted] = useState(false);
-
     useEffect(() => {
-        setMounted(true);
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') onClose();
             if (e.key === 'ArrowLeft' && onPrev) onPrev();
@@ -18,13 +15,12 @@ const VideoModal = ({ video, onClose, onNext, onPrev }) => {
         document.body.style.overflow = 'hidden';
 
         return () => {
-            setMounted(false);
             window.removeEventListener('keydown', handleKeyDown);
             document.body.style.overflow = '';
         };
     }, [onClose, onNext, onPrev]);
 
-    if (!video || !mounted) return null;
+    if (!video) return null;
 
     const modalContent = (
         <AnimatePresence>
