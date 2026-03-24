@@ -329,7 +329,7 @@ const EnhancedFooter = () => (
         <div className="v4-container">
             <div style={{ textAlign: 'center', marginBottom: '3rem', position: 'relative', zIndex: 10 }}>
                 <p style={{ fontFamily: 'JetBrains Mono', color: '#00ff88', marginBottom: '0.5rem' }}>&lt; TRANSMISSION_OPEN /&gt;</p>
-                <a href="mailto:kuberbassi2007@gmail.com" className="v4-megaLink" style={{ whiteSpace: 'nowrap' }}>
+                <a href="mailto:me@kuberbassi.com" className="v4-megaLink" style={{ whiteSpace: 'nowrap' }}>
                     LET'S BUILD THE FUTURE
                 </a>
             </div>
@@ -346,7 +346,7 @@ const EnhancedFooter = () => (
                         <a href="https://github.com/kuberbassi" target="_blank" className="v4-footerIcon"><i className="fab fa-github"></i></a>
                         <a href="https://www.linkedin.com/in/kuberbassi/" target="_blank" className="v4-footerIcon"><i className="fab fa-linkedin"></i></a>
                         <a href="https://www.instagram.com/kuber.bassi/" target="_blank" className="v4-footerIcon"><i className="fab fa-instagram"></i></a>
-                        <a href="mailto:kuberbassi2007@gmail.com" className="v4-footerIcon"><i className="fas fa-envelope"></i></a>
+                        <a href="mailto:me@kuberbassi.com" className="v4-footerIcon"><i className="fas fa-envelope"></i></a>
                     </div>
                 </div>
                 <div>
@@ -423,7 +423,7 @@ const TerminalWidget = () => {
             </div>
             <div className="v4-termLine">
                 <span className="v4-termPrompt">info:</span>
-                <span>Contact: kuberbassi2007@gmail.com</span>
+                <span>Contact: me@kuberbassi.com</span>
             </div>
             <div className="v4-termLine">
                 <span className="v4-termPrompt">system:</span>

@@ -6,7 +6,7 @@ const ContactSection = () => {
         <section id="contact" className={styles.section} data-section-theme="dark">
             <div className={styles.content}>
                 <h2 className={styles.headline}>LET'S CREATE.</h2>
-                <a href="mailto:kuberbassi2007@gmail.com" className={styles.link}>GET IN TOUCH</a>
+                <a href="mailto:me@kuberbassi.com" className={styles.link}>GET IN TOUCH</a>
             </div>
             <div className={styles.bottom}>
                 <div className={styles.socials}>

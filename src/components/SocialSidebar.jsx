@@ -10,7 +10,7 @@ const SocialSidebar = () => {
                 <a href="https://www.youtube.com/channel/UCcw12FyihnsK7TEHFBVHApw" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="YouTube"><i className="fab fa-youtube"></i></a>
                 <a href="https://www.instagram.com/kuberbassi.music/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="Instagram"><i className="fab fa-instagram"></i></a>
                 <a href="https://www.facebook.com/kuberbassi.music/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="Facebook"><i className="fab fa-facebook"></i></a>
-                <a href="mailto:kuberbassi2007@gmail.com" className={styles.socialIcon} aria-label="Email"><i className="fas fa-envelope"></i></a>
+                <a href="mailto:me@kuberbassi.com" className={styles.socialIcon} aria-label="Email"><i className="fas fa-envelope"></i></a>
             </aside>
 
             {/* Liquid Audio Bar - Bottom Left (Mirrors Sound Toggle) */}

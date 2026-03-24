@@ -41,7 +41,7 @@ const NewsletterSection = () => {
                     <a href="https://www.facebook.com/kuberbassi.music/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon} aria-label="Facebook">
                         <i className="fab fa-facebook"></i>
                     </a>
-                    <a href="mailto:kuberbassi2007@gmail.com" className={styles.socialIcon} aria-label="Email">
+                    <a href="mailto:me@kuberbassi.com" className={styles.socialIcon} aria-label="Email">
                         <i className="fas fa-envelope"></i>
                     </a>
                 </motion.div>
