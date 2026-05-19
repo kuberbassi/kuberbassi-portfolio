@@ -1997,3 +1997,298 @@ body {
     letter-spacing: 1px;
     text-transform: uppercase;
 }
+
+.v4-cyber-hand-container { display: none; }
+.v4-cyber-hand { display: none; }
+
+/* --- 3D LAPTOP INTRO --- */
+.v4-laptop-container {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: #030303;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1200px; /* Reduced perspective for smaller model */
+    overflow: hidden;
+}
+
+.v4-laptop {
+    position: relative;
+    width: 500px;
+    height: 320px;
+    margin-top: 200px; /* Pushed lower */
+    transform-style: preserve-3d;
+    /* NO CSS rotateX here — GSAP owns this transform to avoid glitch */
+}.v4-laptop-base {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, #1a1a1a 0%, #111 100%); /* Matte minimal finish */
+    border-radius: 0; /* Sharp corners */
+    transform-style: preserve-3d;
+    border: 1px solid #222; /* Soft edge highlight */
+    box-shadow: 
+        inset 0 1px 2px rgba(255,255,255,0.05), /* Subtler top bevel highlight */
+        inset -1px -1px 2px rgba(0,0,0,0.5), /* Softer inner shadow */
+        0 0 0 1px #050505, 
+        0 20px 40px rgba(0,0,0,0.8), /* Matte grounded shadow */
+        0 40px 80px rgba(0,0,0,0.6), /* Softer ambient occlusion */
+        0 60px 120px -20px rgba(0, 255, 136, 0.05); /* Softer floor bounce light */
+}
+
+/* Base front lip */
+.v4-laptop-base::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 4px;
+    right: 4px;
+    height: 3px;
+    background: #080808;
+    border-radius: 0; /* Sharp lip */
+}
+
+/* Volumetric Godray Spill on Base */
+.v4-screen-glow-spill {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at top center, rgba(0, 255, 136, 0.4) 0%, rgba(0, 255, 136, 0.1) 40%, transparent 80%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10; /* Above keyboard and power button */
+    mix-blend-mode: color-dodge; /* Real light blend for godray look */
+    filter: blur(15px); /* Soft volumetric quality */
+}
+
+/* Zenbook Style Keyboard Well */
+.v4-laptop-keyboard {
+    position: absolute;
+    inset: 35px 25px 110px 25px; /* Increased bottom inset for taller trackpad */
+    background: transparent; /* Unibody design, blends with chassis */
+    border-radius: 0; /* Sharp well */
+    box-shadow: 
+        inset 0 2px 8px rgba(0,0,0,0.6), /* Subtle recess for unibody look */
+        inset 0 0 0 1px rgba(0,0,0,0.8), 
+        0 1px 0 rgba(255,255,255,0.05); /* Crisp bottom edge highlight */
+    display: flex;
+    flex-direction: column;
+    padding: 8px; /* Increased padding makes keys smaller */
+    gap: 4px; /* Increased gap makes keys smaller */
+    transition: box-shadow 0.4s ease; /* For glow animation */
+}
+
+.v4-keyboard-row {
+    display: flex;
+    gap: 4px; /* Increased gap makes keys smaller */
+    flex: 1;
+}
+
+/* Flat, Premium Keys with Text Labels */
+.v4-laptop-key {
+    background: #181818; /* Flat matte keycap */
+    border-radius: 0; /* Sharp keys */
+    border: none;
+    border-top: 1px solid #252525; /* Soft key edge highlight */
+    border-bottom: 1px solid #050505; /* Soft key shadow */
+    box-shadow: 0 1px 1px rgba(0,0,0,0.5);
+    position: relative;
+    transition: all 0.2s ease;
+    
+    /* Text styling */
+    color: rgba(255, 255, 255, 0.7); /* White backlight */
+    font-size: 6px;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.4); /* Backlight bleed */
+    
+    height: 100%; /* Important to fill row! */
+}
+
+.v4-laptop-key.active {
+    background: rgba(0,255,136,0.15);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 0 8px rgba(0,255,136,0.5);
+    border-top: 1px solid rgba(0,255,136,0.4);
+    color: #00ff88;
+    text-shadow: 0 0 5px #00ff88;
+}
+
+/* Minimalist Glassy Trackpad */
+.v4-laptop-trackpad {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 240px; /* Wider */
+    height: 85px; /* Increased height */
+    background: #111; /* Flat matte trackpad */
+    border-radius: 0; /* Sharp trackpad */
+    border: 1px solid #1a1a1a;
+    box-shadow: 
+        inset 0 1px 3px rgba(0,0,0,0.6), /* Softer recess */
+        0 1px 0 rgba(255,255,255,0.03); /* Crisp but subtle bottom edge */
+}
+
+/* Sleek Mechanical Power Button */
+.v4-power-btn-container {
+    position: absolute;
+    top: 8px; /* Above keyboard */
+    right: 25px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1a1a1a 0%, #050505 100%);
+    border: 1px solid #2a2a2a;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateZ(2px); /* Slight raise */
+}
+
+.v4-power-btn-icon {
+    font-size: 10px;
+    color: #444; /* Off state */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.v4-power-btn-ring {
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+}
+
+/* The Lid */
+.v4-laptop-lid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform-origin: top center;
+    transform: rotateX(0deg); /* Starts closed */
+    z-index: 2;
+    will-change: transform;
+}
+
+.v4-laptop-lid-cover {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, #1c1c1c 0%, #111 100%); /* Matte minimal outer shell */
+    border-radius: 0; /* Sharp lid */
+    border: 1px solid #222;
+    box-shadow: 
+        inset 0 1px 2px rgba(255,255,255,0.05), /* Subtle edge highlight */
+        0 -5px 15px rgba(0,0,0,0.5); /* Softer shadow cast by lid */
+    transform: translateZ(4px); /* Increased Z to fully cover power button when closed */
+    backface-visibility: hidden;
+}
+
+.v4-laptop-screen-container {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    border-radius: 0; /* Sharp screen container */
+    /* Thick premium bezels */
+    border: 8px solid #0a0a0a;  /* Matte bezel instead of #020202 */
+    border-bottom-width: 18px; /* Chin */
+    box-shadow: 
+        inset 0 0 0 1px #111, 
+        0 0 0 1px #111,
+        0 -2px 10px rgba(0,0,0,0.5); /* Softer inner ambient shadow */
+    transform: rotateX(180deg) translateZ(4px); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    overflow: hidden; /* For screen reflections */
+}
+
+/* Glass reflection over the screen */
+.v4-laptop-screen-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 40%, rgba(0,0,0,0.4) 100%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.v4-laptop-screen {
+    position: absolute;
+    inset: 8px; /* Extremely thin bezels */
+    background: #020202;
+    border-radius: 0; /* Sharp inner screen */
+    overflow: hidden;
+    box-shadow: inset 0 0 30px rgba(0,0,0,1); /* Deep screen vignette */
+    opacity: 0; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.v4-screen-flash {
+    position: absolute;
+    inset: 0;
+    background: #00ff88;
+    opacity: 0;
+    z-index: 100;
+}
+
+/* Solid Glowing Gear Loader */
+.v4-loading-gear {
+    position: relative;
+    width: 70px; /* Scaled down */
+    height: 70px;
+    border: 2px solid #00ff88;
+    border-radius: 50%;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    animation: gearSpin 2s linear infinite;
+    box-shadow: 0 0 15px rgba(0,255,136,0.3), inset 0 0 15px rgba(0,255,136,0.3);
+}
+
+.v4-loading-gear::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 2px solid rgba(0,255,136,0.6);
+    border-radius: 50%;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    animation: gearSpin 1.5s linear infinite reverse;
+}
+
+.v4-loading-gear::after {
+    content: '';
+    position: absolute;
+    inset: 18px;
+    background: rgba(0,255,136,0.3);
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(0,255,136,0.8);
+}
+
+@keyframes gearSpin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+@media (max-width: 900px) {
+    .v4-laptop {
+        transform: scale(0.8) rotateX(60deg);
+    }
+}
+
+@media (max-width: 500px) {
+    .v4-laptop {
+        transform: scale(0.6) rotateX(60deg);
+    }
+}
+

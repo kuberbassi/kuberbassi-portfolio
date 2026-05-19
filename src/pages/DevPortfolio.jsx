@@ -596,201 +596,116 @@ const ScrollProgress = () => {
     return <div className="v4-scrollProgress" style={{ width: `${progress}%` }}></div>;
 };
 
+const keyboardLayout = [
+    ['Esc', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'PrtSc', 'Del'],
+    ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace'],
+    ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\'],
+    ['Caps', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', "'", 'Enter'],
+    ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'Shift'],
+    ['Ctrl', 'Fn', 'Win', 'Alt', 'Space', 'Alt', 'Fn', 'Ctrl', '◁', '↕', '▷']
+];
+
+const getFlexBasis = (key) => {
+    if (key === 'Space') return 6;
+    if (key === 'Shift') return 2.2;
+    if (key === 'Enter') return 1.8;
+    if (key === 'Caps') return 1.5;
+    if (key === 'Tab') return 1.3;
+    if (key === 'Backspace') return 1.5;
+    if (key === '\\') return 1.2;
+    return 1;
+};
+
 const BiosLoader = ({ onComplete }) => {
     const containerRef = useRef(null);
-    const [lines, setLines] = useState([]);
-    const [phase, setPhase] = useState(0);
-
-    const bootLines = useMemo(() => [
-        '> BIOS v4.2.1 ... OK',
-        '> Memory check .......... 32GB',
-        '> GPU: RTX Pipeline online',
-        '> Loading kernel modules',
-        '> Mounting /dev/portfolio',
-        '> Establishing secure tunnel',
-        '> AUTH: fingerprint verified',
-        '> SYSTEM READY'
-    ], []);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
+            // CRITICAL FIX: GSAP must own all transforms from frame 1.
+            gsap.set('.v4-laptop', { rotationX: 60, transformOrigin: 'center center' });
+
             const tl = gsap.timeline({ onComplete });
 
-            // P1: GRID + SCANLINE ACTIVATION
-            tl.to('.bl-grid', { opacity: 0.15, duration: 0.4, ease: 'power2.in' })
-                .to('.bl-scanline', { opacity: 1, duration: 0.2 }, 0);
-
-            // P2: TERMINAL TYPE
-            tl.call(() => setPhase(1), [], 0.3);
-            bootLines.forEach((_, i) => {
-                tl.call(() => setLines(prev => [...prev, bootLines[i]]), [], 0.3 + i * 0.18);
-            });
-
-            // P3: WIREFRAME GEOMETRY
-            tl.call(() => setPhase(2), [], 1.2)
-                .from('.bl-hex', { scale: 0, rotation: -180, opacity: 0, duration: 1.0, ease: 'expo.out' }, 1.2)
-                .from('.bl-hex-inner', { scale: 0, rotation: 180, opacity: 0, duration: 0.8, ease: 'back.out(2)' }, 1.5)
-                .from('.bl-orbit', { scale: 0, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, 1.6)
-
-                // P4: NAME SLAM
-                .call(() => setPhase(3), [], 2.2)
-                .fromTo('.bl-name', {
-                    scale: 3, opacity: 0, letterSpacing: '40px', filter: 'blur(20px)'
-                }, {
-                    scale: 1, opacity: 1, letterSpacing: '12px', filter: 'blur(0px)',
-                    duration: 0.6, ease: 'expo.out'
-                }, 2.2)
-                .to('.bl-name', { x: -8, skewX: -10, duration: 0.05 }, 2.8)
-                .to('.bl-name', { x: 6, skewX: 8, duration: 0.05 }, 2.85)
-                .to('.bl-name', { x: 0, skewX: 0, duration: 0.05 }, 2.9)
-
-                // P5: SUBTITLE
-                .fromTo('.bl-sub', {
-                    opacity: 0, y: 10, letterSpacing: '15px'
-                }, {
-                    opacity: 0.6, y: 0, letterSpacing: '6px',
-                    duration: 0.4, ease: 'power2.out'
-                }, 2.95)
-
-                // P6: IRIS WIPE EXIT
-                .to('.bl-terminal', { opacity: 0, y: -20, duration: 0.3 }, 3.2)
-                .to('.bl-geo', { scale: 0.5, opacity: 0, rotation: 90, duration: 0.4 }, 3.2)
-                .to(containerRef.current, {
-                    clipPath: 'circle(0% at 50% 50%)',
-                    duration: 0.6, ease: 'power3.inOut'
-                }, 3.4);
+            // 1. Laptop Enters
+            tl.from('.v4-laptop', { y: -200, opacity: 0, duration: 1.0, ease: 'power3.out' })
+              // 2. Lid opens
+              .to('.v4-laptop-lid', { rotationX: 115, duration: 1.2, ease: 'power3.inOut' }, '+=0.0')
+              
+              // 3. Power Button Click
+              .to('.v4-power-btn-container', { z: -2, scale: 0.95, duration: 0.1, yoyo: true, repeat: 1, ease: 'power1.inOut' }, '+=0.1')
+              // 4. Power Button Lights up
+              .to('.v4-power-btn-icon', { color: '#00ff88', textShadow: '0 0 10px #00ff88', duration: 0.2 }, '-=0.1')
+              .to('.v4-power-btn-ring', { borderColor: '#00ff88', boxShadow: '0 0 10px #00ff88, inset 0 0 5px #00ff88', duration: 0.2 }, '<')
+              
+              // 5. Screen & Gear turn on
+              .addLabel('boot')
+              .to('.v4-laptop-screen', { opacity: 1, duration: 0.3 }, 'boot+=0.1')
+              
+              // 6. Screen flashes Full Green + emits glow
+              .to('.v4-screen-flash', { opacity: 1, duration: 0.4 }, 'boot+=1.7')
+              .to('.v4-laptop-screen', { boxShadow: '0 0 200px 80px rgba(0, 255, 136, 0.8)', duration: 0.4 }, '<')
+              
+              // Add volumetric ray-traced screen spill over keyboard
+              .to('.v4-screen-glow-spill', { opacity: 1, duration: 0.4 }, '<')
+              
+              // 7. Sleek Exit
+              .to('.v4-laptop', { scale: 0.9, y: 50, duration: 0.8, ease: 'power3.inOut' }, 'boot+=1.9')
+              .to('.v4-fade-overlay', { opacity: 1, duration: 0.6, ease: 'power2.inOut' }, '<0.1');
 
         }, containerRef);
         return () => ctx.revert();
-    }, [onComplete, bootLines]);
+    }, [onComplete]);
 
     return (
-        <div ref={containerRef} style={{
-            position: 'fixed', inset: 0, background: '#030303', zIndex: 9999,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            clipPath: 'circle(150% at 50% 50%)', overflow: 'hidden',
-            fontFamily: 'JetBrains Mono, monospace'
-        }}>
-            {/* BACKGROUND GRID */}
-            <div className="bl-grid" style={{
-                position: 'absolute', inset: 0, opacity: 0,
-                backgroundImage: `linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px)`,
-                backgroundSize: '60px 60px'
-            }} />
-
-            {/* SCANLINE */}
-            <div className="bl-scanline" style={{
-                position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
-                background: 'linear-gradient(90deg, transparent, #00ff88, transparent)',
-                opacity: 0, boxShadow: '0 0 30px #00ff88, 0 0 60px #00ff88',
-                animation: phase >= 1 ? 'blScanDown 2s linear infinite' : 'none'
-            }} />
-
-            {/* TERMINAL BLOCK */}
-            <div className="bl-terminal" style={{
-                position: 'absolute', top: '8%', left: '6%',
-                display: 'flex', flexDirection: 'column', gap: '2px', maxWidth: '500px'
-            }}>
-                {lines.map((line, i) => (
-                    <div key={i} style={{
-                        fontSize: '0.72rem',
-                        color: i === lines.length - 1 ? '#00ff88' : 'rgba(0,255,136,0.4)',
-                        letterSpacing: '1px', lineHeight: 1.8,
-                        borderLeft: i === lines.length - 1 ? '2px solid #00ff88' : 'none',
-                        paddingLeft: i === lines.length - 1 ? '8px' : '0'
-                    }}>
-                        {line}
+        <div ref={containerRef} className="v4-laptop-container">
+            {/* Dedicated fade overlay to prevent 3D flattening glitch */}
+            <div className="v4-fade-overlay" style={{ position: 'absolute', inset: 0, backgroundColor: '#050505', opacity: 0, zIndex: 50, pointerEvents: 'none' }}></div>
+            
+            {/* 3D Laptop */}
+            <div className="v4-laptop">
+                {/* Base & Keyboard */}
+                <div className="v4-laptop-base">
+                    <div className="v4-laptop-keyboard">
+                        {keyboardLayout.map((row, rIdx) => (
+                            <div key={rIdx} className="v4-keyboard-row">
+                                {row.map((keyLabel, cIdx) => (
+                                    <div 
+                                        key={cIdx} 
+                                        className="v4-laptop-key" 
+                                        style={{ flex: getFlexBasis(keyLabel) }}
+                                    >
+                                        {keyLabel}
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
                     </div>
-                ))}
-                {phase >= 1 && phase < 3 && (
-                    <span style={{ display: 'inline-block', width: '8px', height: '16px', background: '#00ff88', animation: 'blBlink 0.8s step-end infinite' }} />
-                )}
+                    <div className="v4-laptop-trackpad"></div>
+                    
+                    {/* Sleek Power Button */}
+                    <div className="v4-power-btn-container">
+                        <div className="v4-power-btn-ring"></div>
+                        <div className="v4-power-btn-icon">⏻</div>
+                    </div>
+                    
+                    {/* Volumetric Godray Spill */}
+                    <div className="v4-screen-glow-spill"></div>
+                </div>
+
+                {/* Lid & Screen */}
+                <div className="v4-laptop-lid">
+                    <div className="v4-laptop-lid-cover"></div>
+                    
+                    <div className="v4-laptop-screen-container">
+                        <div className="v4-laptop-screen">
+                            {/* Loading Gear */}
+                            <div className="v4-loading-gear"></div>
+                            {/* Flash Overlay */}
+                            <div className="v4-screen-flash"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            {/* CENTER GEOMETRY */}
-            <div className="bl-geo" style={{ position: 'relative', width: '280px', height: '280px' }}>
-                <div className="bl-hex" style={{
-                    position: 'absolute', inset: 0,
-                    border: '1.5px solid rgba(0,255,136,0.4)', borderRadius: '50%',
-                    animation: phase >= 2 ? 'blSpin 8s linear infinite' : 'none'
-                }} />
-                <div className="bl-hex-inner" style={{
-                    position: 'absolute', inset: '30px',
-                    border: '1px solid rgba(0,255,136,0.25)', borderRadius: '50%',
-                    animation: phase >= 2 ? 'blSpin 6s linear infinite reverse' : 'none'
-                }} />
-                {[0, 60, 120, 180, 240, 300].map((deg, i) => (
-                    <div key={`orbit-${i}`} className="bl-orbit" style={{
-                        position: 'absolute', width: '6px', height: '6px',
-                        background: '#00ff88', borderRadius: '50%',
-                        top: '50%', left: '50%',
-                        transform: `rotate(${deg}deg) translateX(140px) translateY(-50%)`,
-                        boxShadow: '0 0 12px #00ff88'
-                    }} />
-                ))}
-                <div style={{ position: 'absolute', top: '50%', left: '50%', width: '20px', height: '1px', background: 'rgba(0,255,136,0.5)', transform: 'translate(-50%, -50%)' }} />
-                <div style={{ position: 'absolute', top: '50%', left: '50%', width: '1px', height: '20px', background: 'rgba(0,255,136,0.5)', transform: 'translate(-50%, -50%)' }} />
-            </div>
-
-            {/* NAME + SUBTITLE */}
-            <div style={{
-                position: 'absolute', bottom: '22%', textAlign: 'center',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.8rem'
-            }}>
-                <h1 className="bl-name" style={{
-                    fontFamily: 'Anton, sans-serif',
-                    fontSize: 'clamp(2.5rem, 8vw, 5.5rem)',
-                    color: '#fff', textTransform: 'uppercase',
-                    opacity: 0, letterSpacing: '12px', lineHeight: 1,
-                    textShadow: '0 0 40px rgba(0,255,136,0.4), 0 0 80px rgba(0,255,136,0.15)',
-                    margin: 0
-                }}>KUBER BASSI</h1>
-                <span className="bl-sub" style={{
-                    fontSize: '0.85rem', color: '#00ff88',
-                    letterSpacing: '6px', textTransform: 'uppercase',
-                    opacity: 0, fontWeight: 300
-                }}>SYSTEM ARCHITECT</span>
-            </div>
-
-            {/* Bottom status */}
-            <div className="bl-status" style={{
-                position: 'absolute', bottom: '4%', left: 0, right: 0,
-                display: 'flex', justifyContent: 'center', gap: '3rem',
-                fontSize: '0.6rem', color: 'rgba(0,255,136,0.3)', letterSpacing: '2px'
-            }}>
-                <span>SEC://TLS-1.3</span>
-                <span>NODE://DELHI</span>
-                <span>BUILD://V4.2</span>
-            </div>
-
-            <style>{`
-                @keyframes blScanDown { 0% { top: -3px; } 100% { top: 100%; } }
-                @keyframes blBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-                @keyframes blSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-                @media (max-width: 768px) {
-                    .bl-terminal { 
-                        top: 5% !important; 
-                        left: 5% !important; 
-                        max-width: 80% !important; 
-                    }
-                    .bl-geo { 
-                        transform: scale(0.75); 
-                    }
-                    .bl-name { 
-                        font-size: clamp(1.8rem, 10vw, 3.5rem) !important; 
-                        letter-spacing: 6px !important; 
-                    }
-                    .bl-sub { 
-                        font-size: 0.7rem !important; 
-                        letter-spacing: 3px !important; 
-                    }
-                    .bl-status {
-                        gap: 1.5rem !important;
-                        font-size: 0.5rem !important;
-                    }
-                }
-            `}</style>
         </div>
     );
 };
@@ -848,12 +763,24 @@ const DevPortfolio = () => {
         const ctx = gsap.context(() => {
             gsap.config({ force3D: true });
 
-            // 1. HERO ENTRANCE
             const tl = gsap.timeline({
                 onComplete: () => ScrollTrigger.refresh()
             });
-            tl.from('.v4-monolithText', { y: 150, opacity: 0, duration: 2.5, ease: "elastic.out(1, 0.4)", stagger: 0.12 })
-                .from('.v4-cube', { scale: 0, rotation: 720, opacity: 0, duration: 3, ease: "back.out(1.4)" }, "-=2");
+
+            // 1. FLUID PAGE ENTRANCE (Music Site Style)
+            gsap.set('.v4-container', { opacity: 0, scale: 1.05, filter: 'blur(10px)', willChange: 'transform, opacity, filter' });
+            
+            tl.to('.v4-container', { 
+                opacity: 1, 
+                scale: 1, 
+                filter: 'blur(0px)', 
+                duration: 1.2, 
+                ease: "power2.out",
+                onComplete: () => gsap.set('.v4-container', { clearProps: 'willChange' })
+            })
+            // 2. HERO ENTRANCE
+            .from('.v4-monolithText', { y: 150, opacity: 0, duration: 2.0, ease: "elastic.out(1, 0.4)", stagger: 0.12 }, "-=0.8")
+            .from('.v4-cube', { scale: 0, rotation: 720, opacity: 0, duration: 2.5, ease: "back.out(1.4)" }, "-=1.5");
 
             // 2. MAGNETIC TEXT EFFECT
             const handleMouseMove = (e) => {
