@@ -1,7 +1,7 @@
 export const identity = {
   name: 'Kuber Bassi',
   handle: 'kuberbassi',
-  role: 'Developer + Musician + Designer + Systems Thinker',
+  role: 'Software Architect & Music Producer',
   location: 'New Delhi, India',
   email: 'me@kuberbassi.com',
   availability: 'Available for systems, products, experiments, and creative collaborations.',

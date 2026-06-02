@@ -1391,9 +1391,9 @@ export default function ModernPortfolio({ initialMode = 'synthesis' }) {
     >
       <div className="mp-cursorGlow" ref={glowRef} />
       <SEO
-        title="Kuber Bassi - Developer + Musician + Designer + Systems Thinker"
-        description="An arcane cinematic portfolio for Kuber Bassi, developer, musician, designer, and systems thinker."
-        keywords="Kuber Bassi, developer, musician, designer, systems thinker, automation, AI, React, portfolio"
+        title="Kuber Bassi | Software Architect & Music Producer"
+        description="Portfolio of Kuber Bassi, a Software Architect & Music Producer crafting high-performance full-stack applications, automation systems, and original instrumentals."
+        keywords="Kuber Bassi, Software Architect, Software Engineer, Music Producer, Full-Stack Developer, Systems Engineering, UI/UX Designer, React, Node, Web Development"
         ogType="website"
         url="https://kuberbassi.com/"
       />
