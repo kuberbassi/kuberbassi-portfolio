@@ -1,0 +1,616 @@
+/* --- KINETIC SPLIT LANDING PAGE — APEX EDITION --- */
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@300;400;700&display=swap');
+
+:root {
+    --color-dev: #00ff88;
+    --color-artist: #ff0033;
+    --color-accent: #8b5cf6;
+    --split-angle: 15deg;
+}
+
+/* ============================================================
+   BASE CONTAINER
+   ============================================================ */
+.landing-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+    visibility: visible !important;
+}
+
+/* ============================================================
+   AURORA CANVAS BACKGROUND LAYER
+   ============================================================ */
+.landing-aurora-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+/* ============================================================
+   SPLIT PANELS
+   ============================================================ */
+.split-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 65%;
+    height: 100%;
+    overflow: hidden;
+    will-change: width, transform;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: filter 0.4s ease;
+}
+
+/* Developer (Left) */
+.panel-dev {
+    left: 0;
+    background: #040404;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+    z-index: 10;
+}
+
+/* Artist (Right) */
+.panel-artist {
+    right: 0;
+    background: #060606;
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+    z-index: 10;
+}
+
+/* Panel dark glass overlay for depth */
+.split-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.panel-dev::before {
+    background: radial-gradient(ellipse at 30% 50%,
+        rgba(0, 255, 136, 0.06) 0%,
+        transparent 65%);
+}
+
+.panel-artist::before {
+    background: radial-gradient(ellipse at 70% 50%,
+        rgba(255, 0, 51, 0.06) 0%,
+        transparent 65%);
+}
+
+/* ============================================================
+   BACKGROUND GFX LAYERS
+   ============================================================ */
+.panel-bg-gfx {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Dev: Scrolling perspective grid */
+.dev-gfx {
+    background:
+        linear-gradient(90deg, rgba(0, 255, 136, 0.08) 1px, transparent 1px),
+        linear-gradient(rgba(0, 255, 136, 0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transform: perspective(600px) rotateX(55deg) translateY(-20%);
+    transform-origin: center top;
+    opacity: 0.5;
+    animation: grid-scroll 1.5s linear infinite;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 80%, transparent 100%);
+}
+
+/* Artist: Pulsing radial waveform rings */
+.artist-gfx {
+    background: none;
+    overflow: hidden;
+}
+
+.artist-gfx::before,
+.artist-gfx::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 0, 51, 0.15);
+    transform: translate(-50%, -50%);
+    animation: ring-pulse 3s ease-in-out infinite;
+}
+.artist-gfx::before {
+    width: 60vw; height: 60vw;
+    animation-delay: 0s;
+}
+.artist-gfx::after {
+    width: 85vw; height: 85vw;
+    animation-delay: 1.5s;
+}
+
+@keyframes ring-pulse {
+    0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+    50% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes grid-scroll {
+    0%   { background-position: 0 0; }
+    100% { background-position: 0 40px; }
+}
+
+/* ============================================================
+   NEON SPLIT-LINE  (where the two panels meet)
+   ============================================================ */
+.landing-split-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 3px;
+    height: 100%;
+    z-index: 30;
+    pointer-events: none;
+    transform: translateX(-50%) skewX(-8deg);
+    background: linear-gradient(to bottom,
+        transparent 0%,
+        rgba(255, 255, 255, 0.02) 10%,
+        rgba(255, 255, 255, 0.8) 40%,
+        rgba(255, 255, 255, 1) 50%,
+        rgba(255, 255, 255, 0.8) 60%,
+        rgba(255, 255, 255, 0.02) 90%,
+        transparent 100%);
+    box-shadow:
+        0 0 8px 2px rgba(255, 255, 255, 0.6),
+        0 0 30px 8px rgba(200, 200, 255, 0.2),
+        0 0 60px 15px rgba(180, 100, 255, 0.1);
+    animation: split-line-breathe 4s ease-in-out infinite;
+}
+
+.landing-split-line::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 20px 8px rgba(255, 255, 255, 0.8),
+                0 0 50px 20px rgba(180, 100, 255, 0.4);
+    animation: split-orb-pulse 2s ease-in-out infinite;
+}
+
+@keyframes split-line-breathe {
+    0%, 100% { opacity: 0.6; filter: blur(0px); }
+    50%       { opacity: 1.0; filter: blur(0.5px); }
+}
+
+@keyframes split-orb-pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+    50%       { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+}
+
+/* ============================================================
+   CONTENT & TYPOGRAPHY
+   ============================================================ */
+.panel-content {
+    position: relative;
+    z-index: 20;
+    text-align: center;
+    pointer-events: none;
+    transition: transform 0.4s ease-out;
+}
+
+.landing-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 9vw;
+    line-height: 0.88;
+    color: #fff;
+    text-transform: uppercase;
+    position: relative;
+    display: block;
+    mix-blend-mode: exclusion;
+    transition: transform 0.3s ease, letter-spacing 0.4s ease, color 0.3s ease;
+    letter-spacing: -0.02em;
+}
+
+.landing-title-dev {
+    text-shadow:
+        0 0 40px rgba(0, 255, 136, 0),
+        0 2px 0 rgba(0, 0, 0, 0.5);
+    transition: text-shadow 0.5s ease, color 0.5s ease, letter-spacing 0.4s ease;
+}
+
+.landing-title-artist {
+    text-shadow:
+        0 0 40px rgba(255, 0, 51, 0),
+        0 2px 0 rgba(0, 0, 0, 0.5);
+    transition: text-shadow 0.5s ease, color 0.5s ease, letter-spacing 0.4s ease;
+}
+
+.landing-subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.3em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 1.2rem;
+    display: block;
+    text-transform: uppercase;
+    transition: opacity 0.4s ease, color 0.4s ease, letter-spacing 0.4s ease;
+}
+
+/* ============================================================
+   VERSION BADGE
+   ============================================================ */
+.landing-version-badge {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+    pointer-events: none;
+    white-space: nowrap;
+    animation: badge-fade-in 2s ease 2s both;
+}
+
+@keyframes badge-fade-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ============================================================
+   RIPPLE SHOCKWAVE (JS-injected element)
+   ============================================================ */
+.landing-ripple {
+    position: fixed;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple-expand 0.8s ease-out forwards;
+}
+
+@keyframes ripple-expand {
+    0%   { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(8); opacity: 0; }
+}
+
+/* ============================================================
+   CHROMATIC ABERRATION EXIT OVERLAY (JS-toggled class)
+   ============================================================ */
+.landing-container.is-exiting::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(255, 255, 255, 0);
+    animation: chroma-flash 0.5s ease forwards;
+    pointer-events: none;
+}
+
+@keyframes chroma-flash {
+    0%   { background: rgba(255, 255, 255, 0); }
+    30%  { background: rgba(255, 255, 255, 0.15); }
+    60%  { background: rgba(0, 255, 136, 0.05); }
+    100% { background: rgba(0, 0, 0, 1); }
+}
+
+/* Chromatic aberration glitch on panel titles during exit */
+.landing-container.is-exiting .landing-title {
+    animation: title-chroma 0.4s ease forwards;
+}
+
+@keyframes title-chroma {
+    0%  { text-shadow: none; }
+    25% { text-shadow: -4px 0 rgba(255, 0, 51, 0.7), 4px 0 rgba(0, 255, 136, 0.7); }
+    50% { text-shadow: 6px 0 rgba(255, 0, 51, 0.5), -6px 0 rgba(0, 100, 255, 0.5); }
+    75% { text-shadow: -3px 0 rgba(200, 0, 255, 0.4), 3px 0 rgba(0, 255, 200, 0.4); }
+    100%{ text-shadow: 0 0 30px rgba(255,255,255,0.8); }
+}
+
+/* ============================================================
+   HOVER STATES — Desktop
+   ============================================================ */
+@media (hover: hover) {
+    .landing-container.hover-dev .panel-dev {
+        width: 78%;
+        clip-path: polygon(0 0, 100% 0, 93% 100%, 0 100%);
+    }
+    .landing-container.hover-dev .panel-artist {
+        width: 34%;
+        clip-path: polygon(28% 0, 100% 0, 100% 100%, 0 100%);
+    }
+    .landing-container.hover-dev .panel-dev .landing-title {
+        color: var(--color-dev);
+        text-shadow: 0 0 60px rgba(0, 255, 136, 0.5), 0 0 120px rgba(0, 255, 136, 0.2);
+        letter-spacing: 0.05em;
+        transform: scale(1.08);
+    }
+    .landing-container.hover-dev .panel-dev .landing-subtitle {
+        color: rgba(0, 255, 136, 0.8);
+        letter-spacing: 0.4em;
+    }
+
+    .landing-container.hover-artist .panel-artist {
+        width: 78%;
+        clip-path: polygon(7% 0, 100% 0, 100% 100%, 0 100%);
+    }
+    .landing-container.hover-artist .panel-dev {
+        width: 34%;
+        clip-path: polygon(0 0, 72% 0, 100% 100%, 0 100%);
+    }
+    .landing-container.hover-artist .panel-artist .landing-title {
+        color: var(--color-artist);
+        text-shadow: 0 0 60px rgba(255, 0, 51, 0.5), 0 0 120px rgba(255, 0, 51, 0.2);
+        letter-spacing: 0.05em;
+        transform: scale(1.08);
+    }
+    .landing-container.hover-artist .panel-artist .landing-subtitle {
+        color: rgba(255, 0, 51, 0.8);
+        letter-spacing: 0.4em;
+    }
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+@media (max-width: 768px) {
+    .panel-dev {
+        position: absolute;
+        width: 100%;
+        height: 53%;
+        left: 0;
+        top: 0;
+        clip-path: polygon(0 0, 100% 0, 100% 87%, 0 100%);
+    }
+    .panel-artist {
+        position: absolute;
+        width: 100%;
+        height: 53%;
+        left: 0;
+        bottom: 0;
+        top: auto;
+        right: auto;
+        clip-path: polygon(0 13%, 100% 0, 100% 100%, 0 100%);
+    }
+    .landing-title {
+        font-size: 14vw;
+    }
+    .landing-split-line {
+        display: none;
+    }
+    .landing-version-badge {
+        font-size: 0.55rem;
+    }
+}
+
+
+.landing-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+    visibility: visible !important;
+    /* Override global main hidden */
+}
+
+/* The Panels */
+.split-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 65%;
+    /* Overlap slightly */
+    height: 100%;
+    overflow: hidden;
+    will-change: width, transform;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* --- BACKGROUND GFX --- */
+.panel-bg-gfx {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+.dev-gfx {
+    background:
+        linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+        linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transform: perspective(500px) rotateX(60deg);
+    animation: grid-scroll 2s linear infinite;
+}
+
+.artist-gfx {
+    background: radial-gradient(circle at center, #ff0033 0%, transparent 70%);
+    filter: blur(40px);
+    opacity: 0.4;
+    animation: pulse-bass 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes grid-scroll {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 0 40px;
+    }
+}
+
+@keyframes pulse-bass {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: scale(1.2);
+        opacity: 0.5;
+    }
+}
+
+/* Developer (Left) */
+.panel-dev {
+    left: 0;
+    background: #050505;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+    /* Diagonal Cut */
+    z-index: 10;
+}
+
+/* Artist (Right) */
+.panel-artist {
+    right: 0;
+    background: #080808;
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+    /* Diagonal Cut */
+    z-index: 10;
+}
+
+/* Content Wrapper to "Un-Skew" or maintain center */
+.panel-content {
+    position: relative;
+    z-index: 20;
+    text-align: center;
+    pointer-events: none;
+    /* Let the panel handle hover */
+    transition: transform 0.4s ease-out;
+}
+
+/* Typography */
+.landing-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 8vw;
+    line-height: 0.9;
+    color: #fff;
+    text-transform: uppercase;
+    position: relative;
+    display: block;
+    mix-blend-mode: exclusion;
+    transition: transform 0.3s ease, letter-spacing 0.3s ease;
+}
+
+/* Subtext */
+.landing-subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 1rem;
+    opacity: 0.8;
+    display: block;
+}
+
+/* --- BACKGROUND FX --- */
+.bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.2;
+    /* Subtle */
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+
+/* --- INTERACTION STATES (Desktop) --- */
+@media (hover: hover) {
+
+    /* Hover Developer -> Expands Left */
+    .landing-container.hover-dev .panel-dev {
+        width: 80%;
+        clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+        /* Less angled */
+    }
+
+    .landing-container.hover-dev .panel-artist {
+        width: 30%;
+        clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
+        /* More angled/squeezed */
+    }
+
+    /* Hover Artist -> Expands Right */
+    .landing-container.hover-artist .panel-artist {
+        width: 80%;
+        clip-path: polygon(5% 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .landing-container.hover-artist .panel-dev {
+        width: 30%;
+        clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+    }
+
+    /* Text Effects */
+    .hover-dev .panel-dev .landing-title {
+        color: var(--color-dev);
+        transform: scale(1.1);
+        letter-spacing: 0.05em;
+    }
+
+    .hover-artist .panel-artist .landing-title {
+        color: var(--color-artist);
+        transform: scale(1.1);
+        letter-spacing: 0.05em;
+    }
+}
+
+/* --- MOBILE --- */
+@media (max-width: 768px) {
+    .panel-dev {
+        position: absolute;
+        width: 100%;
+        height: 55%;
+        left: 0;
+        top: 0;
+        clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    }
+
+    .panel-artist {
+        position: absolute;
+        width: 100%;
+        height: 55%;
+        left: 0;
+        bottom: 0;
+        top: auto;
+        right: auto;
+        clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .landing-title {
+        font-size: 15vw;
+    }
+}

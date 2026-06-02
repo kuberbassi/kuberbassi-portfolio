@@ -1,0 +1,31 @@
+.marqueeContainer {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: transparent;
+    padding: 1rem 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.marqueeTrack {
+    display: flex;
+    white-space: nowrap;
+    will-change: transform;
+}
+
+.marqueeItem {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: clamp(3rem, 4vw, 6rem);
+    color: rgba(255, 255, 255, 0.03);
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+    margin-right: 4rem;
+    text-transform: uppercase;
+}
+
+.filled {
+    color: rgba(255, 0, 51, 0.8);
+    /* Accent color */
+    -webkit-text-stroke: 0;
+}

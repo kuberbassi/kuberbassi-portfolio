@@ -1,0 +1,224 @@
+.section {
+    width: 100%;
+    min-height: 80vh;
+    padding: 6rem 5vw;
+    /* Transparent for global particles */
+    background: transparent;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+/* Removed local background glow */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.content {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 4rem;
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.textContent {
+    text-align: center;
+}
+
+.title {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(3rem, 10vw, 8rem);
+    line-height: 0.85;
+    text-transform: uppercase;
+    color: #f2f2f2;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Apply stroke to the "WITH ME" part */
+.accent {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(242, 242, 242, 0.3);
+    font-size: 0.5em;
+    letter-spacing: 0.1em;
+    margin-top: -0.2em;
+    font-weight: 400;
+}
+
+.description {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #c4c4c4;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.inputWrapper {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+.input {
+    flex: 1;
+    padding: 1.2rem 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    color: #f2f2f2;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.input::placeholder {
+    color: #666;
+}
+
+.input:focus {
+    border-color: #ff3333;
+    background: rgba(255, 51, 51, 0.05);
+}
+
+.input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.button {
+    padding: 1.2rem 2.5rem;
+    background: linear-gradient(135deg, #ff3333, #ff1a1a);
+    border: none;
+    border-radius: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(255, 51, 51, 0.3);
+    transition: all 0.3s ease;
+    min-width: 160px;
+}
+
+.button:hover:not(:disabled) {
+    box-shadow: 0 15px 40px rgba(255, 51, 51, 0.5);
+}
+
+.button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.successMessage {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    color: #4ade80;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.socialLinks {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.socialIcon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #f2f2f2;
+    transition: all 0.3s ease;
+}
+
+.socialIcon:hover {
+    background: rgba(255, 51, 51, 0.1);
+    border-color: #ff3333;
+    color: #ff3333;
+    transform: translateY(-5px);
+}
+
+.footer {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #666;
+    letter-spacing: 0.05em;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .section {
+        padding: 5rem 4vw;
+        min-height: 70vh;
+    }
+
+    .content {
+        padding: 2.5rem 2rem;
+        gap: 2rem;
+    }
+
+    .title {
+        font-size: clamp(2rem, 8vw, 3rem);
+    }
+
+    .description {
+        font-size: 1rem;
+    }
+
+    .inputWrapper {
+        flex-direction: column;
+    }
+
+    .button {
+        width: 100%;
+    }
+
+    .socialLinks {
+        gap: 1.5rem;
+    }
+
+    .socialIcon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+}

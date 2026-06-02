@@ -1,0 +1,241 @@
+.hero {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    background-color: transparent;
+    color: #F2F2F2;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.canvasWrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    /* Behind content but above background */
+    opacity: 0.8;
+    /* Subtle visibility */
+}
+
+/* Grain Overlay */
+.grain {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 15;
+    /* Push behind text (z-20) for clarity */
+    mix-blend-mode: overlay;
+}
+
+/* Central Composition */
+.centerStage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.imageLayer {
+    position: absolute;
+    bottom: -10%;
+    /* Lower the image slightly */
+    height: 95%;
+    /* Make image larger */
+    z-index: 5;
+    /* Behind text */
+    pointer-events: none;
+    filter: grayscale(100%) contrast(120%) brightness(0.9);
+    display: flex;
+    justify-content: center;
+    mix-blend-mode: luminosity;
+    opacity: 0.9;
+}
+
+.imageLayer img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    mask-image: linear-gradient(to top, black 50%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);
+}
+
+.textLayer {
+    position: relative;
+    z-index: 20;
+    width: 100%;
+    text-align: center;
+    mix-blend-mode: normal;
+    will-change: transform;
+}
+
+.slogan {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(4rem, 13vw, 14rem);
+    /* Massive */
+    line-height: 0.82;
+    text-transform: uppercase;
+    color: #dfdfdf;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    letter-spacing: -0.02em;
+}
+
+.smallLabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    color: #ff3333;
+    margin-bottom: 1rem;
+    display: block;
+    font-weight: 700;
+}
+
+.sloganLine {
+    display: block;
+    position: relative;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Accent Color */
+.accent {
+    color: #ff3333;
+    /* Deep Orange/Red */
+}
+
+/* Interaction */
+.interactiveText {
+    cursor: pointer;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+    position: relative;
+    display: inline-block;
+}
+
+.interactiveText:hover {
+    color: #fff;
+    text-shadow:
+        0 0 20px rgba(255, 51, 51, 0.6),
+        3px 0 0 rgba(255, 51, 51, 0.8),
+        -3px 0 0 rgba(0, 255, 255, 0.8);
+    animation: glitch-text 0.3s infinite;
+}
+
+.accent.interactiveText:hover {
+    color: #ff3333;
+    text-shadow:
+        0 0 30px rgba(255, 51, 51, 0.8),
+        2px 0 0 #fff,
+        -2px 0 0 #fff;
+}
+
+@keyframes glitch-text {
+    0% {
+        transform: translate(0);
+    }
+
+    20% {
+        transform: translate(-2px, 2px);
+    }
+
+    40% {
+        transform: translate(-2px, -2px);
+    }
+
+    60% {
+        transform: translate(2px, 2px);
+    }
+
+    80% {
+        transform: translate(2px, -2px);
+    }
+
+    100% {
+        transform: translate(0);
+    }
+}
+
+/* Footer Info */
+.footerInfo {
+    position: absolute;
+    bottom: 2rem;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4rem;
+    /* Inside sidebars */
+    z-index: 20;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: #a3a3a3;
+}
+
+.footerCol h3 {
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+    font-size: 0.75rem;
+    /* Explicitly set size to match previous appearance if needed, though parent has it too */
+}
+
+.footerCol ul {
+    list-style: none;
+}
+
+.footerCol li {
+    margin-bottom: 0.2rem;
+    color: #F2F2F2;
+}
+
+/* Responsiveness */
+/* Tablet & Mobile Optimization */
+@media (max-width: 1024px) {
+    .grain {
+        opacity: 0.02;
+        /* Reduce noise on small screens for better clarity */
+    }
+}
+
+@media (max-width: 768px) {
+    .imageLayer {
+        height: 60%;
+        bottom: 5rem;
+    }
+
+    .slogan {
+        font-size: clamp(2.5rem, 10vw, 4rem);
+        padding: 0 1rem;
+        /* Add breathing room */
+    }
+
+    .footerInfo {
+        display: none;
+        /* Hide on mobile to clean up */
+    }
+
+    /* Ensure image doesn't block text readability if they overlap */
+    .imageLayer {
+        opacity: 0.8;
+    }
+}
+
+@media (max-width: 480px) {
+    .slogan {
+        font-size: clamp(2rem, 12vw, 3rem);
+    }
+
+    .smallLabel {
+        font-size: 0.6rem;
+        letter-spacing: 0.2em;
+    }
+}

@@ -1,0 +1,191 @@
+.section {
+    width: 100%;
+    min-height: 100vh;
+    padding: 6rem 5vw;
+    position: relative;
+    /* Transparent background to show particles */
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    position: relative;
+    z-index: 10;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.title {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(3rem, 10vw, 8rem);
+    line-height: 0.85;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.titleMain {
+    color: #f2f2f2;
+    letter-spacing: -0.02em;
+}
+
+.titleSub {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(242, 242, 242, 0.3);
+    font-size: 0.5em;
+    letter-spacing: 0.1em;
+    margin-top: -0.2em;
+    font-weight: 400;
+}
+
+/* Glassmorphism Container */
+.content {
+    background: rgba(10, 10, 10, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 4rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.artistName {
+    font-family: 'Anton', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1;
+    text-transform: uppercase;
+    color: #f2f2f2;
+    margin-bottom: 1rem;
+    letter-spacing: 0.02em;
+}
+
+.beta,
+.delta {
+    color: #ff3333;
+}
+
+.role {
+    font-family: 'JetBrains Mono', monospace;
+    color: #ff3333;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.bio {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #d1d1d1;
+    font-weight: 300;
+}
+
+.highlight {
+    color: #fff;
+    font-weight: 500;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.techCard {
+    padding: 1.5rem;
+    border-left: 2px solid rgba(255, 51, 51, 0.3);
+    background: linear-gradient(90deg, rgba(255, 51, 51, 0.03) 0%, transparent 100%);
+    transition: all 0.3s ease;
+}
+
+.techCard:hover {
+    border-left-color: #ff3333;
+    background: linear-gradient(90deg, rgba(255, 51, 51, 0.08) 0%, transparent 100%);
+}
+
+.cardLabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.8rem;
+    display: block;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: #f2f2f2;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.statList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.statItem {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: #c4c4c4;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.statIcon {
+    color: #ff3333;
+    font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+    .content {
+        grid-template-columns: 1fr;
+        padding: 2rem;
+        gap: 3rem;
+    }
+
+    .section {
+        padding: 4rem 1rem;
+    }
+
+    .techCard {
+        padding: 1rem;
+    }
+}

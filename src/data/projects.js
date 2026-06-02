@@ -1,14 +1,15 @@
 /**
- * SELF-MAINTAINING PROJECT CONFIG
- * ================================
- * Just add a new project with `github` + `link` URLs.
- * Everything else (title, description, tech, language, stats)
- * is auto-fetched from the GitHub API at runtime.
- *
- * Optional overrides: title, desc, img, projectId, version, stat, cardClass
+ * SELF-MAINTAINING PROJECT CONFIG (FULLY AUTOMATED)
+ * ==================================================
+ * Pulls all public repositories from GitHub at runtime.
+ * Automatically sorts featured repositories first, then by last updated.
  */
 
+import featuredConfig from './featured_projects.json';
+
 const CARD_COLORS = ['v4-card-teal', 'v4-card-blue', 'v4-card-red', 'v4-card-green', 'v4-card-red'];
+const GITHUB_USER = 'kuberbassi';
+const GITHUB_API = 'https://api.github.com';
 
 /**
  * Derives a display title from a GitHub repo name.
@@ -35,76 +36,193 @@ function generateProjectId(repoName, index) {
 }
 
 /**
- * Returns instant defaults for all projects (no API call needed).
- * Use this for the initial render while enrichProjects() loads.
+ * Returns initial projects (using localStorage cache if available, or fallback loading placeholders).
+ * This ensures instant rendering while the fresh API call loads.
  */
-export function getInitialProjects(minimalProjects) {
-    return minimalProjects.map((proj, i) => {
-        const repoName = proj.github.replace('https://github.com/', '').split('/').pop();
-        return {
-            title: proj.title || formatRepoName(repoName),
-            desc: proj.desc || 'Loading from GitHub...',
-            tech: proj.tech || [],
-            language: proj.language || 'JavaScript',
-            stars: 0,
-            img: proj.img || `/dev-portfolio/images/projects/${repoName}.png`,
-            link: proj.link || '',
-            github: proj.github,
-            projectId: proj.projectId || generateProjectId(repoName, i),
-            version: proj.version || 'LATEST',
-            stat: proj.stat || (proj.link ? 'LIVE' : 'DEV'),
-            cardClass: proj.cardClass || CARD_COLORS[i % CARD_COLORS.length],
-        };
-    });
+export function getInitialProjects() {
+    try {
+        const cached = localStorage.getItem('v5_github_cache');
+        if (cached) {
+            const { data } = JSON.parse(cached);
+            if (Array.isArray(data) && data.length > 0) {
+                return data;
+            }
+        }
+    } catch (e) {}
+
+    // Static fallback projects list in case of network/connection issues
+    return [
+        {
+            title: "Zenith",
+            desc: "Next-generation academic hub and resource collaboration platform.",
+            tech: ["Next.js", "React", "TailwindCSS"],
+            language: "JavaScript",
+            stars: 4,
+            img: "/assets/projects/zenith.png",
+            link: "https://zenith-edu.vercel.app",
+            github: "https://github.com/kuberbassi/zenith",
+            projectId: "ZNTH-101",
+            version: "main",
+            stat: "LIVE",
+            cardClass: CARD_COLORS[0]
+        },
+        {
+            title: "IndiaOnRoaming",
+            desc: "Travel and roaming connectivity platform providing data plans and eSIM integration for travelers.",
+            tech: ["Next.js", "Stripe", "PostgreSQL"],
+            language: "TypeScript",
+            stars: 2,
+            img: "/assets/projects/indiaonroaming.png",
+            link: "https://indiaonroaming.com",
+            github: "https://github.com/kuberbassi/indiaonroaming",
+            projectId: "ROAM-202",
+            version: "main",
+            stat: "LIVE",
+            cardClass: CARD_COLORS[1]
+        },
+        {
+            title: "YT Music Scrobbler",
+            desc: "Background service and web interface to track and scrobble YouTube Music listening history to Last.fm.",
+            tech: ["JavaScript", "Chrome Ext", "Last.fm API"],
+            language: "JavaScript",
+            stars: 6,
+            img: "/assets/projects/ytmusic-scrobbler.png",
+            link: "",
+            github: "https://github.com/kuberbassi/ytmusic-scrobbler",
+            projectId: "SCRO-303",
+            version: "main",
+            stat: "SOURCE",
+            cardClass: CARD_COLORS[2]
+        },
+        {
+            title: "Cosma Space",
+            desc: "Interactive space exploration and cosmology visualization platform.",
+            tech: ["Three.js", "React", "WebGL"],
+            language: "JavaScript",
+            stars: 10,
+            img: "/assets/projects/cosma-space.png",
+            link: "https://cosma-space.vercel.app",
+            github: "https://github.com/kuberbassi/cosma-space",
+            projectId: "CSMS-404",
+            version: "main",
+            stat: "LIVE",
+            cardClass: CARD_COLORS[3]
+        }
+    ];
+}
+
+async function fetchReposWithCache(username) {
+  const cacheKey = `gh_project_library_v3_${username}`;
+    const ttl = 3600000; // 1 hour TTL
+
+    try {
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            const { timestamp, data } = JSON.parse(cached);
+            if (Date.now() - timestamp < ttl) return data;
+        }
+    } catch (e) {}
+
+    const proxyUrl = `/api/github?endpoint=repos&username=${encodeURIComponent(username)}&limit=100`;
+    let response;
+
+    try {
+        response = await fetch(proxyUrl);
+    } catch (e) {}
+
+    const isJson = response && response.ok && response.headers.get('content-type')?.includes('application/json');
+
+    if (!isJson) {
+        const headers = {};
+        const token = import.meta.env.VITE_GITHUB_TOKEN;
+        if (token) {
+            headers['Authorization'] = `token ${token}`;
+        }
+        response = await fetch(`${GITHUB_API}/users/${username}/repos?sort=updated&direction=desc&per_page=100`, { headers });
+    }
+
+    if (!response.ok) {
+        try {
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) return JSON.parse(cached).data;
+        } catch (e) {}
+        throw new Error('Unable to fetch GitHub project library');
+    }
+
+    const data = await response.json();
+    try {
+        localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), data }));
+    } catch (e) {}
+
+    return data;
+}
+
+function projectFromRepo(repo, index, override = {}) {
+    const repoName = repo.name;
+    let homepage = repo.homepage && repo.homepage.startsWith('http') ? repo.homepage : '';
+
+    if (repoName === 'cosma-space') {
+        homepage = 'https://cosma-space.vercel.app';
+    }
+
+    return {
+        title: formatRepoName(repoName),
+        desc: repo.description || 'Documentation available in source repository.',
+        tech: repo.topics?.length ? repo.topics.slice(0, 4) : [repo.language || 'Repository'],
+        language: repo.language || 'Repository',
+        stars: repo.stargazers_count || 0,
+        img: `/assets/projects/${repoName}.png`,
+        link: homepage,
+        github: repo.html_url,
+        projectId: generateProjectId(repoName, index),
+        version: repo.default_branch || 'main',
+        stat: homepage ? 'LIVE' : 'SOURCE',
+        cardClass: CARD_COLORS[index % CARD_COLORS.length],
+        updatedAt: repo.updated_at,
+        ...stripUndefined(override),
+    };
 }
 
 /**
- * Enriches a minimal project config with data from the GitHub API.
- * Falls back gracefully if the API call fails.
+ * Enriches and builds the complete automated project list from the GitHub API.
  */
-export async function enrichProjects(minimalProjects) {
-    const enriched = await Promise.all(minimalProjects.map(async (proj, i) => {
-        const repoUrl = proj.github;
-        const repoBase = repoUrl.replace('https://github.com/', '');
-        const repoName = repoBase.split('/').pop();
+export async function enrichProjects() {
+    try {
+        const repos = await fetchReposWithCache(GITHUB_USER);
+        const featuredList = featuredConfig.featured_repos || [];
 
-        // Defaults (no API needed)
-        const defaults = {
-            title: formatRepoName(repoName),
-            desc: 'Project details loading...',
-            tech: [],
-            language: 'JavaScript',
-            stars: 0,
-            img: `/dev-portfolio/images/projects/${repoName}.png`,
-            link: proj.link || '',
-            github: proj.github,
-            projectId: generateProjectId(repoName, i),
-            version: 'LATEST',
-            stat: proj.link ? 'LIVE' : 'DEV',
-            cardClass: CARD_COLORS[i % CARD_COLORS.length],
-        };
+        const processedRepos = repos
+            .filter((repo) => !repo.fork && !repo.archived && repo.name !== GITHUB_USER)
+            .sort((a, b) => {
+                const aName = a.name.toLowerCase();
+                const bName = b.name.toLowerCase();
 
-        try {
-            const res = await fetch(`https://api.github.com/repos/${repoBase}`);
-            if (!res.ok) return { ...defaults, ...stripUndefined(proj) };
-            const data = await res.json();
+                const aFeatured = featuredList.includes(aName) || a.topics?.includes('featured') || a.topics?.includes('pinned');
+                const bFeatured = featuredList.includes(bName) || b.topics?.includes('featured') || b.topics?.includes('pinned');
 
-            return {
-                ...defaults,
-                title: formatRepoName(repoName),
-                desc: data.description || defaults.desc,
-                tech: data.topics?.length ? data.topics.slice(0, 4) : [data.language || 'System'],
-                language: data.language || defaults.language,
-                stars: data.stargazers_count || 0,
-                // Override with any user-specified values
-                ...stripUndefined(proj),
-            };
-        } catch {
-            return { ...defaults, ...stripUndefined(proj) };
-        }
-    }));
+                if (aFeatured && !bFeatured) return -1;
+                if (!aFeatured && bFeatured) return 1;
 
-    return enriched;
+                // If both are featured, maintain config file ordering
+                if (aFeatured && bFeatured) {
+                    const aIndex = featuredList.indexOf(aName);
+                    const bIndex = featuredList.indexOf(bName);
+                    if (aIndex !== -1 && bIndex !== -1) {
+                        return aIndex - bIndex;
+                    }
+                    if (aIndex !== -1) return -1;
+                    if (bIndex !== -1) return 1;
+                }
+
+                // Default sort: most recently updated first
+                return new Date(b.updated_at) - new Date(a.updated_at);
+            });
+
+        return processedRepos.map((repo, i) => projectFromRepo(repo, i));
+    } catch (e) {
+        console.error("Failed to fetch/enrich GitHub project archive:", e);
+        return getInitialProjects();
+    }
 }
 
 /** Removes undefined values so spread doesn't clobber defaults */
@@ -112,35 +230,5 @@ function stripUndefined(obj) {
     return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
 }
 
-/**
- * MINIMAL PROJECT LIST
- * ====================
- * To add a new project: just add { github, link }.
- * To override auto-derived fields: add title, desc, img, etc.
- */
-export const projects = [
-    {
-        github: "https://github.com/kuberbassi/adhikar-ai",
-        link: "https://adhikar.ai.kuberbassi.com/",
-    },
-    {
-        github: "https://github.com/kuberbassi/mcd-hrms",
-        link: "https://mcd-hrms.web.app",
-        title: "MCD HRMS",          // override: acronym formatting
-    },
-    {
-        github: "https://github.com/kuberbassi/acadhub",
-        link: "https://acadhub.kuberbassi.com",
-        title: "AcadHub",           // override: specific casing
-    },
-    {
-        github: "https://github.com/kuberbassi/indiaonroaming",
-        link: "https://indiaonroaming.com",
-        title: "IndiaOnRoaming",    // override: brand name
-    },
-    {
-        github: "https://github.com/kuberbassi/ytmusic-scrobbler",
-        link: "https://ytscrobbler.kuberbassi.com/",
-        title: "YT Music Scrobbler", // override: readable name
-    },
-];
+// Export a legacy/empty array to prevent breaking imports of "projects"
+export const projects = [];

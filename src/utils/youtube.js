@@ -4,6 +4,25 @@ const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
 
 export const fetchYouTubeVideos = async (channelId, apiKey, maxResults = 6) => {
     try {
+        // Try the serverless API first
+        const apiResponse = await fetch(
+            `/api/youtube?channelId=${encodeURIComponent(channelId)}&maxResults=${maxResults}`
+        );
+        if (apiResponse.ok) {
+            return await apiResponse.json();
+        }
+        console.warn('Serverless YouTube endpoint not available, falling back to client-side API...');
+    } catch (e) {
+        console.warn('Failed to call serverless YouTube endpoint, falling back to client-side API:', e);
+    }
+
+    // Fallback to client-side API (e.g. for local development without vercel dev)
+    try {
+        if (!apiKey) {
+            console.error('No YouTube API Key provided for fallback');
+            return null;
+        }
+
         // Check cache first
         const cached = getFromCache();
         if (cached) {
@@ -20,7 +39,9 @@ export const fetchYouTubeVideos = async (channelId, apiKey, maxResults = 6) => {
         }
 
         const searchData = await searchResponse.json();
-        const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+        const videoIds = searchData.items.map(item => item.id.videoId).filter(Boolean).join(',');
+
+        if (!videoIds) return [];
 
         // Step 2: Get detailed video info including statistics and contentDetails
         const detailsResponse = await fetch(
@@ -36,12 +57,8 @@ export const fetchYouTubeVideos = async (channelId, apiKey, maxResults = 6) => {
         // Step 3: Filter out promotional Shorts by title pattern
         const regularVideos = detailsData.items.filter(item => {
             const title = item.snippet.title.toLowerCase();
-
-            // Detect promotional Shorts: "Stream X on all major streaming platforms"
             const isPromotionalShort = title.includes('stream ') &&
                 title.includes('on all major streaming platforms');
-
-            // KEEP videos that are NOT promotional Shorts
             return !isPromotionalShort;
         });
 
@@ -65,7 +82,7 @@ export const fetchYouTubeVideos = async (channelId, apiKey, maxResults = 6) => {
 
         return videos;
     } catch (error) {
-        console.error('Error fetching YouTube videos:', error);
+        console.error('Error fetching YouTube videos client-side:', error);
         return null; // Will trigger fallback
     }
 };

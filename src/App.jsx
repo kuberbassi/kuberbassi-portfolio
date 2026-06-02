@@ -1,41 +1,69 @@
-import React, { Suspense, lazy } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import KineticLandingPage from './pages/KineticLandingPage'; // Updated V3 Kinetic Glass Landing
+import ModernPortfolio from './pages/ModernPortfolio';
+import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Lazy load heavy portfolios
-const MusicPortfolio = lazy(() => import('./pages/MusicPortfolio'));
-const DevPortfolio = lazy(() => import('./pages/DevPortfolio'));
+gsap.registerPlugin(ScrollTrigger);
 
 function App() {
-  const hostname = window.location.hostname;
-  // Check for subdomains
-  const isDevSubdomain = hostname.startsWith('dev.');
-  const isMusicSubdomain = hostname.startsWith('music.');
+  useEffect(() => {
+    // Initialize Lenis smooth scroll with premium configuration
+    const lenis = new Lenis({
+      duration: 1.4,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // sleek easeOutExpo curves
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      smoothTouch: false, // Keep native touch behavior on mobile for best latency
+    });
+
+    // Update ScrollTrigger on Lenis scroll updates
+    lenis.on('scroll', ScrollTrigger.update);
+
+    // Bind RAF loop through GSAP Ticker for perfect synchronization
+    const updateTicker = (time) => {
+      lenis.raf(time * 1000);
+    };
+    gsap.ticker.add(updateTicker);
+    gsap.ticker.lagSmoothing(0);
+
+    // Dynamic anchor interceptor to transition scrolls smoothly
+    const handleAnchorClick = (e) => {
+      const a = e.target.closest('a');
+      if (a) {
+        const href = a.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          const targetEl = document.querySelector(href);
+          if (targetEl) {
+            lenis.scrollTo(targetEl, { offset: -90, duration: 1.5 });
+          }
+        }
+      }
+    };
+
+    document.addEventListener('click', handleAnchorClick);
+    window.lenis = lenis; // Expose globally if other hooks need control
+
+    return () => {
+      lenis.destroy();
+      gsap.ticker.remove(updateTicker);
+      document.removeEventListener('click', handleAnchorClick);
+      delete window.lenis;
+    };
+  }, []);
 
   return (
     <Router>
-      <Suspense fallback={
-        <div style={{ height: '100vh', width: '100vw', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {/* Minimal Loading State */}
-        </div>
-      }>
-        <Routes>
-          {/* Subdomain Routing Rules */}
-          {isDevSubdomain && <Route path="*" element={<DevPortfolio />} />}
-          {isMusicSubdomain && <Route path="*" element={<MusicPortfolio />} />}
-
-          {/* Main Domain Routing (Fallback + Localhost Support) */}
-          {!isDevSubdomain && !isMusicSubdomain && (
-            <>
-              <Route path="/" element={<KineticLandingPage />} />
-              <Route path="/dev" element={<DevPortfolio />} />
-              <Route path="/music" element={<MusicPortfolio />} />
-            </>
-          )}
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route path="/" element={<ModernPortfolio initialMode="synthesis" />} />
+        <Route path="*" element={<ModernPortfolio initialMode="synthesis" />} />
+      </Routes>
     </Router>
   );
 }
 
 export default App;
+

@@ -1,0 +1,120 @@
+.card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    perspective: 1000px;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(255, 51, 51, 0.3);
+}
+
+.thumbnailWrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #0a0a0a;
+}
+
+.thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.playOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.playButton {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 51, 51, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 10px 30px rgba(255, 51, 51, 0.5);
+}
+
+.playButton i {
+    margin-left: 4px; /* Optical centering for play icon */
+}
+
+.content {
+    padding: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 0.75rem;
+    color: #f2f2f2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #a3a3a3;
+}
+
+.views {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.views i {
+    color: #ff3333;
+}
+
+.glow {
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(circle, rgba(255, 51, 51, 0.4), transparent 60%);
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(40px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .title {
+        font-size: 1rem;
+    }
+    
+    .playButton {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+}

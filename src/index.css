@@ -4,9 +4,9 @@
   --color-accent-dev: #00ff88;
   --color-accent-artist: #d32087;
   --color-muted: #aaa;
-  --font-heading: 'Playfair Display', serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'Roboto Mono', monospace;
+  --font-heading: 'Anton', sans-serif;
+  --font-body: 'JetBrains Mono', monospace;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
 * {
@@ -16,10 +16,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
   overflow-y: scroll;
-  /* Force scrollbar */
 }
 
 body {
@@ -27,16 +24,7 @@ body {
   background-color: var(--color-dark);
   color: var(--color-light);
   overflow-x: hidden;
-  /* Ensure snappy feel */
-  height: 100vh;
   width: 100%;
-}
-
-/* Snap individual sections */
-section {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  /* Force stop at each section */
 }
 
 a {
