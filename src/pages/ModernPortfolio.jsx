@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState, useCallback, useLayoutEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useMotionValueEvent, useScroll, useSpring, useTransform } from 'framer-motion';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment, Float, Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
@@ -10,7 +10,7 @@ import SpellText from '../components/SpellText';
 import { projects, enrichProjects, getInitialProjects } from '../data/projects';
 import { identity } from '../data/identity';
 import { musicChannels } from '../data/music';
-import { buildGitHubAnalytics, fetchFeaturedRepos, fetchGitHubProfile } from '../utils/githubProfile';
+import { fetchFeaturedRepos, fetchGitHubProfile } from '../utils/githubProfile';
 import audioSynth from '../utils/audioSynth';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -19,7 +19,7 @@ import '../styles/ModernPortfolio.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const musicArtifacts = [
+const _musicArtifacts = [
   '/music-portfolio/assets/images/album-art/ILLUMINATE.webp',
   '/music-portfolio/assets/images/album-art/RODEO.webp',
   '/music-portfolio/assets/images/album-art/HighwayBlues.webp',
@@ -55,7 +55,7 @@ function TelemetryMaterial({ color, speed, amplitude, wavelength }) {
     uColor: { value: new THREE.Color(color) },
     uAmplitude: { value: amplitude },
     uWavelength: { value: wavelength }
-  }), []);
+  }), [color, amplitude, wavelength]);
 
   useFrame((state) => {
     if (!materialRef.current) return;
@@ -148,7 +148,7 @@ function TelemetryWavefield({ viewMode }) {
     if (viewMode === 'dev') return '#00ffaa';
     if (viewMode === 'music') return '#ff3333';
     return '#9a84ff';
-  }, []);
+  }, [viewMode]);
 
   return (
     <points rotation={[-0.45, 0.15, 0.05]} position={[0, -0.4, -0.8]}>
@@ -174,7 +174,7 @@ function SynthesisCore({ viewMode }) {
   const innerRef = useRef(null);
   const outerRef = useRef(null);
 
-  useFrame((state, delta) => {
+  useFrame((state, _delta) => {
     const t = state.clock.elapsedTime;
     if (innerRef.current) {
       innerRef.current.rotation.x = t * 0.12;
@@ -751,7 +751,8 @@ function ResonanceTerminal({ soundOn }) {
           <div className="mp-monitorWaveform" aria-hidden="true">
             {Array.from({ length: 22 }).map((_, i) => {
               const delay = (i * 0.04).toFixed(2);
-              const duration = (0.5 + Math.random() * 0.6).toFixed(2);
+              const pseudoRandom = ((i * 9301 + 49297) % 233280) / 233280;
+              const duration = (0.5 + pseudoRandom * 0.6).toFixed(2);
               return (
                 <div 
                   key={i} 
@@ -1229,11 +1230,22 @@ function ArcaneBookCodex({ projectData, soundOn }) {
 }
 
 
-export default function ModernPortfolio({ initialMode = 'synthesis' }) {
+export default function ModernPortfolio({ initialMode = 'synthesis', isMobileOverridden = false, onResetMobile }) {
   const viewMode = initialMode;
   const [profile, setProfile] = useState(null);
   const [repos, setRepos] = useState([]);
   const [soundOn, setSoundOn] = useState(false);
+
+  const scrollToSection = (selector) => {
+    const target = document.querySelector(selector);
+    if (target) {
+      if (window.lenis) {
+        window.lenis.scrollTo(target, { offset: -90, duration: 1.5 });
+      } else {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
   const [projectData, setProjectData] = useState(() => {
     try {
       const cached = localStorage.getItem('v6_github_cache');
@@ -1241,7 +1253,9 @@ export default function ModernPortfolio({ initialMode = 'synthesis' }) {
         const { data } = JSON.parse(cached);
         if (Array.isArray(data) && data.length > 0) return data;
       }
-    } catch (e) {}
+    } catch {
+      // ignore
+    }
     return getInitialProjects();
   });
 
@@ -1311,9 +1325,9 @@ export default function ModernPortfolio({ initialMode = 'synthesis' }) {
   const gateFade = useTransform(scrollYProgress, [0, 0.3], [1, 0.36]);
   const glyphY = useTransform(scrollYProgress, [0, 1], [-90, 260]);
   const glyphRotate = useTransform(scrollYProgress, [0, 1], [-8, 24]);
-  const sigilRotate = useTransform(scrollYProgress, [0, 1], [0, 110]);
-  const sigilScale = useTransform(scrollYProgress, [0, 0.28], [1, 1.18]);
-  const sigilY = useTransform(scrollYProgress, [0, 0.28], [0, -54]);
+  const _sigilRotate = useTransform(scrollYProgress, [0, 1], [0, 110]);
+  const _sigilScale = useTransform(scrollYProgress, [0, 0.28], [1, 1.18]);
+  const _sigilY = useTransform(scrollYProgress, [0, 0.28], [0, -54]);
 
   const glowRef = useRef(null);
 
@@ -1350,14 +1364,18 @@ export default function ModernPortfolio({ initialMode = 'synthesis' }) {
             setProjectData(data);
             return;
           }
-        } catch (e) {}
+        } catch {
+          // ignore
+        }
       }
 
       try {
         const enriched = await enrichProjects();
         setProjectData(enriched);
         localStorage.setItem(cacheKey, JSON.stringify({ data: enriched, timestamp: now }));
-      } catch (err) {}
+      } catch {
+        // ignore
+      }
     };
 
     fetchGitHubData();
@@ -1398,6 +1416,35 @@ export default function ModernPortfolio({ initialMode = 'synthesis' }) {
         url="https://kuberbassi.com/"
       />
       <CustomCursor />
+      {isMobileOverridden && (
+        <button 
+          onClick={onResetMobile}
+          className="mp-back-to-mobile-fab"
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            zIndex: 9999,
+            background: 'rgba(5, 4, 7, 0.85)',
+            border: '1px solid var(--color-accent-dev, #00ff88)',
+            color: 'var(--color-light, #fefefe)',
+            fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+            fontSize: '11px',
+            padding: '10px 16px',
+            borderRadius: '20px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 0 15px rgba(0, 255, 136, 0.25)',
+            backdropFilter: 'blur(8px)',
+            transition: 'all 0.3s ease',
+          }}
+        >
+          <i className="fa-solid fa-mobile-screen-button"></i>
+          <span>MOBILE PORTAL</span>
+        </button>
+      )}
       <motion.div className="mp-scrollProgress" style={{ scaleX: progress }} aria-hidden="true" />
       <ArcaneField y={glyphY} rotate={glyphRotate} />
       <SignalThreadNav activeSection={activeSection} />
@@ -1474,7 +1521,7 @@ export default function ModernPortfolio({ initialMode = 'synthesis' }) {
             mode="dev"
             title="Systems."
             text="Product engineering, AI-assisted tooling, and full-stack builds."
-            onClick={() => { document.querySelector('#archive')?.scrollIntoView({ behavior: 'smooth' }); audioSynth.triggerChime(329.63); }}
+            onClick={() => { scrollToSection('#archive'); audioSynth.triggerChime(329.63); }}
             image="/assets/systems_card_bg.png"
             meta={['Engineering', 'Automation', 'AI']}
             triggerSound={soundOn}
@@ -1483,7 +1530,7 @@ export default function ModernPortfolio({ initialMode = 'synthesis' }) {
             mode="music"
             title="Music."
             text="Guitar, releases, cinematic atmosphere, and catalogue."
-            onClick={() => { document.querySelector('#music-terminal')?.scrollIntoView({ behavior: 'smooth' }); audioSynth.triggerChime(493.88); }}
+            onClick={() => { scrollToSection('#music-terminal'); audioSynth.triggerChime(493.88); }}
             image="/assets/music_card_bg.png"
             meta={['Guitar', 'Releases', 'Streaming']}
             triggerSound={soundOn}

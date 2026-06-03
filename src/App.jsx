@@ -1,15 +1,56 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ModernPortfolio from './pages/ModernPortfolio';
+import MobileLinkBio from './pages/MobileLinkBio';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-function App() {
+function PortfolioWrapper() {
+  const [isMobile, setIsMobile] = useState(false);
+  const [overrideMobile, setOverrideMobile] = useState(() => {
+    try {
+      return sessionStorage.getItem('overrideMobile') === 'desktop';
+    } catch {
+      return false;
+    }
+  });
+
   useEffect(() => {
-    // Initialize Lenis smooth scroll with premium configuration
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const handleViewDesktop = () => {
+    try {
+      sessionStorage.setItem('overrideMobile', 'desktop');
+    } catch {
+      // ignore
+    }
+    setOverrideMobile(true);
+  };
+
+  const handleResetMobile = () => {
+    try {
+      sessionStorage.removeItem('overrideMobile');
+    } catch {
+      // ignore
+    }
+    setOverrideMobile(false);
+  };
+
+  const showMobilePortal = isMobile && !overrideMobile;
+
+  useEffect(() => {
+    if (showMobilePortal) return;
+
+    // Initialize Lenis smooth scroll with premium configuration only for desktop layout
     const lenis = new Lenis({
       duration: 1.4,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // sleek easeOutExpo curves
@@ -53,13 +94,27 @@ function App() {
       document.removeEventListener('click', handleAnchorClick);
       delete window.lenis;
     };
-  }, []);
+  }, [showMobilePortal]);
 
+  if (showMobilePortal) {
+    return <MobileLinkBio onViewDesktop={handleViewDesktop} />;
+  }
+
+  return (
+    <ModernPortfolio 
+      initialMode="synthesis" 
+      isMobileOverridden={isMobile && overrideMobile} 
+      onResetMobile={handleResetMobile} 
+    />
+  );
+}
+
+function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<ModernPortfolio initialMode="synthesis" />} />
-        <Route path="*" element={<ModernPortfolio initialMode="synthesis" />} />
+        <Route path="/" element={<PortfolioWrapper />} />
+        <Route path="*" element={<PortfolioWrapper />} />
       </Routes>
     </Router>
   );

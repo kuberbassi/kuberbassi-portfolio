@@ -32,6 +32,9 @@ Instead of separate interfaces, the entire portfolio is presented as a single, c
 - **Layout-Thrashing Prevention:** Layout-measuring calculations (`getBoundingClientRect`) are disabled on touch screen devices to prevent scroll stuttering.
 - **Responsive Custom Cursor:** Uses a canvas-based particle trail system that is automatically disabled on mobile/tablet devices to prevent DOM clutter and CPU overhead.
 - **Reduced Animation Overhead:** Heavy SVG background layouts are automatically hidden on smaller screens.
+- **Mobile View Rendering Fix:** Corrected typography CSS styling on the mobile portal page to resolve blurry text rendering on the name heading.
+- **Vite Chunk Splitting:** Added manual chunk allocation for major dependencies (`three.js`, `gsap`, `framer-motion`), improving caching efficiency.
+- **Vercel Asset Caching:** Configured `vercel.json` with `Cache-Control` immutable headers to speed up repeat loads of static assets.
 
 ---
 
