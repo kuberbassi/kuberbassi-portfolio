@@ -5,9 +5,9 @@ const SEO = ({
   description = "Portfolio of Kuber Bassi, a Software Architect & Music Producer crafting high-performance full-stack applications, automation systems, and original instrumentals.",
   keywords = "Kuber Bassi, Software Architect, Software Engineer, Music Producer, Full-Stack Developer, Systems Engineering, UI/UX, Web Dev, React, Node, Guitarist, Artist",
   ogType = "website",
-  ogImage = "https://kuberbassi.com/og-image.png",
+  ogImage = "https://www.kuberbassi.com/og-image.png",
   twitterCard = "summary_large_image",
-  url = "https://kuberbassi.com"
+  url = "https://www.kuberbassi.com"
 }) => {
   useEffect(() => {
     // Update Title
@@ -26,9 +26,9 @@ const SEO = ({
     };
 
     // Determine if this exact page should be indexed
-    // Only index when host is exactly 'kuberbassi.com' and path is root '/'
+    // Only index when host is either 'kuberbassi.com' or 'www.kuberbassi.com' and path is root '/'
     const isHomepage = window.location.pathname === '/' || window.location.pathname === '';
-    const isMainDomain = window.location.hostname === 'kuberbassi.com';
+    const isMainDomain = window.location.hostname === 'kuberbassi.com' || window.location.hostname === 'www.kuberbassi.com';
     const shouldIndex = isHomepage && isMainDomain;
     const robotsValue = shouldIndex ? 'index, follow' : 'noindex, nofollow';
 
@@ -58,7 +58,7 @@ const SEO = ({
       document.head.appendChild(canonical);
     }
     // Always keep canonical pointing to the main homepage to consolidate authority
-    canonical.setAttribute('href', 'https://kuberbassi.com/');
+    canonical.setAttribute('href', 'https://www.kuberbassi.com/');
 
   }, [title, description, keywords, ogType, ogImage, twitterCard, url]);
 
