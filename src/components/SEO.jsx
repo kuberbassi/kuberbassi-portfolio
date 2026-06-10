@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
 const SEO = ({
-  title = "KUBER BASSI | Guitarist & Producer",
-  description = "Rock guitarist, music producer & sound designer crafting high-energy instrumentals. Stream on Spotify, Apple Music & YouTube. Unique blend of technical mastery and creative expression.",
-  keywords = "Kuber Bassi, rock guitar, instrumental music, music producer, sound designer, guitarist, electric guitar, music production",
-  ogType = "profile",
+  title = "Kuber Bassi | Software Architect & Music Producer",
+  description = "Portfolio of Kuber Bassi, a Software Architect & Music Producer crafting high-performance full-stack applications, automation systems, and original instrumentals.",
+  keywords = "Kuber Bassi, Software Architect, Software Engineer, Music Producer, Full-Stack Developer, Systems Engineering, UI/UX, Web Dev, React, Node, Guitarist, Artist",
+  ogType = "website",
   ogImage = "https://kuberbassi.com/og-image.png",
   twitterCard = "summary_large_image",
   url = "https://kuberbassi.com"
@@ -25,11 +25,18 @@ const SEO = ({
       el.setAttribute('content', content);
     };
 
+    // Determine if this exact page should be indexed
+    // Only index when host is exactly 'kuberbassi.com' and path is root '/'
+    const isHomepage = window.location.pathname === '/' || window.location.pathname === '';
+    const isMainDomain = window.location.hostname === 'kuberbassi.com';
+    const shouldIndex = isHomepage && isMainDomain;
+    const robotsValue = shouldIndex ? 'index, follow' : 'noindex, nofollow';
+
     // Update Meta Tags
     updateMeta('name', 'description', description);
     updateMeta('name', 'keywords', keywords);
     updateMeta('name', 'author', 'Kuber Bassi');
-    updateMeta('name', 'robots', 'index, follow');
+    updateMeta('name', 'robots', robotsValue);
 
     updateMeta('property', 'og:type', ogType);
     updateMeta('property', 'og:url', url);
@@ -50,7 +57,8 @@ const SEO = ({
       canonical.setAttribute('rel', 'canonical');
       document.head.appendChild(canonical);
     }
-    canonical.setAttribute('href', url);
+    // Always keep canonical pointing to the main homepage to consolidate authority
+    canonical.setAttribute('href', 'https://kuberbassi.com/');
 
   }, [title, description, keywords, ogType, ogImage, twitterCard, url]);
 

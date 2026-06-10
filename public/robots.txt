@@ -1,4 +1,5 @@
 User-agent: *
-Allow: /
+Allow: /$
+Disallow: /
 
 Sitemap: https://kuberbassi.com/sitemap.xml

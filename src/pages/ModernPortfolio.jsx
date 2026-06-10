@@ -1411,7 +1411,7 @@ export default function ModernPortfolio({ initialMode = 'synthesis', isMobileOve
       <SEO
         title="Kuber Bassi | Software Architect & Music Producer"
         description="Portfolio of Kuber Bassi, a Software Architect & Music Producer crafting high-performance full-stack applications, automation systems, and original instrumentals."
-        keywords="Kuber Bassi, Software Architect, Software Engineer, Music Producer, Full-Stack Developer, Systems Engineering, UI/UX Designer, React, Node, Web Development"
+        keywords="Kuber Bassi, Software Architect, Software Engineer, Music Producer, Full-Stack Developer, Systems Engineering, UI/UX, Web Dev, React, Node, Guitarist, Artist"
         ogType="website"
         url="https://kuberbassi.com/"
       />

@@ -108,11 +108,11 @@ export default function MobileLinkBio({ onViewDesktop }) {
   return (
     <div className="ml-container">
       <SEO
-        title="Kuber Bassi | Portal"
-        description="Mobile Link-in-Bio portal for Kuber Bassi - Software Architect & Music Producer. Access GitHub repositories, music releases, and creative projects."
-        keywords="Kuber Bassi, mobile portfolio, link in bio, systems engineer, music producer, guitar, web developer"
-        ogType="profile"
-        url="https://kuberbassi.com"
+        title="Kuber Bassi | Software Architect & Music Producer"
+        description="Portfolio of Kuber Bassi, a Software Architect & Music Producer crafting high-performance full-stack applications, automation systems, and original instrumentals."
+        keywords="Kuber Bassi, Software Architect, Software Engineer, Music Producer, Full-Stack Developer, Systems Engineering, UI/UX, Web Dev, React, Node, Guitarist, Artist"
+        ogType="website"
+        url="https://kuberbassi.com/"
       />
 
       <div className="ml-grid-overlay" />
