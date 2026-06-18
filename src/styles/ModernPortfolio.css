@@ -603,34 +603,106 @@
   inset: 0;
   z-index: -2;
   opacity: 0.96;
-  filter: saturate(1.28) brightness(1.18);
+  will-change: transform, opacity;
 }
 
-.mp-magicCircuit {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 140vh;
-  height: 140vh;
-  min-width: 800px;
-  min-height: 800px;
-  transform: translate(-50%, -50%);
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.72;
-  mix-blend-mode: screen;
+.sigil-crystal {
+  transform-origin: center;
+  animation: sigilFloat 6s ease-in-out infinite;
   will-change: transform;
 }
 
-.circuit-svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+.sigil-glow-circle {
+  transform-origin: center;
+  animation: sigilPulse 4s ease-in-out infinite alternate;
+  will-change: transform;
 }
 
-.magma-core-pulse {
-  animation: magmaBreath 8s ease-in-out infinite alternate;
+.sigil-outer-ring {
   transform-origin: center;
+  animation: sigilSpin 45s linear infinite;
+  will-change: transform;
+}
+
+@keyframes sigilFloat {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(2.5deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes sigilPulse {
+  0% { transform: scale(0.92); opacity: 0.45; }
+  100% { transform: scale(1.1); opacity: 0.85; }
+}
+
+@keyframes sigilSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Tech Resonance Crest Styles */
+.mp-resonanceCrest {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(780px, 95vw);
+  height: min(780px, 95vw);
+  transform: translate(-50%, -50%);
+  z-index: -2;
+  pointer-events: none;
+  will-change: transform;
+  opacity: 0.92;
+  filter: drop-shadow(0 0 40px rgba(247, 234, 214, 0.06));
+  transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+.mp-resonanceCrest.is-paused * {
+  animation-play-state: paused !important;
+}
+
+.crest-glow {
+  animation: crestGlowPulse 4s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+.crest-mid-ring-cw {
+  animation: spinCw 60s linear infinite;
+  transform-origin: center;
+}
+
+.crest-inner-ring-ccw {
+  animation: spinCcw 40s linear infinite;
+  transform-origin: center;
+}
+
+.crest-waveform-rotate {
+  animation: spinCw 90s linear infinite;
+  transform-origin: center;
+}
+
+.crest-core-pulse {
+  animation: crestCorePulse 3s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+.crest-play-btn {
+  transform-origin: center;
+  animation: crestPlayPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes crestGlowPulse {
+  0% { opacity: 0.15; transform: scale(0.95); }
+  100% { opacity: 0.35; transform: scale(1.05); }
+}
+
+@keyframes crestCorePulse {
+  0% { opacity: 0.3; transform: scale(0.9); }
+  100% { opacity: 0.6; transform: scale(1.1); }
+}
+
+@keyframes crestPlayPulse {
+  0% { transform: scale(0.95); }
+  100% { transform: scale(1.05); }
 }
 
 .rotate-clockwise-slow {
@@ -677,21 +749,6 @@
   box-shadow: 0 0 8px #ffaa00;
   display: inline-block;
   animation: pulseBlink 1s ease-in-out infinite alternate;
-}
-
-@keyframes magmaBreath {
-  0% {
-    r: 150px;
-    opacity: 0.65;
-  }
-  50% {
-    r: 195px;
-    opacity: 0.95;
-  }
-  100% {
-    r: 160px;
-    opacity: 0.72;
-  }
 }
 
 @keyframes spinCw {
@@ -781,10 +838,9 @@
   pointer-events: none;
   border: 1px solid rgba(247, 234, 214, 0.04);
   background: 
+    radial-gradient(circle at 50% 50%, transparent 40%, #050407 85%),
     linear-gradient(90deg, rgba(247, 234, 214, 0.012) 1px, transparent 1px) center / 60px 60px repeat,
     linear-gradient(0deg, rgba(247, 234, 214, 0.012) 1px, transparent 1px) center / 60px 60px repeat;
-  mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 75%);
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 75%);
 }
 
 .hud-corner {
@@ -3266,6 +3322,10 @@
   margin: 25px 0;
 }
 
+.mp-monitorWaveform.is-paused .mp-waveBar {
+  animation-play-state: paused !important;
+}
+
 .mp-waveBar {
   flex: 1;
   max-width: 8px;
@@ -4716,10 +4776,37 @@ html.lenis {
   text-transform: uppercase;
 }
 
-/* === MOBILE OPTIMIZATIONS === */
+/* Disable heavy SVG animations to fix extreme lag */
 @media (max-width: 768px) {
-  /* Disable heavy SVG animations to fix extreme lag */
   .mp-magicCircuit {
     display: none !important;
   }
+}
+
+/* Pause SVG path keyframe rotations when Gate is offscreen */
+.mp-magicCircuit.is-paused,
+.mp-magicCircuit.is-paused * {
+  animation-play-state: paused !important;
+}
+
+/* Hardware accelerate hoverable elements to bypass paint cycles */
+.nav-link-pill,
+.nav-sound-btn,
+.mp-portalCard,
+.v4-stackPill,
+.book-text-btn,
+.mp-resonanceLink,
+.mp-archiveRow,
+.mp-manifestoGrid > article,
+.mp-manifestoGrid > div,
+.mp-contactRow {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* Lazy-render offscreen sections to free up CPU & GPU */
+.mp-footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
 }

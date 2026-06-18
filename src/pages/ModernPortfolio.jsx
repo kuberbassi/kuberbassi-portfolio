@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment, Float, Sparkles } from '@react-three/drei';
-import * as THREE from 'three';
+// Three.js and dynamic chunk imports removed in favor of lightweight SVG vector sigils
 import SEO from '../components/SEO';
 import CustomCursor from '../components/CustomCursor';
 import SpellText from '../components/SpellText';
@@ -18,6 +16,7 @@ import { useGSAP } from '@gsap/react';
 import '../styles/ModernPortfolio.css';
 
 gsap.registerPlugin(ScrollTrigger);
+
 
 const _musicArtifacts = [
   '/music-portfolio/assets/images/album-art/ILLUMINATE.webp',
@@ -40,257 +39,199 @@ const navItems = [
 const arcaneGlyphs = ['✦', '✧', '✶', '✵', '✷', '✸'];
 
 function handlePointerGlow(event) {
-  if (window.innerWidth <= 768) return; // Skip on mobile/tablets to prevent getBoundingClientRect layout thrashing during scrolls/touches
-  const rect = event.currentTarget.getBoundingClientRect();
-  event.currentTarget.style.setProperty('--mx', `${((event.clientX - rect.left) / rect.width) * 100}%`);
-  event.currentTarget.style.setProperty('--my', `${((event.clientY - rect.top) / rect.height) * 100}%`);
-}
-
-function TelemetryMaterial({ color, speed, amplitude, wavelength }) {
-  const materialRef = useRef(null);
-
-  const uniforms = useMemo(() => ({
-    uTime: { value: 0 },
-    uMouse: { value: new THREE.Vector2(0, 0) },
-    uColor: { value: new THREE.Color(color) },
-    uAmplitude: { value: amplitude },
-    uWavelength: { value: wavelength }
-  }), [color, amplitude, wavelength]);
-
-  useFrame((state) => {
-    if (!materialRef.current) return;
-    materialRef.current.uniforms.uTime.value = state.clock.elapsedTime * speed;
-    
-    const mx = (state.pointer.x * state.viewport.width) / 2;
-    const my = (state.pointer.y * state.viewport.height) / 2;
-    materialRef.current.uniforms.uMouse.value.set(mx, my);
-  });
-
-  useEffect(() => {
-    if (materialRef.current) {
-      materialRef.current.uniforms.uColor.value.set(color);
-      materialRef.current.uniforms.uAmplitude.value = amplitude;
-      materialRef.current.uniforms.uWavelength.value = wavelength;
-    }
-  }, [color, amplitude, wavelength]);
-
-  return (
-    <shaderMaterial
-      ref={materialRef}
-      uniforms={uniforms}
-      transparent
-      blending={THREE.AdditiveBlending}
-      vertexShader={`
-        uniform float uTime;
-        uniform vec2 uMouse;
-        uniform float uAmplitude;
-        uniform float uWavelength;
-        varying vec3 vPosition;
-        
-        void main() {
-          vPosition = position;
-          
-          float distFromCenter = length(position.xy);
-          float z = sin(distFromCenter * uWavelength - uTime) * uAmplitude;
-          
-          float distToMouse = length(position.xy - uMouse);
-          if (distToMouse < 2.0) {
-            float force = (2.0 - distToMouse) / 2.0;
-            z -= force * 0.4;
-          }
-          
-          vec3 newPosition = vec3(position.x, position.y, z);
-          vec4 mvPosition = modelViewMatrix * vec4(newPosition, 1.0);
-          gl_Position = projectionMatrix * mvPosition;
-          
-          gl_PointSize = 15.0 / -mvPosition.z;
-        }
-      `}
-      fragmentShader={`
-        uniform vec3 uColor;
-        void main() {
-          vec2 coord = gl_PointCoord - vec2(0.5);
-          if (length(coord) > 0.5) discard;
-          gl_FragColor = vec4(uColor, 0.6);
-        }
-      `}
-    />
-  );
-}
-
-function TelemetryWavefield({ viewMode }) {
-  const cols = 50;
-  const rows = 35;
-  const numPoints = cols * rows;
+  if (window.innerWidth <= 768) return;
+  const card = event.currentTarget;
   
-  const { positions } = useMemo(() => {
-    const pos = new Float32Array(numPoints * 3);
-    const spacingX = 0.22;
-    const spacingY = 0.22;
-    const startX = -((cols - 1) * spacingX) / 2;
-    const startY = -((rows - 1) * spacingY) / 2;
-    
-    for (let i = 0; i < numPoints; i++) {
-      const col = i % cols;
-      const row = Math.floor(i / cols);
-      pos[i * 3] = startX + col * spacingX;
-      pos[i * 3 + 1] = startY + row * spacingY;
-      pos[i * 3 + 2] = 0;
-    }
-    return { positions: pos };
-  }, [cols, rows, numPoints]);
-
-  const speed = viewMode === 'dev' ? 1.0 : viewMode === 'music' ? 2.2 : 1.6;
-  const amplitude = viewMode === 'dev' ? 0.15 : viewMode === 'music' ? 0.38 : 0.25;
-  const wavelength = viewMode === 'dev' ? 1.4 : viewMode === 'music' ? 0.8 : 1.1;
-
-  const pColor = useMemo(() => {
-    if (viewMode === 'dev') return '#00ffaa';
-    if (viewMode === 'music') return '#ff3333';
-    return '#9a84ff';
-  }, [viewMode]);
-
-  return (
-    <points rotation={[-0.45, 0.15, 0.05]} position={[0, -0.4, -0.8]}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={numPoints}
-          array={positions}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <TelemetryMaterial 
-        color={pColor}
-        speed={speed}
-        amplitude={amplitude}
-        wavelength={wavelength}
-      />
-    </points>
-  );
-}
-
-function SynthesisCore({ viewMode }) {
-  const innerRef = useRef(null);
-  const outerRef = useRef(null);
-
-  useFrame((state, _delta) => {
-    const t = state.clock.elapsedTime;
-    if (innerRef.current) {
-      innerRef.current.rotation.x = t * 0.12;
-      innerRef.current.rotation.y = t * 0.18;
-      innerRef.current.position.y = Math.sin(t * 0.8) * 0.12;
-    }
-    if (outerRef.current) {
-      outerRef.current.rotation.x = -t * 0.09;
-      outerRef.current.rotation.y = -t * 0.14;
-      outerRef.current.rotation.z = t * 0.05;
-      outerRef.current.position.y = Math.sin(t * 0.8) * 0.12;
-    }
-  });
-
-  const coreColor = useMemo(() => {
-    if (viewMode === 'dev') return '#00ffaa';
-    if (viewMode === 'music') return '#ff5533';
-    return '#f2cf85';
-  }, [viewMode]);
-
-  const innerColor = useMemo(() => {
-    if (viewMode === 'dev') return '#e6fff5';
-    if (viewMode === 'music') return '#fff0eb';
-    return '#fcf9f2';
-  }, [viewMode]);
-
-  return (
-    <group position={[0, 0.1, -0.6]}>
-      <pointLight intensity={12} distance={6} color={coreColor} />
-      
-      <Float floatIntensity={1.5} speed={1.2} rotationIntensity={0.5}>
-        <mesh ref={innerRef} scale={1.1}>
-          <dodecahedronGeometry args={[0.75, 0]} />
-          <meshPhysicalMaterial
-            transparent
-            transmission={0.88}
-            roughness={0.12}
-            ior={1.45}
-            thickness={1.1}
-            clearcoat={1.0}
-            clearcoatRoughness={0.08}
-            color={innerColor}
-            attenuationDistance={1.8}
-            attenuationColor={coreColor}
-          />
-        </mesh>
-
-        <mesh ref={outerRef} scale={1.24}>
-          <dodecahedronGeometry args={[0.75, 0]} />
-          <meshBasicMaterial
-            color={coreColor}
-            wireframe
-            transparent
-            opacity={0.32}
-            blending={THREE.AdditiveBlending}
-          />
-        </mesh>
-        
-        <group position={[0, 0, 0]}>
-          <mesh position={[-1.7, 0, 0]} scale={[0.1, 0.1, 0.1]}>
-            <ringGeometry args={[0.8, 1, 4]} />
-            <meshBasicMaterial color={coreColor} transparent opacity={0.3} wireframe />
-          </mesh>
-          <mesh position={[1.7, 0, 0]} scale={[0.1, 0.1, 0.1]}>
-            <ringGeometry args={[0.8, 1, 4]} />
-            <meshBasicMaterial color={coreColor} transparent opacity={0.3} wireframe />
-          </mesh>
-        </group>
-      </Float>
-    </group>
-  );
-}
-
-function PortalScene({ viewMode, active }) {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const p1Color = useMemo(() => {
-    if (viewMode === 'dev') return '#00ffaa';
-    if (viewMode === 'music') return '#ff3333';
-    return '#9a84ff';
-  }, [viewMode]);
-
-  const p2Color = useMemo(() => {
-    if (viewMode === 'dev') return '#00f2ff';
-    if (viewMode === 'music') return '#e8bd72';
-    return '#ffbf6e';
-  }, [viewMode]);
-
-  if (!active) {
-    return <div className="mp-worldCanvas" style={{ background: '#050407' }} aria-hidden="true" />;
+  if (!card._cachedRect) {
+    card._cachedRect = card.getBoundingClientRect();
+    const handleMouseLeave = () => {
+      card._cachedRect = null;
+      card.removeEventListener('mouseleave', handleMouseLeave);
+    };
+    card.addEventListener('mouseleave', handleMouseLeave, { passive: true });
   }
 
+  const rect = card._cachedRect;
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  card.style.setProperty('--mx', `${(x / rect.width) * 100}%`);
+  card.style.setProperty('--my', `${(y / rect.height) * 100}%`);
+}
+
+function ResonanceCrest({ viewMode, active = true }) {
+  const primaryColor = useMemo(() => {
+    if (viewMode === 'dev') return '#00ffaa';
+    if (viewMode === 'music') return '#ff3333';
+    return '#9a84ff';
+  }, [viewMode]);
+
+  const secondaryColor = useMemo(() => {
+    if (viewMode === 'dev') return '#00f2ff';
+    if (viewMode === 'music') return '#ffaa33';
+    return '#e8bd72';
+  }, [viewMode]);
+
+  const crestGlowColors = useMemo(() => {
+    if (viewMode === 'dev') {
+      return {
+        inner: '#00ffaa',
+        mid: '#00f2ff',
+        outer: '#0066ff'
+      };
+    }
+    if (viewMode === 'music') {
+      return {
+        inner: '#ff3333',
+        mid: '#ff8800',
+        outer: '#ff0055'
+      };
+    }
+    // Synthesis/Default
+    return {
+      inner: '#e8bd72', // Gold core
+      mid: '#9a84ff',   // Purple blend
+      outer: '#ff00aa'  // Pink bloom
+    };
+  }, [viewMode]);
+
+  const waveformPoints = useMemo(() => {
+    const points = [];
+    const center = 400;
+    const rBase = 150;
+    const numPoints = 80;
+    for (let i = 0; i <= numPoints; i++) {
+      const angle = (i / numPoints) * Math.PI * 2;
+      const wave = Math.sin(angle * 8) * 8 + Math.cos(angle * 16) * 4;
+      const r = rBase + wave;
+      const x = center + r * Math.cos(angle);
+      const y = center + r * Math.sin(angle);
+      points.push(`${x},${y}`);
+    }
+    return `M ${points.join(' L ')}`;
+  }, []);
+
   return (
-    <div className="mp-worldCanvas" aria-hidden="true">
-      <Canvas camera={{ position: [0, 0, 6.8], fov: 42 }} dpr={isMobile ? [1, 1] : [1, 1.25]} gl={{ antialias: false, powerPreference: "high-performance" }}>
-        <color attach="background" args={['#050407']} />
-        <fog attach="fog" args={['#050407', 7, 13]} />
-        <ambientLight intensity={0.9} />
-        <pointLight position={[-4, 3, 4]} intensity={18} color={p1Color} />
-        <pointLight position={[4, -3, 4]} intensity={16} color={p2Color} />
-        
-        {!isMobile && <TelemetryWavefield viewMode={viewMode} />}
-        
-        <SynthesisCore viewMode={viewMode} />
-        
-        <Sparkles count={isMobile ? 10 : 30} scale={[8, 4, 3]} size={1.0} speed={0.15} opacity={0.3} color={p2Color} />
-        <Sparkles count={isMobile ? 5 : 15} scale={[7, 3.5, 2.5]} size={0.6} speed={0.2} opacity={0.2} color={p1Color} />
-      </Canvas>
-    </div>
+    <svg 
+      viewBox="0 0 800 800" 
+      className={`mp-resonanceCrest ${active ? 'is-playing' : 'is-paused'}`} 
+      aria-hidden="true"
+    >
+      <defs>
+        <radialGradient id="crestGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={crestGlowColors.mid} stopOpacity="0.65" />
+          <stop offset="50%" stopColor={crestGlowColors.outer} stopOpacity="0.35" />
+          <stop offset="100%" stopColor={crestGlowColors.outer} stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="crestCoreGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={crestGlowColors.inner} stopOpacity="0.8" />
+          <stop offset="50%" stopColor={crestGlowColors.mid} stopOpacity="0.4" />
+          <stop offset="100%" stopColor={crestGlowColors.mid} stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="crestGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={primaryColor} />
+          <stop offset="50%" stopColor={secondaryColor} />
+          <stop offset="100%" stopColor={primaryColor} />
+        </linearGradient>
+      </defs>
+      
+      {/* Background Glows (Vibrant Color Blooms) */}
+      <circle cx="400" cy="400" r="380" fill="url(#crestGlow)" className="crest-glow" />
+      <circle cx="400" cy="400" r="240" fill="url(#crestCoreGlow)" className="crest-core-pulse" />
+      
+      {/* Outer Rotating Dotted Circle (Representing digital resonance / tech track) */}
+      <circle 
+        cx="400" 
+        cy="400" 
+        r="340" 
+        stroke="url(#crestGradient)" 
+        strokeWidth="1" 
+        fill="none" 
+        opacity="0.25" 
+        strokeDasharray="4 8"
+        className="crest-mid-ring-cw"
+      />
+
+      {/* Outer Solid Ring with DAW Timeline Ticks */}
+      <g className="crest-mid-ring-cw">
+        <circle 
+          cx="400" 
+          cy="400" 
+          r="320" 
+          stroke="url(#crestGradient)" 
+          strokeWidth="1.2" 
+          fill="none" 
+          opacity="0.3" 
+        />
+        {Array.from({ length: 36 }).map((_, i) => {
+          const angle = (i * 10 * Math.PI) / 180;
+          const len = i % 3 === 0 ? 12 : 6;
+          const rStart = 320;
+          const rEnd = 320 - len;
+          const x1 = 400 + rStart * Math.cos(angle);
+          const y1 = 400 + rStart * Math.sin(angle);
+          const x2 = 400 + rEnd * Math.cos(angle);
+          const y2 = 400 + rEnd * Math.sin(angle);
+          return (
+            <line 
+              key={`tick-${i}`} 
+              x1={x1} 
+              y1={y1} 
+              x2={x2} 
+              y2={y2} 
+              stroke="url(#crestGradient)" 
+              strokeWidth="1.2" 
+              opacity={i % 3 === 0 ? "0.45" : "0.25"} 
+            />
+          );
+        })}
+      </g>
+
+      {/* Dotted Inner Track (concentric vinyl groove theme) */}
+      <circle 
+        cx="400" 
+        cy="400" 
+        r="270" 
+        stroke="url(#crestGradient)" 
+        strokeWidth="1" 
+        fill="none" 
+        opacity="0.2" 
+        strokeDasharray="2 4"
+      />
+      <circle 
+        cx="400" 
+        cy="400" 
+        r="230" 
+        stroke="url(#crestGradient)" 
+        strokeWidth="1.5" 
+        fill="none" 
+        opacity="0.3" 
+        strokeDasharray="20 10 5 10"
+        className="crest-inner-ring-ccw"
+      />
+
+      {/* Circular Waveform Path (Music theme) */}
+      <g className="crest-waveform-rotate">
+        <path 
+          d={waveformPoints} 
+          stroke="url(#crestGradient)" 
+          strokeWidth="1.5" 
+          fill="none" 
+          opacity="0.45" 
+        />
+      </g>
+
+      {/* Inner Central Pulse & Golden Core Geometric Play Button */}
+      <g className="crest-play-btn">
+        <circle cx="400" cy="400" r="75" fill="url(#crestCoreGlow)" className="crest-core-pulse" />
+        <circle cx="400" cy="400" r="50" stroke="url(#crestGradient)" strokeWidth="1.2" fill="none" opacity="0.4" />
+        <circle cx="400" cy="400" r="95" stroke="url(#crestGradient)" strokeWidth="0.8" fill="none" opacity="0.15" strokeDasharray="3 9" />
+        <polygon 
+          points="422,400 388,380.5 388,419.5" 
+          fill="url(#crestGradient)" 
+          opacity="0.75" 
+        />
+      </g>
+    </svg>
   );
 }
 
@@ -333,105 +274,7 @@ function ArcaneField({ y, rotate }) {
   );
 }
 
-function MagicCircuitBackground() {
-  return (
-    <div className="mp-magicCircuit" aria-hidden="true">
-      <svg viewBox="0 0 800 800" className="circuit-svg">
-        <defs>
-          <radialGradient id="magmaCore" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ff4500" stopOpacity="0.85" />
-            <stop offset="35%" stopColor="#ff1a00" stopOpacity="0.4" />
-            <stop offset="70%" stopColor="#2c0c00" stopOpacity="0.15" />
-            <stop offset="100%" stopColor="#050407" stopOpacity="0" />
-          </radialGradient>
-          <radialGradient id="magmaGlowRing" cx="50%" cy="50%" r="50%">
-            <stop offset="60%" stopColor="#ff3c00" stopOpacity="0.24" />
-            <stop offset="85%" stopColor="#ff8c00" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="#050407" stopOpacity="0" />
-          </radialGradient>
-          <linearGradient id="magmaGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ff3300" />
-            <stop offset="50%" stopColor="#ff7700" />
-            <stop offset="100%" stopColor="#ffd700" />
-          </linearGradient>
-        </defs>
 
-        {/* Static Background Glow (Cached once, zero CPU overhead) */}
-        <circle cx="400" cy="400" r="350" fill="url(#magmaGlowRing)" />
-
-        {/* Central Magma Core Reservoir */}
-        <circle cx="400" cy="400" r="180" fill="url(#magmaCore)" className="magma-core-pulse" />
-
-        {/* Rotational Circuit Ring 1: Runic Ticks & Outer Guides */}
-        <g className="rotate-clockwise-slow">
-          <circle cx="400" cy="400" r="320" stroke="url(#magmaGlow)" strokeWidth="1" fill="none" opacity="0.35" strokeDasharray="5,15" />
-          <circle cx="400" cy="400" r="300" stroke="url(#magmaGlow)" strokeWidth="1.2" fill="none" opacity="0.45" strokeDasharray="1,6" />
-          {Array.from({ length: 12 }).map((_, i) => {
-            const angle = (i * 30 * Math.PI) / 180;
-            const x1 = 400 + 290 * Math.cos(angle);
-            const y1 = 400 + 290 * Math.sin(angle);
-            const x2 = 400 + 310 * Math.cos(angle);
-            const y2 = 400 + 310 * Math.sin(angle);
-            return (
-              <line key={`tick1-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="url(#magmaGlow)" strokeWidth="1.5" opacity="0.4" />
-            );
-          })}
-        </g>
-
-        {/* Rotational Circuit Ring 2: The Core Triangles */}
-        <g className="rotate-counter-clockwise">
-          <polygon points="400,160 608,520 192,520" stroke="url(#magmaGlow)" strokeWidth="1" fill="none" opacity="0.4" />
-          <polygon points="400,640 192,280 608,280" stroke="url(#magmaGlow)" strokeWidth="1" fill="none" opacity="0.4" />
-          <circle cx="400" cy="400" r="240" stroke="url(#magmaGlow)" strokeWidth="1.8" fill="none" opacity="0.55" strokeDasharray="40,20,10,20" />
-        </g>
-
-        {/* Rotational Circuit Ring 3: Fine Inner Circles & Tech Rails */}
-        <g className="rotate-clockwise-fast">
-          <circle cx="400" cy="400" r="140" stroke="url(#magmaGlow)" strokeWidth="0.8" fill="none" opacity="0.4" strokeDasharray="20,10" />
-          <circle cx="400" cy="400" r="130" stroke="url(#magmaGlow)" strokeWidth="0.6" fill="none" opacity="0.25" />
-          <circle cx="400" cy="400" r="90" stroke="url(#magmaGlow)" strokeWidth="1.2" fill="none" opacity="0.6" strokeDasharray="4,4" />
-          {Array.from({ length: 8 }).map((_, i) => {
-            const angle = (i * 45 * Math.PI) / 180;
-            const x1 = 400 + 90 * Math.cos(angle);
-            const y1 = 400 + 90 * Math.sin(angle);
-            const x2 = 400 + 130 * Math.cos(angle);
-            const y2 = 400 + 130 * Math.sin(angle);
-            return (
-              <line key={`spike-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="url(#magmaGlow)" strokeWidth="0.8" opacity="0.5" />
-            );
-          })}
-        </g>
-
-        {/* Rotational Circuit Ring 4: Outer Ring with detailed brackets */}
-        <g className="rotate-clockwise-slow">
-          <circle cx="400" cy="400" r="360" stroke="url(#magmaGlow)" strokeWidth="0.5" fill="none" opacity="0.2" />
-          {Array.from({ length: 4 }).map((_, i) => {
-            const angle = (i * 90 * Math.PI) / 180;
-            const x1 = 400 + 355 * Math.cos(angle - 0.05);
-            const y1 = 400 + 355 * Math.sin(angle - 0.05);
-            const x2 = 400 + 365 * Math.cos(angle - 0.05);
-            const y2 = 400 + 365 * Math.sin(angle - 0.05);
-            const mx1 = 400 + 365 * Math.cos(angle - 0.05);
-            const my1 = 400 + 365 * Math.sin(angle - 0.05);
-            const mx2 = 400 + 365 * Math.cos(angle + 0.05);
-            const my2 = 400 + 365 * Math.sin(angle + 0.05);
-            const bx1 = 400 + 365 * Math.cos(angle + 0.05);
-            const by1 = 400 + 365 * Math.sin(angle + 0.05);
-            const bx2 = 400 + 355 * Math.cos(angle + 0.05);
-            const by2 = 400 + 355 * Math.sin(angle + 0.05);
-            return (
-              <g key={`bracket-${i}`}>
-                <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="url(#magmaGlow)" strokeWidth="1.2" opacity="0.5" />
-                <path d={`M ${mx1} ${my1} A 365 365 0 0 1 ${mx2} ${my2}`} fill="none" stroke="url(#magmaGlow)" strokeWidth="1.2" opacity="0.5" />
-                <line x1={bx1} y1={by1} x2={bx2} y2={by2} stroke="url(#magmaGlow)" strokeWidth="1.2" opacity="0.5" />
-              </g>
-            );
-          })}
-        </g>
-      </svg>
-    </div>
-  );
-}
 
 function ScrollTelemetry({ activeSection }) {
   const chapters = {
@@ -537,13 +380,14 @@ function PortalCard({ mode, title, text, onClick, image, meta, triggerSound }) {
   );
 }
 
-function VinylPlayer({ soundOn }) {
+function VinylPlayer({ soundOn, active = false }) {
   const recordRef = useRef(null);
   const rotationRef = useRef(0);
   const speedRef = useRef(0);
   const armAngle = soundOn ? 85 : 22;
 
   useEffect(() => {
+    if (!active) return undefined;
     let frameId;
 
     const animate = () => {
@@ -574,7 +418,7 @@ function VinylPlayer({ soundOn }) {
     return () => {
       if (frameId) cancelAnimationFrame(frameId);
     };
-  }, [soundOn]);
+  }, [soundOn, active]);
 
   return (
     <div className="mp-vinylDeck">
@@ -609,21 +453,22 @@ function VinylPlayer({ soundOn }) {
   );
 }
 
-function ResonanceTerminal({ soundOn }) {
+function ResonanceTerminal({ soundOn, active = false }) {
   const [hoveredPlatform, setHoveredPlatform] = useState(null);
   const [tuningPercent, setTuningPercent] = useState(50);
   const [needleJitter, setNeedleJitter] = useState(0);
 
   useEffect(() => {
-    let active = true;
+    if (!active) return undefined;
+    let running = true;
     const updateJitter = () => {
-      if (!active) return;
+      if (!running) return;
       setNeedleJitter((Math.random() - 0.5) * 1.5);
       setTimeout(updateJitter, 80 + Math.random() * 60);
     };
     updateJitter();
-    return () => { active = false; };
-  }, []);
+    return () => { running = false; };
+  }, [active]);
 
   const targetRotation = ((tuningPercent - 50) / 50) * 22;
   const needleRotation = (hoveredPlatform ? targetRotation : -22) + (soundOn ? needleJitter * 2.0 : needleJitter * 0.4);
@@ -748,7 +593,7 @@ function ResonanceTerminal({ soundOn }) {
             <div className="vu-glass-sheen" />
           </div>
 
-          <div className="mp-monitorWaveform" aria-hidden="true">
+          <div className={`mp-monitorWaveform ${active ? 'is-playing' : 'is-paused'}`} aria-hidden="true">
             {Array.from({ length: 22 }).map((_, i) => {
               const delay = (i * 0.04).toFixed(2);
               const pseudoRandom = ((i * 9301 + 49297) % 233280) / 233280;
@@ -802,7 +647,7 @@ function ResonanceTerminal({ soundOn }) {
 
       {/* Right: Vinyl Player & Streaming Platforms list */}
       <div className="mp-vinylAndLinks">
-        <VinylPlayer soundOn={soundOn} />
+        <VinylPlayer soundOn={soundOn} active={active} />
 
         <div className="mp-resonanceGrid">
           {platforms.map((platform, idx) => (
@@ -1261,6 +1106,7 @@ export default function ModernPortfolio({ initialMode = 'synthesis', isMobileOve
 
   const [activeSection, setActiveSection] = useState('GATE');
   const [isHeroInView, setIsHeroInView] = useState(true);
+  const [isMusicInView, setIsMusicInView] = useState(false);
 
   useEffect(() => {
     const gateEl = document.getElementById('gate');
@@ -1269,6 +1115,15 @@ export default function ModernPortfolio({ initialMode = 'synthesis', isMobileOve
     }, { rootMargin: '100px 0px 100px 0px' });
     if (gateEl) gateObserver.observe(gateEl);
     return () => gateObserver.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const musicEl = document.getElementById('music-terminal');
+    const musicObserver = new IntersectionObserver(([entry]) => {
+      setIsMusicInView(entry.isIntersecting);
+    }, { rootMargin: '100px 0px 100px 0px' });
+    if (musicEl) musicObserver.observe(musicEl);
+    return () => musicObserver.disconnect();
   }, []);
 
   useEffect(() => {
@@ -1483,8 +1338,7 @@ export default function ModernPortfolio({ initialMode = 'synthesis', isMobileOve
       </nav>
 
       <section className="mp-gate" id="gate">
-        <PortalScene viewMode={viewMode} active={isHeroInView} />
-        <MagicCircuitBackground />
+        <ResonanceCrest viewMode={viewMode} active={isHeroInView} />
         <HeroTechHUD />
         <div className="mp-gateShade" aria-hidden="true" />
         <motion.div className="mp-gateCopy" style={{ y: gateLift, opacity: gateFade }}>
@@ -1728,7 +1582,7 @@ export default function ModernPortfolio({ initialMode = 'synthesis', isMobileOve
             triggerSound={soundOn}
           />
         </div>
-        <ResonanceTerminal soundOn={soundOn} />
+        <ResonanceTerminal soundOn={soundOn} active={isMusicInView} />
       </section>
 
       {/* ── FOOTER — 06 SIGNAL ─────────────────────────── */}
@@ -1834,67 +1688,34 @@ export default function ModernPortfolio({ initialMode = 'synthesis', isMobileOve
 
           <div className="mp-footerRight">
             <div className="mp-astrolabeContainer">
-              <svg viewBox="0 0 100 100" className="large-astrolabe-svg">
+              <svg viewBox="0 0 100 100" className="large-astrolabe-svg mp-signal-sigil" aria-hidden="true">
                 <defs>
-                  {/* Pulsing magical mana core gradient */}
-                  <radialGradient id="manaGlow" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#ffd875" stopOpacity="0.85" />
-                    <stop offset="35%" stopColor="#d4af37" stopOpacity="0.5" />
-                    <stop offset="70%" stopColor="#5c1818" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#120202" stopOpacity="0.9" />
+                  <radialGradient id="signalGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#f2cf85" stopOpacity="0.45" />
+                    <stop offset="100%" stopColor="#f2cf85" stopOpacity="0" />
                   </radialGradient>
-                  
-                  {/* Crystal outline sheen */}
-                  <linearGradient id="crystalBorder" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#ffe699" />
-                    <stop offset="40%" stopColor="#8a6f27" />
-                    <stop offset="70%" stopColor="#ffffff" />
-                    <stop offset="100%" stopColor="#5c1818" />
+                  <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#ffd875" />
+                    <stop offset="100%" stopColor="#b8862e" />
                   </linearGradient>
                 </defs>
-
-                {/* The Crystal Stone base body */}
-                <circle cx="50" cy="50" r="43" fill="url(#manaGlow)" stroke="url(#crystalBorder)" strokeWidth="0.75" className="crystal-body" />
                 
-                {/* 3D Glass/Crystal convex light reflections */}
-                <path d="M 15 50 A 35 35 0 0 1 85 50" stroke="rgba(255, 255, 255, 0.16)" strokeWidth="1.2" fill="none" strokeLinecap="round" className="crystal-reflection" />
-                <path d="M 20 50 A 30 30 0 0 1 80 50" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="0.6" fill="none" strokeLinecap="round" className="crystal-reflection" />
-
-                {/* Outer orbital ring */}
-                <circle cx="50" cy="50" r="46" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 4" className="ring-outer" />
-                {/* Middle ring with ticks/markers */}
-                <circle cx="50" cy="50" r="38" stroke="currentColor" strokeWidth="0.75" className="ring-middle" />
-                {/* Inner ring */}
-                <circle cx="50" cy="50" r="28" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 2" className="ring-inner" />
-                {/* Core ring */}
-                <circle cx="50" cy="50" r="16" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+                {/* Glow */}
+                <circle cx="50" cy="50" r="40" fill="url(#signalGlow)" className="signal-glow-pulse" />
                 
-                {/* Core axes */}
-                <line x1="50" y1="2" x2="50" y2="98" stroke="currentColor" strokeWidth="0.25" opacity="0.3" />
-                <line x1="2" y1="50" x2="98" y2="50" stroke="currentColor" strokeWidth="0.25" opacity="0.3" />
-                
-                {/* Intersecting diagonal vectors */}
-                <line x1="16" y1="16" x2="84" y2="84" stroke="currentColor" strokeWidth="0.2" opacity="0.15" strokeDasharray="1 3" />
-                <line x1="16" y1="84" x2="84" y2="16" stroke="currentColor" strokeWidth="0.2" opacity="0.15" strokeDasharray="1 3" />
-                
-                {/* Orbiting satellites */}
-                <circle cx="50" cy="12" r="1.5" fill="currentColor" className="orbit-dot-1" />
-                <circle cx="12" cy="50" r="1.2" fill="currentColor" className="orbit-dot-2" />
-                <circle cx="50" cy="88" r="1" fill="currentColor" className="orbit-dot-3" />
-                
-                {/* Star Core under-glow */}
-                <circle cx="50" cy="50" r="7" fill="#ffe29a" opacity="0.6" className="star-core-glow" />
-
-                {/* Faceted 3D Crystal Star Core */}
-                <g className="astrolabe-star">
-                  {/* Top-Right Facet (Light Gold) */}
-                  <polygon points="50,50 50,32 68,50" fill="#fff1c5" opacity="0.95" />
-                  {/* Bottom-Right Facet (Dark Gold) */}
-                  <polygon points="50,50 68,50 50,68" fill="#b8862e" opacity="0.95" />
-                  {/* Bottom-Left Facet (Mid Gold) */}
-                  <polygon points="50,50 50,68 32,50" fill="#9b7123" opacity="0.95" />
-                  {/* Top-Left Facet (Extra Light Gold) */}
-                  <polygon points="50,50 32,50 50,32" fill="#ffe29a" opacity="0.95" />
+                {/* Minimalist Emitter Sigil */}
+                <g className="signal-emblem">
+                  {/* Outer thin border */}
+                  <polygon points="50,15 80,67 20,67" stroke="url(#goldGrad)" strokeWidth="0.75" fill="none" opacity="0.3" />
+                  <polygon points="50,22 74,63 26,63" stroke="url(#goldGrad)" strokeWidth="1" fill="none" opacity="0.5" />
+                  
+                  {/* Central Emitter Core */}
+                  <circle cx="50" cy="50" r="10" fill="url(#goldGrad)" opacity="0.15" />
+                  <polygon points="50,38 60,56 40,56" fill="url(#goldGrad)" opacity="0.8" />
+                  
+                  {/* Rings emanating */}
+                  <circle cx="50" cy="50" r="24" stroke="url(#goldGrad)" strokeWidth="0.5" strokeDasharray="2 3" opacity="0.4" className="sigil-outer-ring" />
+                  <circle cx="50" cy="50" r="32" stroke="url(#goldGrad)" strokeWidth="0.5" opacity="0.2" />
                 </g>
               </svg>
             </div>

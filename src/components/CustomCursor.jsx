@@ -4,9 +4,9 @@ function CustomCursor() {
   const [canHover, setCanHover] = useState(() => {
     return typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   });
-  const [position, setPosition] = useState({ x: -80, y: -80 });
   const [active, setActive] = useState(false);
   const canvasRef = useRef(null);
+  const cursorRef = useRef(null);
   const particlesRef = useRef([]);
   const mouseRef = useRef({ x: -80, y: -80 });
   const lastSpawnRef = useRef(0);
@@ -29,11 +29,24 @@ function CustomCursor() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
+    let isLooping = false;
+    let animId;
+
+    const startLoop = () => {
+      if (!isLooping) {
+        isLooping = true;
+        animId = requestAnimationFrame(updateParticles);
+      }
+    };
+
     const onMove = (event) => {
       const x = event.clientX;
       const y = event.clientY;
-      setPosition({ x, y });
       mouseRef.current = { x, y };
+
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      }
 
       // Spawn trail runes
       const now = Date.now();
@@ -60,6 +73,7 @@ function CustomCursor() {
         color: color
       };
       particlesRef.current.push(newParticle);
+      startLoop();
     };
 
     const onOver = (event) => {
@@ -78,10 +92,14 @@ function CustomCursor() {
     document.addEventListener('pointerover', onOver);
     window.addEventListener('keydown', onKeyDown);
 
-    let animId;
     const updateParticles = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
+      if (particlesRef.current.length === 0) {
+        isLooping = false;
+        return;
+      }
+
       particlesRef.current.forEach((p) => {
         p.x += p.vx;
         p.y += p.vy;
@@ -94,10 +112,6 @@ function CustomCursor() {
         ctx.save();
         ctx.globalAlpha = alpha;
         
-        // Add subtle chromatic shadow/glow
-        ctx.shadowBlur = progress * 8;
-        ctx.shadowColor = p.color;
-        
         ctx.font = `${p.size}px serif`;
         ctx.fillStyle = p.color;
         ctx.fillText(p.character, p.x, p.y);
@@ -109,8 +123,6 @@ function CustomCursor() {
 
       animId = requestAnimationFrame(updateParticles);
     };
-    
-    updateParticles();
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
@@ -135,8 +147,9 @@ function CustomCursor() {
         }} 
       />
       <div
+        ref={cursorRef}
         className={`mp-cursor ${active ? 'is-active' : ''}`}
-        style={{ transform: `translate3d(${position.x}px, ${position.y}px, 0)` }}
+        style={{ transform: 'translate3d(-80px, -80px, 0)' }}
         aria-hidden="true"
       />
     </>

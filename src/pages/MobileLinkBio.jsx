@@ -57,11 +57,12 @@ export default function MobileLinkBio({ onViewDesktop }) {
       .catch(() => null);
 
     const fetchGitHubData = async () => {
-      const _cacheKey = 'v6_github_cache';
+      const cacheKey = 'v6_github_cache';
       try {
         const enriched = await enrichProjects();
         if (mounted) {
           setProjects(enriched);
+          localStorage.setItem(cacheKey, JSON.stringify({ data: enriched, timestamp: Date.now() }));
         }
       } catch {
         // ignore
@@ -164,34 +165,39 @@ export default function MobileLinkBio({ onViewDesktop }) {
           </div>
         </motion.div>
 
-        {/* Skewomorphic Sound Module */}
+        {/* Redesigned Spotify Audio Panel */}
         <motion.div 
-          className="ml-audio-panel"
+          className="ml-audio-panel spotify-player-panel"
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
           <div className="audio-header">
             <div className="audio-title-group">
-              <span className="audio-label">ATMOSPHERIC FREQUENCY</span>
-              <span className="audio-channel-name">{activeChannel}</span>
+              <span className="audio-label">CURRENT TRANSMISSION</span>
+              <span className="audio-channel-name" style={{ color: '#1ed760' }}>SPOTIFY PLAYER</span>
             </div>
-            <div className={`audio-wave-anim ${soundOn ? 'is-active' : ''}`}>
-              <div className="audio-wave-bar" />
-              <div className="audio-wave-bar" />
-              <div className="audio-wave-bar" />
-              <div className="audio-wave-bar" />
-              <div className="audio-wave-bar" />
+            <div className="audio-wave-anim is-active">
+              <div className="audio-wave-bar" style={{ backgroundColor: '#1ed760', boxShadow: '0 0 6px #1ed760' }} />
+              <div className="audio-wave-bar" style={{ backgroundColor: '#1ed760', boxShadow: '0 0 6px #1ed760' }} />
+              <div className="audio-wave-bar" style={{ backgroundColor: '#1ed760', boxShadow: '0 0 6px #1ed760' }} />
+              <div className="audio-wave-bar" style={{ backgroundColor: '#1ed760', boxShadow: '0 0 6px #1ed760' }} />
+              <div className="audio-wave-bar" style={{ backgroundColor: '#1ed760', boxShadow: '0 0 6px #1ed760' }} />
             </div>
           </div>
 
-          <button 
-            onClick={handleToggleSound}
-            className={`audio-toggle-btn ${soundOn ? 'is-active' : ''}`}
-          >
-            <span className="led" />
-            <span>{soundOn ? 'MUTED / OFF' : 'ACTIVATE AMBIENT AUDIO'}</span>
-          </button>
+          <div className="spotify-embed-container">
+            <iframe 
+              style={{ borderRadius: '12px', border: 'none' }} 
+              src="https://open.spotify.com/embed/track/19uF87i1d51C6AeTrMUWaA?utm_source=generator&theme=0" 
+              width="100%" 
+              height="80" 
+              allowFullScreen="" 
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+              loading="lazy"
+              title="Spotify Player"
+            />
+          </div>
         </motion.div>
 
         {/* Section: Channels */}
@@ -403,7 +409,7 @@ export default function MobileLinkBio({ onViewDesktop }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          {projects.slice(0, 4).map((project, i) => (
+          {projects.map((project, i) => (
             <div key={project.projectId || i} className="ml-project-card">
               <div className="project-card-header">
                 <span className="project-card-id">{project.projectId || `PROJ-${100 + i}`}</span>
@@ -446,6 +452,40 @@ export default function MobileLinkBio({ onViewDesktop }) {
               </div>
             </div>
           ))}
+        </motion.div>
+
+        {/* Section: Workflow Frequency */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.45 }}
+        >
+          <div className="ml-section-header">
+            <span className="ml-section-num">03</span>
+            <h2 className="ml-section-title">Workflow</h2>
+            <div className="ml-section-line" />
+          </div>
+        </motion.div>
+
+        {/* GitHub Heatmap Card */}
+        <motion.div 
+          className="ml-heatmap-card"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.48 }}
+        >
+          <div className="ml-heatmap-header">
+            <span className="ml-heatmap-title">GITHUB HEATMAP</span>
+            <span className="ml-heatmap-subtitle">@KUBERBASSI // CONTRIBUTIONS</span>
+          </div>
+          <div className="ml-heatmap-scroll-container">
+            <img 
+              src="https://ghchart.rshah.org/00ff88/kuberbassi" 
+              alt="Kuber Bassi GitHub Contributions Heatmap" 
+              className="ml-heatmap-img"
+              loading="lazy"
+            />
+          </div>
         </motion.div>
 
         {/* Telemetry/System Stats */}

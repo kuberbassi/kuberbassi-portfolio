@@ -1,10 +1,5 @@
 User-agent: *
-Allow: /$
-Allow: /sitemap.xml
-Allow: /robots.txt
-Allow: /assets/
-Allow: /songs.json
-Allow: /og-image.png
-Disallow: /
+Allow: /
 
+Sitemap: https://kuberbassi.com/sitemap.xml
 Sitemap: https://www.kuberbassi.com/sitemap.xml

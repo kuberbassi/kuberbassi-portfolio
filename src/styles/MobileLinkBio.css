@@ -829,3 +829,86 @@
   0% { height: 4px; }
   100% { height: 18px; }
 }
+
+/* Spotify Redesigned Audio Panel */
+.spotify-player-panel {
+  border-left-color: #1ed760;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.spotify-embed-container {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  background: #000;
+}
+
+/* GitHub Heatmap Card */
+.ml-heatmap-card {
+  background: var(--ml-glass);
+  border: 1px solid var(--ml-glass-border);
+  border-radius: 12px;
+  padding: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-left: 3px solid var(--ml-accent-dev);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ml-heatmap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ml-heatmap-title {
+  font-size: 10px;
+  color: var(--ml-accent-dev);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.ml-heatmap-subtitle {
+  font-size: 7.5px;
+  color: var(--ml-text-muted);
+  letter-spacing: 1px;
+}
+
+.ml-heatmap-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+/* Custom scrollbar styling for the heatmap scroll container */
+.ml-heatmap-scroll-container::-webkit-scrollbar {
+  height: 4px;
+}
+
+.ml-heatmap-scroll-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.ml-heatmap-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 136, 0.2);
+  border-radius: 2px;
+}
+
+.ml-heatmap-img {
+  min-width: 650px;
+  height: auto;
+  display: block;
+  filter: invert(1) hue-rotate(180deg) brightness(1.2) contrast(1.1);
+  mix-blend-mode: screen;
+  margin: 0 auto;
+}
+
+

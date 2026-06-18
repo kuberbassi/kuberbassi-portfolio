@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ModernPortfolio from './pages/ModernPortfolio';
-import MobileLinkBio from './pages/MobileLinkBio';
+const ModernPortfolio = React.lazy(() => import('./pages/ModernPortfolio'));
+const MobileLinkBio = React.lazy(() => import('./pages/MobileLinkBio'));
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -50,10 +50,9 @@ function PortfolioWrapper() {
   useEffect(() => {
     if (showMobilePortal) return;
 
-    // Initialize Lenis smooth scroll with premium configuration only for desktop layout
+    // Initialize Lenis smooth scroll optimized for high refresh rates (120Hz/144Hz)
     const lenis = new Lenis({
-      duration: 1.4,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // sleek easeOutExpo curves
+      lerp: 0.1, // buttery smooth responsive scroll interpolation
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
@@ -97,15 +96,21 @@ function PortfolioWrapper() {
   }, [showMobilePortal]);
 
   if (showMobilePortal) {
-    return <MobileLinkBio onViewDesktop={handleViewDesktop} />;
+    return (
+      <React.Suspense fallback={<div style={{ background: '#050407', minHeight: '100vh' }} />}>
+        <MobileLinkBio onViewDesktop={handleViewDesktop} />
+      </React.Suspense>
+    );
   }
 
   return (
-    <ModernPortfolio 
-      initialMode="synthesis" 
-      isMobileOverridden={isMobile && overrideMobile} 
-      onResetMobile={handleResetMobile} 
-    />
+    <React.Suspense fallback={<div style={{ background: '#050407', minHeight: '100vh' }} />}>
+      <ModernPortfolio 
+        initialMode="synthesis" 
+        isMobileOverridden={isMobile && overrideMobile} 
+        onResetMobile={handleResetMobile} 
+      />
+    </React.Suspense>
   );
 }
 
