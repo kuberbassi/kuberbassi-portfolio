@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="/assets/icons/favicon.png" />
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/KuberBassi.svg" />
+  <link rel="preload" href="/assets/topographic-bg.webp" as="image" type="image/webp" fetchpriority="high" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Default meta tags - dynamically updated by SEO component -->
@@ -61,31 +62,15 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 
-  <!-- Webfonts & FontAwesome -->
+  <!-- Webfonts: Syne, Plus Jakarta Sans, Space Grotesk, Inter, JetBrains Mono -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=Syne:wght@600;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-
-  <!-- SERVICE WORKER KILLER: Fix for stale localhost PWA caches -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function (registrations) {
-        for (let registration of registrations) {
-          console.log('Unregistering stale service worker:', registration);
-          registration.unregister();
-        }
-      });
-      caches.keys().then(function (names) {
-        for (let name of names) caches.delete(name);
-      });
-    }
-  </script>
 </head>
 
 <body>
   <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 
 </html>

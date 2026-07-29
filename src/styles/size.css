@@ -1,0 +1,22 @@
+:root {
+  --text-caption: 0.6875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.5rem;
+  --text-4xl: 3.75rem;
+  --text-5xl: 5.5rem;
+  --text-6xl: 7.5rem;
+
+  --line-compact: 1.25;
+  --line-body: 1.6;
+  --line-relaxed: 1.7;
+
+  --space-copy-gap: clamp(36px, 4.5dvh, 48px);
+  --space-follow-gap: clamp(52px, 7dvh, 74px);
+  --interactive-lift: -2px;
+}

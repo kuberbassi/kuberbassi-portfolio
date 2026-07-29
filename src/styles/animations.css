@@ -1,0 +1,154 @@
+/* ============================================================
+   ANIMATIONS.CSS — Reusable Keyframe Animations
+   Only shared, reusable animations belong here.
+   Page/component-specific transitions go in their own files.
+   ============================================================ */
+
+/* ── Keyframes ──────────────────────────────────────────────── */
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes blur-in {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--color-accent-glow);
+  }
+  50% {
+    box-shadow: 0 0 20px 4px var(--color-accent-glow);
+  }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes line-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+/* ── Animation utility classes ──────────────────────────────── */
+
+.animate-fade-in     { animation: fade-in          var(--duration-slow) var(--ease-out) both; }
+.animate-fade-up     { animation: fade-up           var(--duration-slow) var(--ease-out) both; }
+.animate-fade-down   { animation: fade-down         var(--duration-slow) var(--ease-out) both; }
+.animate-scale-in    { animation: scale-in          var(--duration-slow) var(--ease-out) both; }
+.animate-blur-in     { animation: blur-in           var(--duration-slow) var(--ease-out) both; }
+.animate-slide-left  { animation: slide-in-left     var(--duration-slow) var(--ease-out) both; }
+.animate-slide-right { animation: slide-in-right    var(--duration-slow) var(--ease-out) both; }
+.animate-spin        { animation: spin             1000ms linear infinite; }
+.animate-float       { animation: float            3000ms var(--ease-default) infinite; }
+
+/* ── Delay helpers ──────────────────────────────────────────── */
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+
+/* ── Skeleton shimmer ────────────────────────────────────────── */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-1) 25%,
+    var(--color-surface-2) 50%,
+    var(--color-surface-1) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+/* ── Reduced motion ──────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration:   0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration:  0.01ms !important;
+  }
+}

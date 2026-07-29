@@ -1,0 +1,20 @@
+:root {
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
+  --font-mono: var(--font-sans);
+  --font-serif: Georgia, 'Times New Roman', serif;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-body);
+}

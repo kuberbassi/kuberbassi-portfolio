@@ -1,0 +1,111 @@
+/* ============================================================
+   SECTION INDICATOR — Fixed right-rail vertical section nav
+   Reference: b.d studio style — thin vertical track + dashes
+   ============================================================ */
+
+.section-indicator {
+  position: fixed;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 150;
+  opacity: 0.74;
+  pointer-events: none; /* container transparent, only items catch events */
+  display: flex;
+  align-items: center;
+}
+
+.section-indicator__track {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: all;
+}
+
+/* ── Each section marker ──────────────────────────────────── */
+.section-indicator__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  outline: none;
+}
+
+/* The dash line */
+.section-indicator__dash {
+  display: block;
+  width: 20px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 2px;
+  transition:
+    width 240ms var(--ease-out),
+    background-color 220ms ease,
+    opacity 220ms ease;
+  flex-shrink: 0;
+}
+
+/* Label — hidden by default, revealed on active/hover */
+.section-indicator__label {
+  position: absolute;
+  right: calc(100% + 12px);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #d5b27e;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(6px);
+  transition:
+    opacity 220ms ease,
+    transform 240ms var(--ease-out);
+  pointer-events: none;
+  font-family: var(--font-body);
+}
+
+/* ── Hover state ────────────────────────────────────────────── */
+.section-indicator__item:hover .section-indicator__dash,
+.section-indicator__item:focus-visible .section-indicator__dash {
+  background: rgba(213, 178, 126, 0.55);
+  width: 26px;
+}
+
+.section-indicator__item:hover .section-indicator__label,
+.section-indicator__item:focus-visible .section-indicator__label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.section-indicator__item:focus-visible {
+  outline: none;
+}
+
+/* ── Active state ────────────────────────────────────────────── */
+.section-indicator__item.is-active .section-indicator__dash {
+  width: 32px;
+  background: #d5b27e;
+  box-shadow: 0 0 8px rgba(213, 178, 126, 0.6);
+}
+
+.section-indicator__item.is-active .section-indicator__label {
+  color: #d5b27e;
+}
+
+.section-indicator__item.is-active:hover .section-indicator__label,
+.section-indicator__item.is-active:focus-visible .section-indicator__label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Hide on mobile — not enough room ────────────────────────── */
+@media (max-width: 768px) {
+  .section-indicator {
+    display: none;
+  }
+}
