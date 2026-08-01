@@ -1,6 +1,14 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowDownRight, Code2, House, Mail } from 'lucide-react';
-import { SiGithub } from 'react-icons/si';
+import { ArrowDownRight, ArrowUpRight, Code2, House, Mail } from 'lucide-react';
+import {
+  SiApplemusic,
+  SiGithub,
+  SiSpotify,
+  SiYoutube,
+  SiYoutubemusic,
+} from 'react-icons/si';
+import { TbBrandAmazon } from 'react-icons/tb';
+import type { IconType } from 'react-icons';
 import { SectionIndicator } from '../components/ui/SectionIndicator';
 import { TimeOfDayIcon } from '../components/ui/TimeOfDayIcon';
 import { Footer } from '../components/layout/Footer';
@@ -55,6 +63,14 @@ const githubOrganizations = [
   { name: 'VanguardLogic', handle: 'VanguardLogic', href: 'https://github.com/VanguardLogic' },
 ] as const;
 
+const musicPlatformIcons: Record<string, IconType> = {
+  Spotify: SiSpotify,
+  'Apple Music': SiApplemusic,
+  'Amazon Music': TbBrandAmazon,
+  YouTube: SiYoutube,
+  'YouTube Music': SiYoutubemusic,
+};
+
 const SECTIONS = [
   { id: 'home',      label: 'Intro'     },
   { id: 'about',     label: 'About'     },
@@ -68,12 +84,17 @@ export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [deckEnabled, setDeckEnabled] = useState(() => !window.matchMedia('(max-width: 768px), (pointer: coarse)').matches);
   const workIsActive = !deckEnabled || activeIndex === 3;
-  const { projects, loading } = useGitHubProjects(workIsActive);
+  const [workMounted, setWorkMounted] = useState(() => !deckEnabled);
+  const { projects, loading } = useGitHubProjects(workMounted);
   const activeIndexRef = useRef(0);
   const isAnimatingRef = useRef(false);
   const touchStartYRef = useRef(0);
   const wheelDeltaRef = useRef(0);
   const wheelResetRef = useRef(0);
+
+  useEffect(() => {
+    if (workIsActive) setWorkMounted(true);
+  }, [workIsActive]);
 
   const goToSection = useCallback((index: number) => {
     if (index < 0 || index >= SECTIONS.length) return;
@@ -397,17 +418,32 @@ export default function Home() {
                   <span><SiGithub size={12} aria-hidden="true" /> Organizations</span>
                   <div>
                     {githubOrganizations.map((organization) => (
-                      <a key={organization.handle} href={organization.href} target="_blank" rel="noreferrer">
+                      <SpecularButton
+                        className="kb-work-org-link"
+                        href={organization.href}
+                        key={organization.handle}
+                        target="_blank"
+                        rel="noreferrer"
+                        size="sm"
+                        radius={999}
+                        tint="#090908"
+                        tintOpacity={0.58}
+                        lineColor="#d5b27e"
+                        baseColor="#403629"
+                        intensity={0.8}
+                        shineSize={12}
+                        shineFade={30}
+                      >
                         <img src={`https://github.com/${organization.handle}.png?size=48`} alt="" loading="lazy" decoding="async" />
                         <span>{organization.name}</span>
-                      </a>
+                      </SpecularButton>
                     ))}
                   </div>
                 </div>
               </div>
             </div>
             <div className="project-orbit">
-              {workIsActive && (
+              {workMounted && (
                 <Suspense fallback={<div className="repo-gallery-shell repo-gallery-shell--loading" aria-hidden="true" />}>
                   <RepositoryGallery projects={projects} loading={loading} />
                 </Suspense>
@@ -429,7 +465,7 @@ export default function Home() {
             <div className="kb-music-listen">
               <BlurText
                 key={activeIndex === 4 ? 'music-copy-active' : 'music-copy-idle'}
-                text="Guitar, music production, and original releases — a parallel space for mood, detail, and composition."
+                text="Original music, cinematic sound, and guitar — another way I build with intention."
                 animateBy="words"
                 direction="bottom"
                 delay={54}
@@ -455,11 +491,35 @@ export default function Home() {
                 />
               )}
               <nav className="kb-music-platforms" aria-label="Listen on music platforms">
-                {musicChannels.map((channel) => (
-                  <a href={channel.url} key={channel.name} target="_blank" rel="noreferrer">
-                    {channel.name}
-                  </a>
-                ))}
+                {musicChannels.map((channel) => {
+                  const PlatformIcon = musicPlatformIcons[channel.name];
+                  return (
+                    <SpecularButton
+                      className="kb-music-platform"
+                      href={channel.url}
+                      key={channel.name}
+                      target="_blank"
+                      rel="noreferrer"
+                      ariaLabel={`Open Kuber Bassi on ${channel.name}`}
+                      size="sm"
+                      radius={12}
+                      tint="#090908"
+                      tintOpacity={0.72}
+                      lineColor="#d5b27e"
+                      baseColor="#403629"
+                      intensity={0.9}
+                      shineSize={16}
+                      shineFade={38}
+                    >
+                      <PlatformIcon className="kb-music-platform-icon" aria-hidden="true" />
+                      <span className="kb-music-platform-copy">
+                        <small>Artist profile</small>
+                        <strong>{channel.name}</strong>
+                      </span>
+                      <ArrowUpRight className="kb-music-platform-arrow" aria-hidden="true" />
+                    </SpecularButton>
+                  );
+                })}
               </nav>
             </div>
           </div>

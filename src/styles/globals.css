@@ -719,8 +719,8 @@ button::before,
 }
 
 :is(
-  button:not(.section-indicator__item),
-  [role="button"]:not(.section-indicator__item),
+  button:not(.section-indicator__item):not(.specular-button),
+  [role="button"]:not(.section-indicator__item):not(.specular-button),
   .kb-lines-btn,
   .work-copy a,
   .text-link,
@@ -741,7 +741,7 @@ button::before,
   .work-copy a,
   .text-link,
   .round-scroll
-):not(.section-indicator__item):hover {
+):not(.section-indicator__item):not(.specular-button):hover {
   border-color: rgba(226, 190, 134, 0.62);
   box-shadow:
     0 0 0 1px rgba(213, 178, 126, 0.12),
@@ -750,7 +750,7 @@ button::before,
   transform: translateY(-1px);
 }
 
-:is(a, button, [role="button"], input, textarea):focus-visible {
+:is(a, button, [role="button"], input, textarea):not(.specular-button):not(.specular-surface):focus-visible {
   outline: 1px solid rgba(240, 207, 158, 0.9);
   outline-offset: 4px;
   box-shadow: 0 0 0 4px rgba(213, 178, 126, 0.12);
@@ -949,8 +949,8 @@ button::before,
 }
 
 /* Shared gold boundary language for native controls across the site. */
-button:not(.section-indicator__item),
-[role='button']:not(.section-indicator__item) {
+button:not(.section-indicator__item):not(.specular-button),
+[role='button']:not(.section-indicator__item):not(.specular-button) {
   outline: 1px solid color-mix(in srgb, var(--color-accent) 48%, transparent);
   outline-offset: -1px;
   box-shadow:
@@ -963,10 +963,10 @@ button:not(.section-indicator__item),
   transition-timing-function: var(--ease-out);
 }
 
-button:not(.section-indicator__item):hover,
-button:not(.section-indicator__item):focus-visible,
-[role='button']:not(.section-indicator__item):hover,
-[role='button']:not(.section-indicator__item):focus-visible {
+button:not(.section-indicator__item):not(.specular-button):hover,
+button:not(.section-indicator__item):not(.specular-button):focus-visible,
+[role='button']:not(.section-indicator__item):not(.specular-button):hover,
+[role='button']:not(.section-indicator__item):not(.specular-button):focus-visible {
   outline-color: color-mix(in srgb, var(--color-accent) 88%, transparent);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.075),

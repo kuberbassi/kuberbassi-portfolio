@@ -4,16 +4,9 @@ export const musicChannels: MusicChannel[] = [
   {
     name: 'Spotify',
     desc: 'Published releases and official streaming catalog.',
-    url: 'https://push.fm/fl/jqjuw3ji',
+    url: 'https://open.spotify.com/artist/1hVnV9LmM1EJpA8Gj0iT0H?si=ffa3fb99769b4dd6',
     status: 'ONLINE',
     tuning: 35,
-  },
-  {
-    name: 'YouTube',
-    desc: 'Performances, guitar covers, and visual studio recordings.',
-    url: 'https://www.youtube.com/channel/UCcw12FyihnsK7TEHFBVHApw',
-    status: 'BROADCASTING',
-    tuning: 15,
   },
   {
     name: 'Apple Music',
@@ -28,6 +21,13 @@ export const musicChannels: MusicChannel[] = [
     url: 'https://music.amazon.in/artists/B0DDQ7M12J',
     status: 'ONLINE',
     tuning: 95,
+  },
+  {
+    name: 'YouTube',
+    desc: 'Performances, guitar covers, and visual studio recordings.',
+    url: 'https://www.youtube.com/channel/UCcw12FyihnsK7TEHFBVHApw',
+    status: 'BROADCASTING',
+    tuning: 15,
   },
   {
     name: 'YouTube Music',

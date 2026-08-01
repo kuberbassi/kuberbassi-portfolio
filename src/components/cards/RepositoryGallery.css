@@ -384,15 +384,6 @@
     transform var(--transition-fast);
 }
 
-.repo-gallery-card__actions a:hover {
-  border-color: rgba(213, 178, 126, 0.52);
-  color: var(--color-accent);
-  box-shadow:
-    0 0 0 1px rgba(213, 178, 126, 0.08),
-    0 0 18px rgba(213, 178, 126, 0.11);
-  transform: translateY(-1px);
-}
-
 .repo-gallery-card__actions a.is-primary {
   border-color: rgba(213, 178, 126, 0.45);
   color: var(--color-text-inverse);
@@ -401,10 +392,7 @@
 
 .repo-gallery-card__actions a.is-primary:hover {
   color: var(--color-text-inverse);
-  background: var(--color-accent-light);
-  box-shadow:
-    0 0 0 1px rgba(239, 209, 163, 0.18),
-    0 0 22px rgba(213, 178, 126, 0.23);
+  background: var(--color-accent);
 }
 
 .repo-gallery-card--loading {

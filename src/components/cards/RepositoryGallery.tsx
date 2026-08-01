@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowRight, Code2, ExternalLink, MoveHorizontal, Star } from 'lucide-react';
 import type { Project } from '../../types';
+import SpecularButton from '../SpecularButton';
 import './RepositoryGallery.css';
 
 interface RepositoryGalleryProps {
   projects: Project[];
   loading?: boolean;
 }
+
+const resolvedPreviewSources = new Map<string, string>();
 
 const githubPreview = (project: Project) => {
   const repository = project.github?.match(/github\.com\/([^/]+\/[^/#?]+)/i)?.[1]
@@ -22,15 +25,15 @@ const livePreview = (project: Project) => {
 function ProjectPreview({ project, eager }: { project: Project; eager: boolean }) {
   const fallback = githubPreview(project);
   const primary = livePreview(project);
+  const remembered = resolvedPreviewSources.get(project.slug) ?? '';
   const rootRef = useRef<HTMLDivElement>(null);
-  const [activated, setActivated] = useState(eager);
-  const [src, setSrc] = useState(eager ? primary : '');
+  const [activated, setActivated] = useState(eager || Boolean(remembered));
+  const [src, setSrc] = useState(remembered || (eager ? primary : ''));
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (!activated) return;
-    setLoaded(false);
-    setSrc(primary);
+    setSrc((current) => current || primary);
   }, [activated, primary]);
 
   useEffect(() => {
@@ -58,7 +61,10 @@ function ProjectPreview({ project, eager }: { project: Project; eager: boolean }
           alt={`${project.title} project preview`}
           loading={eager ? 'eager' : 'lazy'}
           decoding="async"
-          onLoad={() => setLoaded(true)}
+          onLoad={() => {
+            resolvedPreviewSources.set(project.slug, src);
+            setLoaded(true);
+          }}
           onError={() => {
             setLoaded(false);
             if (src === fallback) return;
@@ -282,14 +288,43 @@ export function RepositoryGallery({ projects, loading = false }: RepositoryGalle
 
                   <div className="repo-gallery-card__actions">
                     {project.github && (
-                      <a className="specular-surface" href={project.github} target="_blank" rel="noreferrer">
+                      <SpecularButton
+                        className="repo-gallery-action"
+                        href={project.github}
+                        target="_blank"
+                        rel="noreferrer"
+                        size="sm"
+                        radius={8}
+                        tint="#090908"
+                        tintOpacity={0.62}
+                        lineColor="#d5b27e"
+                        baseColor="#403629"
+                        intensity={0.86}
+                        shineSize={14}
+                        shineFade={34}
+                      >
                         <Code2 size={14} /> Source
-                      </a>
+                      </SpecularButton>
                     )}
                     {project.link && (
-                      <a href={project.link} target="_blank" rel="noreferrer" className="is-primary specular-surface">
+                      <SpecularButton
+                        className="repo-gallery-action is-primary"
+                        href={project.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        size="sm"
+                        radius={8}
+                        tint="#d5b27e"
+                        tintOpacity={0.94}
+                        textColor="#080807"
+                        lineColor="#fff0d0"
+                        baseColor="#755a35"
+                        intensity={1.05}
+                        shineSize={14}
+                        shineFade={34}
+                      >
                         <ExternalLink size={14} /> Live
-                      </a>
+                      </SpecularButton>
                     )}
                   </div>
                 </div>
