@@ -1,16 +1,34 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowDownRight, Code2, Mail } from 'lucide-react';
-import { LogoThreeScene } from '../components/canvas/LogoThreeScene';
-import { LightRays } from '../components/effects/LightRays';
-import { RepositoryGallery } from '../components/cards/RepositoryGallery';
-import { SkillObservatory } from '../components/sections/SkillObservatory';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { ArrowDownRight, Code2, House, Mail } from 'lucide-react';
+import { SiGithub } from 'react-icons/si';
 import { SectionIndicator } from '../components/ui/SectionIndicator';
+import { TimeOfDayIcon } from '../components/ui/TimeOfDayIcon';
 import { Footer } from '../components/layout/Footer';
 import BlurText from '../components/BlurText';
 import ScrollVelocity from '../components/ScrollVelocity';
 import SpecularButton from '../components/SpecularButton';
+import { LightRays } from '../components/effects/LightRays';
 import { useGitHubProjects } from '../services/githubRepos';
+import { musicChannels } from '../data/music';
 import '../styles/portfolio.css';
+
+const LogoThreeScene = lazy(() =>
+  import('../components/canvas/LogoThreeScene').then(({ LogoThreeScene: Component }) => ({
+    default: Component,
+  })),
+);
+
+const RepositoryGallery = lazy(() =>
+  import('../components/cards/RepositoryGallery').then(({ RepositoryGallery: Component }) => ({
+    default: Component,
+  })),
+);
+
+const SkillObservatory = lazy(() =>
+  import('../components/sections/SkillObservatory').then(({ SkillObservatory: Component }) => ({
+    default: Component,
+  })),
+);
 
 const focus = [
   'Software Engineering',
@@ -32,20 +50,25 @@ const principles = [
   'Curiosity',
 ];
 
+const githubOrganizations = [
+  { name: 'KuberBassi Labs', handle: 'kuberbassi-labs', href: 'https://github.com/kuberbassi-labs' },
+  { name: 'VanguardLogic', handle: 'VanguardLogic', href: 'https://github.com/VanguardLogic' },
+] as const;
+
 const SECTIONS = [
   { id: 'home',      label: 'Intro'     },
   { id: 'about',     label: 'About'     },
   { id: 'toolkit',   label: 'Toolkit'   },
   { id: 'work',      label: 'Work'      },
-  { id: 'exploring', label: 'Exploring' },
   { id: 'music',     label: 'Music'     },
   { id: 'contact',   label: 'Contact'   },
 ];
 
 export default function Home() {
-  const { projects, loading } = useGitHubProjects();
   const [activeIndex, setActiveIndex] = useState(0);
   const [deckEnabled, setDeckEnabled] = useState(() => !window.matchMedia('(max-width: 768px), (pointer: coarse)').matches);
+  const workIsActive = !deckEnabled || activeIndex === 3;
+  const { projects, loading } = useGitHubProjects(workIsActive);
   const activeIndexRef = useRef(0);
   const isAnimatingRef = useRef(false);
   const touchStartYRef = useRef(0);
@@ -116,6 +139,7 @@ export default function Home() {
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       if (window.matchMedia('(max-width: 768px), (pointer: coarse)').matches) return;
+      if (e.defaultPrevented) return;
 
       const target = e.target as HTMLElement | null;
       if (target?.closest('.project-orbit')) return;
@@ -153,6 +177,7 @@ export default function Home() {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (window.matchMedia('(max-width: 768px)').matches) return;
+      if (e.defaultPrevented) return;
       if (['ArrowDown', 'PageDown', 'Space'].includes(e.code)) {
         e.preventDefault();
         goToSection(activeIndexRef.current + 1);
@@ -213,27 +238,28 @@ export default function Home() {
         {/* ── Slide 0: Hero ────────────────────────────────────── */}
         <section className={`blago-slide ${activeIndex === 0 ? 'is-active' : ''}`} id="home" aria-hidden={deckEnabled && activeIndex !== 0} inert={deckEnabled && activeIndex !== 0}>
           <div className="kb-hero">
-            <LightRays
-              className="kb-light"
-              raysOrigin="top-center"
-              raysColor="#d5b27e"
-              raysSpeed={0.28}
-              lightSpread={0.82}
-              rayLength={1.3}
-              fadeDistance={1.25}
-              saturation={0.7}
-              followMouse
-              mouseInfluence={0.05}
-              noiseAmount={0.01}
-              distortion={0.016}
-            />
+            {(!deckEnabled || activeIndex === 0) && (
+              <LightRays
+                className="kb-light"
+                raysColor="#d5b27e"
+                followMouse
+                mouseInfluence={0.05}
+              />
+            )}
             <div className="kb-art kb-art--faded">
-              <LogoThreeScene />
+              {(!deckEnabled || activeIndex === 0) && (
+                <Suspense fallback={<div className="kb-logo-placeholder" aria-hidden="true" />}>
+                  <LogoThreeScene />
+                </Suspense>
+              )}
             </div>
             <div className="kb-meta">
-              <span>New Delhi, India</span>
+              <span className="kb-location">
+                <House aria-hidden="true" size={15} strokeWidth={1.7} />
+                <span>New Delhi, India</span>
+              </span>
               <span>Independent engineer &amp; product thinker</span>
-              <span>IST (UTC+5:30)</span>
+              <TimeOfDayIcon />
             </div>
             <div className="kb-hero-copy">
               <h1>
@@ -311,26 +337,34 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-              <ScrollVelocity
-                items={principles}
-                active={activeIndex === 1}
-                idleVelocity={24}
-                maxVelocity={180}
-                copies={4}
-              />
+              {(!deckEnabled || activeIndex === 1) && (
+                <ScrollVelocity
+                  items={principles}
+                  active
+                  idleVelocity={24}
+                  maxVelocity={180}
+                  copies={4}
+                />
+              )}
             </div>
           </div>
         </section>
 
         {/* ── Slide 2: Toolkit ─────────────────────────────────── */}
         <section className={`blago-slide ${activeIndex === 2 ? 'is-active' : ''}`} id="toolkit" aria-hidden={deckEnabled && activeIndex !== 2} inert={deckEnabled && activeIndex !== 2}>
-          <div className="kb-section kb-arsenal">
-            <p className="kb-label">Toolkit</p>
-            <h2>
-              A considered<br />
-              toolkit.
-            </h2>
-            <SkillObservatory />
+          <div className="kb-section kb-arsenal kb-toolkit-layout">
+            <div className="kb-toolkit-intro">
+              <p className="kb-label">Toolkit</p>
+              <h2>
+                A considered<br />
+                <i>toolkit.</i>
+              </h2>
+            </div>
+            {(!deckEnabled || activeIndex === 2) && (
+              <Suspense fallback={<div className="tech-wall tech-wall--loading" aria-hidden="true" />}>
+                <SkillObservatory active />
+              </Suspense>
+            )}
           </div>
         </section>
 
@@ -338,17 +372,67 @@ export default function Home() {
         <section className={`blago-slide ${activeIndex === 3 ? 'is-active' : ''}`} id="work" aria-hidden={deckEnabled && activeIndex !== 3} inert={deckEnabled && activeIndex !== 3}>
           <div className="kb-section">
             <div className="kb-section-head">
-              <p className="kb-label">Selected Work</p>
+              <p className="kb-label">Work</p>
               <h2>
                 Things I've<br />
                 <i>put into motion.</i>
               </h2>
+              <div className="kb-work-context">
+                <BlurText
+                  key={activeIndex === 3 ? 'work-copy-active' : 'work-copy-idle'}
+                  text="A selection of products, experiments, and open-source work."
+                  animateBy="words"
+                  direction="bottom"
+                  delay={62}
+                  stepDuration={0.32}
+                  threshold={0.2}
+                  animationFrom={{ filter: 'blur(6px)', opacity: 0, y: 8 }}
+                  animationTo={[
+                    { filter: 'blur(2px)', opacity: 0.55, y: 2 },
+                    { filter: 'blur(0px)', opacity: 1, y: 0 },
+                  ]}
+                  className="kb-reveal-copy kb-work-intro"
+                />
+                <div className="kb-work-orgs" aria-label="GitHub organizations">
+                  <span><SiGithub size={12} aria-hidden="true" /> Organizations</span>
+                  <div>
+                    {githubOrganizations.map((organization) => (
+                      <a key={organization.handle} href={organization.href} target="_blank" rel="noreferrer">
+                        <img src={`https://github.com/${organization.handle}.png?size=48`} alt="" loading="lazy" decoding="async" />
+                        <span>{organization.name}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="project-orbit">
+              {workIsActive && (
+                <Suspense fallback={<div className="repo-gallery-shell repo-gallery-shell--loading" aria-hidden="true" />}>
+                  <RepositoryGallery projects={projects} loading={loading} />
+                </Suspense>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Slide 4: Music ───────────────────────────────────── */}
+        <section className={`blago-slide ${activeIndex === 4 ? 'is-active' : ''}`} id="music" aria-hidden={deckEnabled && activeIndex !== 4} inert={deckEnabled && activeIndex !== 4}>
+          <div className="kb-music">
+            <div className="kb-music-copy">
+              <p className="kb-label">Music</p>
+              <h2>
+                Making space<br />
+                for <i>sound.</i>
+              </h2>
+            </div>
+            <div className="kb-music-listen">
               <BlurText
-                key={activeIndex === 3 ? 'work-copy-active' : 'work-copy-idle'}
-                text="Drag through a spatial index of products, experiments, and open-source work."
+                key={activeIndex === 4 ? 'music-copy-active' : 'music-copy-idle'}
+                text="Guitar, music production, and original releases — a parallel space for mood, detail, and composition."
                 animateBy="words"
                 direction="bottom"
-                delay={72}
+                delay={54}
                 stepDuration={0.32}
                 threshold={0.2}
                 animationFrom={{ filter: 'blur(6px)', opacity: 0, y: 8 }}
@@ -356,71 +440,33 @@ export default function Home() {
                   { filter: 'blur(2px)', opacity: 0.55, y: 2 },
                   { filter: 'blur(0px)', opacity: 1, y: 0 },
                 ]}
-                className="kb-reveal-copy kb-work-intro"
+                className="kb-reveal-copy kb-music-intro"
               />
-            </div>
-            <div className="project-orbit">
-              <RepositoryGallery projects={projects} loading={loading} />
-            </div>
-          </div>
-        </section>
-
-        {/* ── Slide 4: Exploring ───────────────────────────────── */}
-        <section className={`blago-slide ${activeIndex === 4 ? 'is-active' : ''}`} id="exploring" aria-hidden={deckEnabled && activeIndex !== 4} inert={deckEnabled && activeIndex !== 4}>
-          <div className="kb-section kb-now">
-            <p className="kb-label">Exploring</p>
-            <h2>
-              Always<br />
-              in <i>progress.</i>
-            </h2>
-            <div>
-              {[
-                'Advanced JavaScript',
-                'TypeScript',
-                'System Design',
-                'Testing',
-                'AI Workflows',
-                'Performance Optimization',
-                'Developer Experience',
-              ].map((item) => (
-                <span key={item}>
-                  {item}
-                </span>
-              ))}
+              {(!deckEnabled || activeIndex === 4) && (
+                <iframe
+                  className="kb-spotify-embed"
+                  title="Featured track on Spotify"
+                  src="https://open.spotify.com/embed/track/19uF87i1d51C6AeTrMUWaA?utm_source=generator&theme=0&si=26ffa32d9b8140b7"
+                  width="100%"
+                  height="152"
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                />
+              )}
+              <nav className="kb-music-platforms" aria-label="Listen on music platforms">
+                {musicChannels.map((channel) => (
+                  <a href={channel.url} key={channel.name} target="_blank" rel="noreferrer">
+                    {channel.name}
+                  </a>
+                ))}
+              </nav>
             </div>
           </div>
         </section>
 
-        {/* ── Slide 5: Music ───────────────────────────────────── */}
-        <section className={`blago-slide ${activeIndex === 5 ? 'is-active' : ''}`} id="music" aria-hidden={deckEnabled && activeIndex !== 5} inert={deckEnabled && activeIndex !== 5}>
-          <div className="kb-music">
-            <div>
-              <p className="kb-label">Music</p>
-              <h2>
-                Making space<br />
-                for <i>sound.</i>
-              </h2>
-            </div>
-            <BlurText
-              key={activeIndex === 5 ? 'music-copy-active' : 'music-copy-idle'}
-              text="Guitar, music production, cinematic sound, original releases, and streaming. A second practice in mood, detail, and composition."
-              animateBy="words"
-              direction="bottom"
-              delay={54}
-              stepDuration={0.32}
-              threshold={0.2}
-              animationFrom={{ filter: 'blur(6px)', opacity: 0, y: 8 }}
-              animationTo={[
-                { filter: 'blur(2px)', opacity: 0.55, y: 2 },
-                { filter: 'blur(0px)', opacity: 1, y: 0 },
-              ]}
-              className="kb-reveal-copy kb-music-intro"
-            />
-          </div>
-        </section>
-
-        {/* ── Slide 6: Contact & Footer ───────────────────────── */}
-        <section className={`blago-slide ${activeIndex === 6 ? 'is-active' : ''}`} id="contact" aria-hidden={deckEnabled && activeIndex !== 6} inert={deckEnabled && activeIndex !== 6}>
+        {/* ── Slide 5: Contact & Footer ───────────────────────── */}
+        <section className={`blago-slide ${activeIndex === 5 ? 'is-active' : ''}`} id="contact" aria-hidden={deckEnabled && activeIndex !== 5} inert={deckEnabled && activeIndex !== 5}>
           <div className="kb-closing-card">
             <div className="kb-closing">
               <div className="kb-contact-heading">
@@ -432,7 +478,7 @@ export default function Home() {
                   <i>Let's build it well.</i>
                 </h2>
                 <BlurText
-                  key={activeIndex === 6 ? 'contact-copy-active' : 'contact-copy-idle'}
+                  key={activeIndex === 5 ? 'contact-copy-active' : 'contact-copy-idle'}
                   text="Let's build something worth using."
                   animateBy="letters"
                   direction="bottom"

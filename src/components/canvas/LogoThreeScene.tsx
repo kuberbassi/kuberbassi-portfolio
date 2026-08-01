@@ -81,12 +81,12 @@ export function LogoThreeScene() {
     const camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 1000);
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: false,
       alpha: true,
-      powerPreference: 'high-performance',
+      powerPreference: 'low-power',
     });
     renderer.setSize(w, h);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
     renderer.setClearColor(0x000000, 0); // 100% transparent canvas
     container.appendChild(renderer.domElement);
 
@@ -234,6 +234,15 @@ export function LogoThreeScene() {
     const raycaster = new THREE.Raycaster();
     const mouseNdc = new THREE.Vector2(9999, 9999);
     const planeZ0 = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    let lastInteraction = 0;
+    let animId = 0;
+
+    const startAnimation = () => {
+      lastInteraction = performance.now();
+      if (!animId && !document.hidden) {
+        animId = requestAnimationFrame(animate);
+      }
+    };
 
     const handleMouseMove = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
@@ -248,10 +257,12 @@ export function LogoThreeScene() {
       if (raycaster.ray.intersectPlane(planeZ0, intersect)) {
         mouse2D.copy(intersect);
       }
+      startAnimation();
     };
 
     const handleMouseLeave = () => {
       mouse2D.set(9999, 9999, 0);
+      startAnimation();
       window.dispatchEvent(new CustomEvent('kb:logohover', { detail: false }));
     };
 
@@ -270,15 +281,15 @@ export function LogoThreeScene() {
       h = container.clientHeight;
       renderer.setSize(w, h);
       updateCameraFit();
+      renderer.render(scene, camera);
     };
 
     window.addEventListener('resize', handleResize);
 
     // ── 7. Render Loop: Still in Normal State, Up/Down Displacement ONLY on Hover ─
-    let animId: number;
-
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
+    function animate() {
+      animId = 0;
+      if (document.hidden) return;
 
       // Normal state is completely still; lines ONLY react when hovered by mouse
       instancedMeshes.forEach(({ mesh, items }) => {
@@ -324,13 +335,16 @@ export function LogoThreeScene() {
       });
 
       renderer.render(scene, camera);
-    };
+      if (performance.now() - lastInteraction <= 900) {
+        animId = requestAnimationFrame(animate);
+      }
+    }
 
-    animate();
+    renderer.render(scene, camera);
 
     // ── 8. Cleanup ───────────────────────────────────────────────────────────
     return () => {
-      cancelAnimationFrame(animId);
+      if (animId) cancelAnimationFrame(animId);
       window.dispatchEvent(new CustomEvent('kb:logohover', { detail: false }));
       container.removeEventListener('mouseenter', handleMouseEnter);
       container.removeEventListener('mousemove', handleMouseMove);
@@ -348,6 +362,7 @@ export function LogoThreeScene() {
         }
       });
       renderer.dispose();
+      renderer.forceContextLoss();
 
       if (renderer.domElement && container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);

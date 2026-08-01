@@ -1,29 +1,62 @@
 .repo-gallery-shell {
+  --gallery-progress: 0;
   position: relative;
-  height: clamp(360px, 54dvh, 570px);
+  height: clamp(390px, 57dvh, 610px);
   overflow: hidden;
-  border: 1px solid rgba(213, 178, 126, 0.16);
-  border-radius: 16px;
-  background:
-    radial-gradient(circle at 50% 120%, rgba(213, 178, 126, 0.06), transparent 42%),
-    rgba(5, 5, 4, 0.5);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.035),
-    0 28px 80px rgba(0, 0, 0, 0.22);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   isolation: isolate;
+}
+
+.repo-gallery-shell::after {
+  content: '';
+  position: absolute;
+  top: 32px;
+  right: 0;
+  bottom: 12px;
+  z-index: 4;
+  width: clamp(54px, 7vw, 110px);
+  background: linear-gradient(90deg, transparent, rgba(5, 5, 4, 0.82));
+  pointer-events: none;
 }
 
 .repo-gallery-hint {
   position: absolute;
-  top: 16px;
-  left: 18px;
+  top: 2px;
+  left: 2px;
   z-index: 5;
-  color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 5px 10px;
+  border: 1px solid rgba(213, 178, 126, 0.18);
+  border-radius: 999px;
+  color: var(--color-text-secondary);
+  background: rgba(7, 7, 6, 0.72);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.22);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   pointer-events: none;
+}
+
+.repo-gallery-hint > svg {
+  color: var(--color-accent);
+}
+
+.repo-gallery-hint strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.repo-gallery-hint > span {
+  color: var(--color-text-muted);
+  font-weight: 500;
+  letter-spacing: 0.08em;
 }
 
 .repo-gallery-viewport {
@@ -33,7 +66,6 @@
   scrollbar-width: none;
   cursor: grab;
   overscroll-behavior: contain;
-  scroll-snap-type: x mandatory;
   touch-action: pan-x;
 }
 
@@ -41,10 +73,92 @@
   display: none;
 }
 
-.repo-gallery-viewport[data-dragging='true'] {
+.repo-gallery-viewport[data-dragging='true'],
+.repo-gallery-viewport[data-gliding='true'] {
   cursor: grabbing;
   scroll-snap-type: none;
   user-select: none;
+}
+
+.repo-gallery-viewport[data-gliding='true'] {
+  cursor: grab;
+}
+
+.repo-gallery-shell .repo-gallery-cue {
+  position: absolute;
+  top: 50%;
+  right: clamp(18px, 3vw, 48px);
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  width: 112px;
+  height: 112px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: transparent;
+  box-shadow: none;
+  filter:
+    drop-shadow(0 5px 5px rgba(0, 0, 0, 0.72))
+    drop-shadow(0 0 9px rgba(213, 178, 126, 0.38));
+  transform: translateY(-50%);
+  transition: opacity 260ms ease, filter 220ms ease, visibility 260ms ease;
+  animation: repo-cue-point 1.35s cubic-bezier(.2, .75, .25, 1) infinite;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.repo-gallery-cue > svg {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+}
+
+.repo-gallery-cue__arrow {
+  color: #ddb97e;
+}
+
+.repo-gallery-shell .repo-gallery-cue.is-hidden {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-50%) translateX(22px);
+  animation: none;
+  pointer-events: none;
+}
+
+.repo-gallery-progress {
+  position: absolute;
+  right: 2px;
+  bottom: 1px;
+  left: 2px;
+  z-index: 6;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.09);
+  pointer-events: none;
+}
+
+.repo-gallery-progress > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #8e7045, #d5b27e);
+  box-shadow: 0 0 8px rgba(213, 178, 126, 0.48);
+  transform: scaleX(max(0.045, var(--gallery-progress)));
+  transform-origin: left center;
+}
+
+@keyframes repo-cue-point {
+  0%, 100% {
+    opacity: 0.72;
+    transform: translateY(-50%) translateX(0);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(15px);
+  }
 }
 
 .repo-gallery-track {
@@ -54,18 +168,13 @@
   width: max-content;
   min-width: 100%;
   height: 100%;
-  padding: 46px max(5vw, calc((100vw - 1440px) / 2 + 2vw)) 24px;
+  padding: 34px 2px 10px;
 }
 
 .repo-gallery-card {
-  --orbit-y: 0px;
-  --orbit-rotate: 0deg;
-  --orbit-scale: 1;
-  --shine-x: 50%;
-  --shine-y: 30%;
   position: relative;
-  flex: 0 0 clamp(300px, 27vw, 390px);
-  height: min(450px, calc(100% - 14px));
+  flex: 0 0 clamp(320px, 28vw, 430px);
+  height: min(490px, calc(100% - 10px));
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
@@ -75,13 +184,12 @@
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.34),
     inset 0 1px 0 rgba(255, 255, 255, 0.035);
-  transform: translate3d(0, var(--orbit-y), 0) rotate(var(--orbit-rotate)) scale(var(--orbit-scale));
-  transform-origin: center;
   transition:
-    transform 180ms linear,
     border-color var(--duration-base) var(--ease-default),
     box-shadow var(--duration-base) var(--ease-default);
-  scroll-snap-align: center;
+  contain: layout paint style;
+  content-visibility: auto;
+  contain-intrinsic-size: 430px 490px;
 }
 
 .repo-gallery-card:hover {
@@ -94,7 +202,7 @@
 
 .repo-gallery-card__media {
   position: relative;
-  height: 45%;
+  height: 50%;
   overflow: hidden;
   border-bottom: 1px solid rgba(255, 255, 255, 0.09);
   background:
@@ -124,12 +232,23 @@
   pointer-events: none;
 }
 
+.repo-gallery-card__preview,
 .repo-gallery-card__media img {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
+}
+
+.repo-gallery-card__preview {
+  position: relative;
+  overflow: hidden;
+}
+
+.repo-gallery-card__media img {
   object-fit: cover;
   object-position: top center;
-  opacity: 0.88;
+  opacity: 0;
   filter: saturate(0.82) contrast(1.02);
   transition:
     opacity var(--duration-base) var(--ease-default),
@@ -137,9 +256,30 @@
     transform 700ms var(--ease-default);
 }
 
-.repo-gallery-card:hover .repo-gallery-card__media img {
-  opacity: 1;
-  filter: saturate(1) contrast(1.03);
+.repo-gallery-card__preview-placeholder {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, 0.045) 42%, transparent 64%),
+    rgba(12, 12, 10, 0.94);
+  background-size: 240% 100%;
+  animation: repo-loading 1.5s linear infinite;
+  transition: opacity 220ms ease;
+}
+
+.repo-gallery-card__preview.is-loaded img {
+  opacity: 0.76;
+  filter: brightness(0.78) saturate(0.76) contrast(1.03);
+}
+
+.repo-gallery-card__preview.is-loaded .repo-gallery-card__preview-placeholder {
+  opacity: 0;
+  animation: none;
+}
+
+.repo-gallery-card:hover .repo-gallery-card__preview.is-loaded img {
+  opacity: 0.98;
+  filter: brightness(1) saturate(1) contrast(1.03);
   transform: scale(1.018);
 }
 
@@ -160,7 +300,7 @@
 .repo-gallery-card__body {
   display: flex;
   flex-direction: column;
-  height: 55%;
+  height: 50%;
   padding: 18px;
 }
 
@@ -267,24 +407,6 @@
     0 0 22px rgba(213, 178, 126, 0.23);
 }
 
-.repo-gallery-card__shine {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  opacity: 0;
-  pointer-events: none;
-  background: radial-gradient(
-    260px circle at var(--shine-x) var(--shine-y),
-    rgba(255, 244, 220, 0.16),
-    transparent 58%
-  );
-  transition: opacity var(--duration-base) var(--ease-default);
-}
-
-.repo-gallery-card:hover .repo-gallery-card__shine {
-  opacity: 1;
-}
-
 .repo-gallery-card--loading {
   background:
     linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, 0.045) 42%, transparent 64%),
@@ -308,8 +430,18 @@
 
   .repo-gallery-card {
     flex-basis: min(82vw, 340px);
-    height: 390px;
-    transform: none;
+    height: 410px;
+  }
+
+  .repo-gallery-cue {
+    right: 12px;
+    width: 64px;
+    height: 64px;
+  }
+
+  .repo-gallery-cue > svg {
+    width: 54px;
+    height: 54px;
   }
 }
 
@@ -322,13 +454,16 @@
 
 @media (prefers-reduced-motion: reduce) {
   .repo-gallery-card,
-  .repo-gallery-card__media img,
-  .repo-gallery-card__shine {
+  .repo-gallery-card__media img {
     transition: none;
     transform: none;
   }
 
   .repo-gallery-card--loading {
+    animation: none;
+  }
+
+  .repo-gallery-cue {
     animation: none;
   }
 }

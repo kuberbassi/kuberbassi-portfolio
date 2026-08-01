@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { useReducedMotion } from 'motion/react';
 
 type ScrollVelocityProps = {
   items: string[];
@@ -32,7 +31,7 @@ export function ScrollVelocity({
   const sequenceWidthRef = useRef(0);
   const lastCenterItemRef = useRef<HTMLElement | null>(null);
   const isMobileRef = useRef(false);
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   useEffect(() => {
     activeRef.current = active;

@@ -1,0 +1,201 @@
+.pinned-horizontal-scroll {
+  --phs-accent: var(--theme-accent, #d5b27e);
+  --phs-text: var(--theme-text, #f5f3ef);
+  --phs-muted: var(--theme-text-secondary, #aaa59d);
+  --phs-line: var(--theme-border, rgba(255, 255, 255, 0.09));
+  --phs-ease: var(--ease-section, cubic-bezier(0.16, 1, 0.3, 1));
+
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--phs-text);
+  background:
+    radial-gradient(circle at 78% 44%, rgba(213, 178, 126, 0.055), transparent 34%),
+    var(--theme-bg, #080807);
+  outline: none;
+}
+
+.pinned-horizontal-scroll:focus-visible {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--phs-accent) 58%, transparent);
+}
+
+.pinned-horizontal-scroll__header {
+  position: absolute;
+  top: clamp(2rem, 5vw, 4.75rem);
+  left: clamp(1.5rem, 5vw, 6rem);
+  z-index: 2;
+}
+
+.pinned-horizontal-scroll__eyebrow {
+  color: var(--phs-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.pinned-horizontal-scroll__title {
+  max-width: 12ch;
+  margin-top: 0.7rem;
+  font: inherit;
+  font-size: clamp(1.75rem, 3vw, 3.25rem);
+  letter-spacing: -0.04em;
+}
+
+.pinned-horizontal-scroll__viewport {
+  grid-row: 1 / -1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.pinned-horizontal-scroll__track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+  transition: transform var(--phs-duration, 900ms) var(--phs-ease);
+}
+
+.pinned-horizontal-scroll__panel {
+  display: grid;
+  width: 100%;
+  min-width: 100%;
+  min-height: 100svh;
+  flex: 0 0 100%;
+  place-items: center;
+  padding:
+    clamp(7rem, 14vh, 10rem)
+    clamp(1.5rem, 5vw, 6rem)
+    clamp(5.5rem, 10vh, 7.5rem);
+  opacity: 0.14;
+  transition: opacity 480ms var(--ease-out, ease);
+}
+
+.pinned-horizontal-scroll__panel > * {
+  transform: translate3d(18px, 0, 0) scale(0.992);
+  transition: transform 820ms var(--phs-ease);
+  will-change: transform;
+}
+
+.pinned-horizontal-scroll__panel[data-position='before'] > * {
+  transform: translate3d(-18px, 0, 0) scale(0.992);
+}
+
+.pinned-horizontal-scroll__panel[data-active='true'] {
+  opacity: 1;
+}
+
+.pinned-horizontal-scroll__panel[data-active='true'] > * {
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.pinned-horizontal-scroll__progress {
+  position: absolute;
+  left: clamp(1.5rem, 5vw, 6rem);
+  bottom: clamp(2rem, 5vw, 4.5rem);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.pinned-horizontal-scroll__progress-button {
+  display: grid;
+  width: 1.25rem;
+  height: 1.5rem;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.pinned-horizontal-scroll__progress-button span {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--phs-line);
+  transform-origin: left center;
+  transition:
+    width 320ms var(--phs-ease),
+    background-color 320ms ease;
+}
+
+.pinned-horizontal-scroll__progress-button[aria-current='step'] {
+  width: 2.25rem;
+}
+
+.pinned-horizontal-scroll__progress-button[aria-current='step'] span {
+  background: var(--phs-accent);
+}
+
+.pinned-horizontal-scroll__progress-button:focus-visible {
+  outline: 1px solid var(--phs-accent);
+  outline-offset: 3px;
+}
+
+.pinned-horizontal-scroll__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 767px), (pointer: coarse) {
+  .pinned-horizontal-scroll {
+    display: block;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .pinned-horizontal-scroll__header {
+    position: relative;
+    top: auto;
+    left: auto;
+    padding: 4.5rem 1.25rem 1rem;
+  }
+
+  .pinned-horizontal-scroll__viewport {
+    overflow: visible;
+  }
+
+  .pinned-horizontal-scroll__track {
+    display: grid;
+    transform: none !important;
+    transition: none;
+  }
+
+  .pinned-horizontal-scroll__panel {
+    width: auto;
+    min-width: 0;
+    min-height: min(82svh, 46rem);
+    padding: 3rem 1.25rem;
+    opacity: 1;
+    border-top: 1px solid var(--phs-line);
+  }
+
+  .pinned-horizontal-scroll__panel > * {
+    transform: none;
+    transition: none;
+  }
+
+  .pinned-horizontal-scroll__progress {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pinned-horizontal-scroll__track,
+  .pinned-horizontal-scroll__panel,
+  .pinned-horizontal-scroll__panel > *,
+  .pinned-horizontal-scroll__progress-button span {
+    transition: none;
+  }
+}

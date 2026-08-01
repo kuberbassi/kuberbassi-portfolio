@@ -106,11 +106,13 @@ export async function fetchLiveGitHubProjects(): Promise<Project[]> {
   }
 }
 
-export function useGitHubProjects() {
+export function useGitHubProjects(enabled = true) {
   const [projectsList, setProjectsList] = useState<Project[]>(fallbackProjects);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    if (!enabled) return;
+
     let isMounted = true;
     fetchLiveGitHubProjects().then((data) => {
       if (isMounted) {
@@ -121,7 +123,7 @@ export function useGitHubProjects() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [enabled]);
 
   return { projects: projectsList, loading };
 }

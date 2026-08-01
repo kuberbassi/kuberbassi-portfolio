@@ -17,20 +17,25 @@
 
 .section-indicator__track {
   display: flex;
+  width: 44px;
   flex-direction: column;
   align-items: flex-end;
   gap: 10px;
-  pointer-events: all;
+  pointer-events: auto;
 }
 
 /* ── Each section marker ──────────────────────────────────── */
 .section-indicator__item {
   position: relative;
   display: flex;
+  width: 44px;
+  justify-content: flex-end;
   align-items: center;
   gap: 10px;
   background: none;
   border: none;
+  overflow: visible;
+  isolation: auto;
   padding: 4px 0;
   cursor: pointer;
   outline: none;
@@ -46,14 +51,15 @@
   transition:
     width 240ms var(--ease-out),
     background-color 220ms ease,
-    opacity 220ms ease;
+    opacity 220ms ease,
+    box-shadow 220ms ease;
   flex-shrink: 0;
 }
 
 /* Label — hidden by default, revealed on active/hover */
 .section-indicator__label {
   position: absolute;
-  right: calc(100% + 12px);
+  right: 32px;
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -63,6 +69,7 @@
   opacity: 0;
   transform: translateX(6px);
   transition:
+    right 240ms var(--ease-out),
     opacity 220ms ease,
     transform 240ms var(--ease-out);
   pointer-events: none;
@@ -74,10 +81,12 @@
 .section-indicator__item:focus-visible .section-indicator__dash {
   background: rgba(213, 178, 126, 0.55);
   width: 26px;
+  box-shadow: none;
 }
 
 .section-indicator__item:hover .section-indicator__label,
 .section-indicator__item:focus-visible .section-indicator__label {
+  right: 38px;
   opacity: 1;
   transform: translateX(0);
 }
@@ -99,6 +108,7 @@
 
 .section-indicator__item.is-active:hover .section-indicator__label,
 .section-indicator__item.is-active:focus-visible .section-indicator__label {
+  right: 44px;
   opacity: 1;
   transform: translateX(0);
 }

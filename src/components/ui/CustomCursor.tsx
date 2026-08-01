@@ -1,132 +1,80 @@
-import { useEffect, useState, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+
+type CursorMode = 'idle' | 'interactive' | 'label';
 
 export function CustomCursor() {
-  const [cursorText, setCursorText] = useState('');
-  const [isHovered, setIsHovered] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const cursorRef = useRef<HTMLDivElement | null>(null);
-  const requestRef = useRef<number | null>(null);
-  const mousePos = useRef({ x: -100, y: -100 });
-  const visibleRef = useRef(false);
-  const hoveredRef = useRef(false);
-  const cursorTextRef = useRef('');
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<number | null>(null);
+  const positionRef = useRef({ x: -80, y: -80 });
+  const currentRef = useRef({ x: -80, y: -80 });
+  const modeRef = useRef<CursorMode>('idle');
+  const labelRef = useRef('');
+  const [mode, setMode] = useState<CursorMode>('idle');
+  const [label, setLabel] = useState('');
 
   useEffect(() => {
-    // Touch and reduced-motion users retain the platform cursor.
-    if (
-      window.matchMedia('(pointer: coarse), (prefers-reduced-motion: reduce)').matches
-    ) {
-      return;
-    }
+    const enabled = window.matchMedia('(pointer: fine) and (hover: hover)').matches
+      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!enabled) return;
 
-    const updateVisible = (next: boolean) => {
-      if (visibleRef.current === next) return;
-      visibleRef.current = next;
-      setIsVisible(next);
-    };
+    const root = document.documentElement;
+    root.dataset.customCursor = 'true';
 
-    const onMouseMove = (e: MouseEvent) => {
-      mousePos.current = { x: e.clientX, y: e.clientY };
-      updateVisible(true);
-
-      // Check for interactive targets
-      const target = e.target as HTMLElement | null;
-      if (!target) return;
-
-      const cursorTarget = target.closest('[data-cursor]') as HTMLElement | null;
-      const clickableTarget = target.closest('a, button, input, textarea, [role="button"]') as HTMLElement | null;
-
-      if (cursorTarget) {
-        const nextText = cursorTarget.getAttribute('data-cursor') || '';
-        if (cursorTextRef.current !== nextText) {
-          cursorTextRef.current = nextText;
-          setCursorText(nextText);
-        }
-        if (!hoveredRef.current) {
-          hoveredRef.current = true;
-          setIsHovered(true);
-        }
-      } else if (clickableTarget) {
-        if (cursorTextRef.current) {
-          cursorTextRef.current = '';
-          setCursorText('');
-        }
-        if (!hoveredRef.current) {
-          hoveredRef.current = true;
-          setIsHovered(true);
-        }
+    const paint = () => {
+      const current = currentRef.current;
+      const target = positionRef.current;
+      current.x += (target.x - current.x) * 0.2;
+      current.y += (target.y - current.y) * 0.2;
+      cursorRef.current?.style.setProperty(
+        'transform',
+        `translate3d(${current.x}px, ${current.y}px, 0) translate(-50%, -50%)`,
+      );
+      if (Math.abs(target.x - current.x) > 0.12 || Math.abs(target.y - current.y) > 0.12) {
+        frameRef.current = requestAnimationFrame(paint);
       } else {
-        if (cursorTextRef.current) {
-          cursorTextRef.current = '';
-          setCursorText('');
-        }
-        if (hoveredRef.current) {
-          hoveredRef.current = false;
-          setIsHovered(false);
-        }
+        current.x = target.x;
+        current.y = target.y;
+        frameRef.current = null;
       }
     };
 
-    const onMouseLeave = () => updateVisible(false);
-    const onMouseEnter = () => updateVisible(true);
+    const onPointerMove = (event: PointerEvent) => {
+      positionRef.current = { x: event.clientX, y: event.clientY };
+      cursorRef.current?.classList.add('is-visible');
+      if (frameRef.current === null) frameRef.current = requestAnimationFrame(paint);
 
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
-    document.addEventListener('mouseleave', onMouseLeave);
-    document.addEventListener('mouseenter', onMouseEnter);
-
-    // Smooth lerp loop
-    let currentX = -100;
-    let currentY = -100;
-
-    const loop = () => {
-      currentX += (mousePos.current.x - currentX) * 0.2;
-      currentY += (mousePos.current.y - currentY) * 0.2;
-      if (cursorRef.current) {
-        cursorRef.current.style.transform =
-          `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`;
+      const target = event.target instanceof Element ? event.target : null;
+      const labelled = target?.closest<HTMLElement>('[data-cursor]');
+      const nextLabel = labelled?.dataset.cursor ?? '';
+      const interactive = labelled || target?.closest('a, button, input, textarea, select, [role="button"]');
+      const nextMode: CursorMode = nextLabel ? 'label' : interactive ? 'interactive' : 'idle';
+      if (labelRef.current !== nextLabel) {
+        labelRef.current = nextLabel;
+        setLabel(nextLabel);
       }
-      requestRef.current = requestAnimationFrame(loop);
+      if (modeRef.current !== nextMode) {
+        modeRef.current = nextMode;
+        setMode(nextMode);
+      }
     };
 
-    loop();
+    const hide = () => cursorRef.current?.classList.remove('is-visible');
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    document.addEventListener('mouseleave', hide);
+    window.addEventListener('blur', hide);
 
     return () => {
-      window.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseleave', onMouseLeave);
-      document.removeEventListener('mouseenter', onMouseEnter);
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+      delete root.dataset.customCursor;
+      window.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('mouseleave', hide);
+      window.removeEventListener('blur', hide);
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
     };
   }, []);
 
-  if (!isVisible) return null;
-
   return (
-    <motion.div
-      ref={cursorRef}
-      className="fixed top-0 left-0 pointer-events-none z-[var(--z-toast)] flex items-center justify-center rounded-full bg-[var(--color-accent)] mix-blend-difference text-[var(--color-text-inverse)] font-mono text-[10px] font-bold uppercase tracking-widest text-center shadow-glow"
-      initial={{ opacity: 0 }}
-      animate={{
-        width: cursorText ? 64 : isHovered ? 40 : 12,
-        height: cursorText ? 64 : isHovered ? 40 : 12,
-        opacity: isVisible ? 1 : 0,
-      }}
-      transition={{
-        type: 'spring',
-        stiffness: 400,
-        damping: 28,
-        mass: 0.5,
-      }}
-    >
-      {cursorText && (
-        <motion.span
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.5 }}
-        >
-          {cursorText}
-        </motion.span>
-      )}
-    </motion.div>
+    <div ref={cursorRef} className="custom-cursor" data-mode={mode} aria-hidden="true">
+      {label && <span>{label}</span>}
+    </div>
   );
 }

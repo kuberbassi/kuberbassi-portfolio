@@ -9,13 +9,6 @@ export const musicChannels: MusicChannel[] = [
     tuning: 35,
   },
   {
-    name: 'Apple Music',
-    desc: 'Lossless audio distribution channel.',
-    url: 'https://music.apple.com/in/artist/ku%CE%B2er-%CE%B2%CE%B4ssi/1763841556',
-    status: 'ACTIVE',
-    tuning: 55,
-  },
-  {
     name: 'YouTube',
     desc: 'Performances, guitar covers, and visual studio recordings.',
     url: 'https://www.youtube.com/channel/UCcw12FyihnsK7TEHFBVHApw',
@@ -23,11 +16,11 @@ export const musicChannels: MusicChannel[] = [
     tuning: 15,
   },
   {
-    name: 'YouTube Music',
-    desc: 'Streaming archive & radio discovery.',
-    url: 'https://music.youtube.com/channel/UCnom0oKiYYa_PLEUpczvOVQ',
-    status: 'TRANSMITTING',
-    tuning: 75,
+    name: 'Apple Music',
+    desc: 'Lossless audio distribution channel.',
+    url: 'https://music.apple.com/in/artist/ku%CE%B2er-%CE%B2%CE%B4ssi/1763841556',
+    status: 'ACTIVE',
+    tuning: 55,
   },
   {
     name: 'Amazon Music',
@@ -35,6 +28,13 @@ export const musicChannels: MusicChannel[] = [
     url: 'https://music.amazon.in/artists/B0DDQ7M12J',
     status: 'ONLINE',
     tuning: 95,
+  },
+  {
+    name: 'YouTube Music',
+    desc: 'Streaming archive & radio discovery.',
+    url: 'https://music.youtube.com/channel/UCnom0oKiYYa_PLEUpczvOVQ',
+    status: 'TRANSMITTING',
+    tuning: 75,
   },
 ];
 

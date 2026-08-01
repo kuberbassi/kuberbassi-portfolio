@@ -5,8 +5,7 @@ const links = [
   { href: '#about', label: 'About', index: 1 },
   { href: '#toolkit', label: 'Toolkit', index: 2 },
   { href: '#work', label: 'Work', index: 3 },
-  { href: '#exploring', label: 'Exploring', index: 4 },
-  { href: '#music', label: 'Music', index: 5 },
+  { href: '#music', label: 'Music', index: 4 },
 ];
 
 function navigateToSection(index: number) {
@@ -49,7 +48,7 @@ export function Navbar() {
           className="nav-hello"
           href="#contact"
           size="md"
-          radius={22}
+          radius={12}
           tint="#d5b27e"
           tintOpacity={0.88}
           textColor="#080807"
@@ -60,7 +59,7 @@ export function Navbar() {
           shineFade={34}
           onClick={(event) => {
             event.preventDefault();
-            navigateToSection(6);
+            navigateToSection(5);
           }}
         >
           Let's talk <ArrowUpRight size={14} />
