@@ -7,6 +7,7 @@ import './RepositoryGallery.css';
 interface RepositoryGalleryProps {
   projects: Project[];
   loading?: boolean;
+  error?: string | null;
 }
 
 const resolvedPreviewSources = new Map<string, string>();
@@ -58,9 +59,11 @@ function ProjectPreview({ project, eager }: { project: Project; eager: boolean }
       {src ? (
         <img
           src={src}
+          draggable={false}
           alt={`${project.title} project preview`}
           loading={eager ? 'eager' : 'lazy'}
           decoding="async"
+          onDragStart={(event) => event.preventDefault()}
           onLoad={() => {
             resolvedPreviewSources.set(project.slug, src);
             setLoaded(true);
@@ -76,7 +79,7 @@ function ProjectPreview({ project, eager }: { project: Project; eager: boolean }
   );
 }
 
-export function RepositoryGallery({ projects, loading = false }: RepositoryGalleryProps) {
+export function RepositoryGallery({ projects, loading = false, error = null }: RepositoryGalleryProps) {
   const shellRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef({ active: false, startX: 0, latestX: 0, scrollLeft: 0, frame: 0 });
@@ -156,13 +159,14 @@ export function RepositoryGallery({ projects, loading = false }: RepositoryGalle
 
   return (
     <div className="repo-gallery-shell" ref={shellRef}>
-      <span className="repo-gallery-hint">
+      {!error && projects.length > 0 && <span className="repo-gallery-hint">
         <MoveHorizontal size={14} aria-hidden="true" />
         <strong>Drag or scroll to explore</strong>
         <span>Arrow keys also work</span>
-      </span>
+      </span>}
       <div
         className="repo-gallery-viewport"
+        data-cursor="Drag"
         ref={viewportRef}
         role="region"
         aria-label="GitHub project gallery"
@@ -221,6 +225,7 @@ export function RepositoryGallery({ projects, loading = false }: RepositoryGalle
             frame: 0,
           };
           viewport.dataset.dragging = 'true';
+          window.dispatchEvent(new CustomEvent('kb:horizontaldrag', { detail: true }));
           viewport.setPointerCapture(event.pointerId);
         }}
         onPointerMove={(event) => {
@@ -247,6 +252,7 @@ export function RepositoryGallery({ projects, loading = false }: RepositoryGalle
           dragRef.current.active = false;
           if (viewportRef.current) glideRef.current.target = viewportRef.current.scrollLeft;
           delete viewportRef.current?.dataset.dragging;
+          window.dispatchEvent(new CustomEvent('kb:horizontaldrag', { detail: false }));
           if (viewportRef.current?.hasPointerCapture(event.pointerId)) {
             viewportRef.current.releasePointerCapture(event.pointerId);
           }
@@ -257,9 +263,16 @@ export function RepositoryGallery({ projects, loading = false }: RepositoryGalle
           dragRef.current.active = false;
           if (viewportRef.current) glideRef.current.target = viewportRef.current.scrollLeft;
           delete viewportRef.current?.dataset.dragging;
+          window.dispatchEvent(new CustomEvent('kb:horizontaldrag', { detail: false }));
         }}
       >
         <div className="repo-gallery-track">
+          {!loading && (error || projects.length === 0) && (
+            <div className="repo-gallery-empty" role="status">
+              <strong>GitHub projects could not be loaded.</strong>
+              <span>{error ?? 'No public GitHub projects are available right now.'}</span>
+            </div>
+          )}
           {(loading ? Array.from({ length: 4 }) : projects).map((project, index) =>
             loading ? (
               <div className="repo-gallery-card repo-gallery-card--loading" key={index} />
@@ -333,15 +346,15 @@ export function RepositoryGallery({ projects, loading = false }: RepositoryGalle
           )}
         </div>
       </div>
-      <span
+      {!error && projects.length > 0 && <span
         className={`repo-gallery-cue${hasExplored ? ' is-hidden' : ''}`}
         aria-hidden="true"
       >
         <ArrowRight className="repo-gallery-cue__arrow" strokeWidth={1.3} />
-      </span>
-      <div className="repo-gallery-progress" aria-hidden="true">
+      </span>}
+      {!error && projects.length > 0 && <div className="repo-gallery-progress" aria-hidden="true">
         <span />
-      </div>
+      </div>}
     </div>
   );
 }

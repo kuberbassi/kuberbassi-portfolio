@@ -19,6 +19,7 @@ import { LightRays } from '../components/effects/LightRays';
 import { useGitHubProjects } from '../services/githubRepos';
 import { musicChannels } from '../data/music';
 import '../styles/portfolio.css';
+import { usePortfolioMotion } from '../hooks/usePortfolioMotion';
 
 const LogoThreeScene = lazy(() =>
   import('../components/canvas/LogoThreeScene').then(({ LogoThreeScene: Component }) => ({
@@ -82,15 +83,29 @@ const SECTIONS = [
 
 export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [leavingIndex, setLeavingIndex] = useState<number | null>(null);
   const [deckEnabled, setDeckEnabled] = useState(() => !window.matchMedia('(max-width: 768px), (pointer: coarse)').matches);
   const workIsActive = !deckEnabled || activeIndex === 3;
+  const heroIsActive = !deckEnabled || activeIndex === 0;
+  const aboutIsActive = !deckEnabled || activeIndex === 1;
+  const toolkitIsActive = !deckEnabled || activeIndex === 2;
+  const musicIsActive = !deckEnabled || activeIndex === 4;
+  const heroPresent = heroIsActive || leavingIndex === 0;
+  const aboutPresent = aboutIsActive || leavingIndex === 1;
+  const toolkitPresent = toolkitIsActive || leavingIndex === 2;
+  const musicPresent = musicIsActive || leavingIndex === 4;
   const [workMounted, setWorkMounted] = useState(() => !deckEnabled);
-  const { projects, loading } = useGitHubProjects(workMounted);
+  const { projects, loading, error: projectsError } = useGitHubProjects(workMounted);
   const activeIndexRef = useRef(0);
   const isAnimatingRef = useRef(false);
   const touchStartYRef = useRef(0);
   const wheelDeltaRef = useRef(0);
   const wheelResetRef = useRef(0);
+  const leavingTimerRef = useRef(0);
+  const deckRootRef = useRef<HTMLDivElement>(null);
+  const deckSliderRef = useRef<HTMLDivElement>(null);
+
+  usePortfolioMotion({ rootRef: deckRootRef, sliderRef: deckSliderRef, activeIndex, deckEnabled });
 
   useEffect(() => {
     if (workIsActive) setWorkMounted(true);
@@ -98,17 +113,23 @@ export default function Home() {
 
   const goToSection = useCallback((index: number) => {
     if (index < 0 || index >= SECTIONS.length) return;
+    if (index === activeIndexRef.current) return;
     if (isAnimatingRef.current) return;
 
     isAnimatingRef.current = true;
+    setLeavingIndex(activeIndexRef.current);
+    window.clearTimeout(leavingTimerRef.current);
+    leavingTimerRef.current = window.setTimeout(() => setLeavingIndex(null), 1400);
     activeIndexRef.current = index;
     setActiveIndex(index);
     window.dispatchEvent(new CustomEvent('kb:sectionchange', { detail: index }));
 
     window.setTimeout(() => {
       isAnimatingRef.current = false;
-    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 80 : 900);
+    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 360 : 1750);
   }, []);
+
+  useEffect(() => () => window.clearTimeout(leavingTimerRef.current), []);
 
   useEffect(() => {
     const navigate = (index: number) => {
@@ -118,7 +139,6 @@ export default function Home() {
       window.history.replaceState(null, '', `#${section.id}`);
 
       if (deckEnabled) {
-        isAnimatingRef.current = false;
         goToSection(index);
         return;
       }
@@ -241,7 +261,8 @@ export default function Home() {
   }, [goToSection]);
 
   return (
-    <div className="blago-deck-container">
+    <div className="blago-deck-container" ref={deckRootRef}>
+      <div className="portfolio-load-curtain" aria-hidden="true" />
       {/* Right-rail section indicator */}
       <SectionIndicator
         sections={SECTIONS}
@@ -252,14 +273,12 @@ export default function Home() {
       {/* Full-screen stacked slides wrapper */}
       <div
         className="blago-deck-slider"
-        style={{
-          transform: `translate3d(0, -${activeIndex * 100}dvh, 0)`,
-        }}
+        ref={deckSliderRef}
       >
         {/* ── Slide 0: Hero ────────────────────────────────────── */}
         <section className={`blago-slide ${activeIndex === 0 ? 'is-active' : ''}`} id="home" aria-hidden={deckEnabled && activeIndex !== 0} inert={deckEnabled && activeIndex !== 0}>
           <div className="kb-hero">
-            {(!deckEnabled || activeIndex === 0) && (
+            {heroPresent && (
               <LightRays
                 className="kb-light"
                 raysColor="#d5b27e"
@@ -268,7 +287,7 @@ export default function Home() {
               />
             )}
             <div className="kb-art kb-art--faded">
-              {(!deckEnabled || activeIndex === 0) && (
+              {heroPresent && (
                 <Suspense fallback={<div className="kb-logo-placeholder" aria-hidden="true" />}>
                   <LogoThreeScene />
                 </Suspense>
@@ -287,7 +306,6 @@ export default function Home() {
                 Building thoughtful systems that make technology feel <i>effortless.</i>
               </h1>
               <BlurText
-                key={activeIndex === 0 ? 'hero-copy-active' : 'hero-copy-idle'}
                 text="Turning ideas into clean, useful, and reliable digital products."
                 animateBy="letters"
                 direction="bottom"
@@ -332,7 +350,6 @@ export default function Home() {
                 <i>Carefully made.</i>
               </h2>
               <BlurText
-                key={activeIndex === 1 ? 'about-active' : 'about-idle'}
                 text="I build software, products, and creative tools with simplicity, performance, and long-term thinking."
                 animateBy="letters"
                 direction="bottom"
@@ -358,10 +375,10 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-              {(!deckEnabled || activeIndex === 1) && (
+              {aboutPresent && (
                 <ScrollVelocity
                   items={principles}
-                  active
+                  active={aboutIsActive}
                   idleVelocity={24}
                   maxVelocity={180}
                   copies={4}
@@ -381,9 +398,9 @@ export default function Home() {
                 <i>toolkit.</i>
               </h2>
             </div>
-            {(!deckEnabled || activeIndex === 2) && (
+            {toolkitPresent && (
               <Suspense fallback={<div className="tech-wall tech-wall--loading" aria-hidden="true" />}>
-                <SkillObservatory active />
+                <SkillObservatory active={toolkitIsActive} />
               </Suspense>
             )}
           </div>
@@ -400,7 +417,6 @@ export default function Home() {
               </h2>
               <div className="kb-work-context">
                 <BlurText
-                  key={activeIndex === 3 ? 'work-copy-active' : 'work-copy-idle'}
                   text="A selection of products, experiments, and open-source work."
                   animateBy="words"
                   direction="bottom"
@@ -445,7 +461,7 @@ export default function Home() {
             <div className="project-orbit">
               {workMounted && (
                 <Suspense fallback={<div className="repo-gallery-shell repo-gallery-shell--loading" aria-hidden="true" />}>
-                  <RepositoryGallery projects={projects} loading={loading} />
+                  <RepositoryGallery projects={projects} loading={loading} error={projectsError} />
                 </Suspense>
               )}
             </div>
@@ -464,7 +480,6 @@ export default function Home() {
             </div>
             <div className="kb-music-listen">
               <BlurText
-                key={activeIndex === 4 ? 'music-copy-active' : 'music-copy-idle'}
                 text="Original music, cinematic sound, and guitar — another way I build with intention."
                 animateBy="words"
                 direction="bottom"
@@ -478,17 +493,22 @@ export default function Home() {
                 ]}
                 className="kb-reveal-copy kb-music-intro"
               />
-              {(!deckEnabled || activeIndex === 4) && (
-                <iframe
+              {musicPresent && (
+                <div className="kb-spotify-shell">
+                  <span className="kb-spotify-skeleton" aria-hidden="true" />
+                  <iframe
                   className="kb-spotify-embed"
                   title="Featured track on Spotify"
                   src="https://open.spotify.com/embed/track/19uF87i1d51C6AeTrMUWaA?utm_source=generator&theme=0&si=26ffa32d9b8140b7"
                   width="100%"
                   height="152"
                   allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                  allowFullScreen
                   loading="lazy"
-                />
+                  onMouseEnter={() => window.dispatchEvent(new CustomEvent('kb:cursorsuspend', { detail: true }))}
+                  onMouseLeave={() => window.dispatchEvent(new CustomEvent('kb:cursorsuspend', { detail: false }))}
+                  onLoad={(event) => event.currentTarget.parentElement?.classList.add('is-ready')}
+                  />
+                </div>
               )}
               <nav className="kb-music-platforms" aria-label="Listen on music platforms">
                 {musicChannels.map((channel) => {
@@ -538,7 +558,6 @@ export default function Home() {
                   <i>Let's build it well.</i>
                 </h2>
                 <BlurText
-                  key={activeIndex === 5 ? 'contact-copy-active' : 'contact-copy-idle'}
                   text="Let's build something worth using."
                   animateBy="letters"
                   direction="bottom"

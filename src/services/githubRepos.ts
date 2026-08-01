@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import type { Project } from '../types';
-import { projects as fallbackProjects } from '../data/projects';
 
 export interface GitHubRepoRaw {
   id: number;
@@ -41,13 +40,23 @@ export function resolveRepoImage(repoName: string, homepage: string | null): str
   return `https://opengraph.githubassets.com/1/kuberbassi/${repoName}`;
 }
 
-export async function fetchLiveGitHubProjects(): Promise<Project[]> {
-  try {
-    const res = await fetch('https://api.github.com/users/kuberbassi/repos?sort=updated&per_page=100');
-    if (!res.ok) throw new Error(`GitHub API Error: ${res.status}`);
+let projectsRequest: Promise<Project[]> | null = null;
+
+export function fetchLiveGitHubProjects(): Promise<Project[]> {
+  if (projectsRequest) return projectsRequest;
+
+  projectsRequest = (async () => {
+    const res = await fetch('/api/github-projects', {
+      headers: { Accept: 'application/vnd.github+json' },
+    });
+    if (!res.ok) {
+      throw new Error(res.status === 403
+        ? 'GitHub request limit reached. Please try again shortly.'
+        : `GitHub projects are unavailable right now (${res.status}).`);
+    }
 
     const rawData: GitHubRepoRaw[] = await res.json();
-    if (!Array.isArray(rawData)) return fallbackProjects;
+    if (!Array.isArray(rawData)) throw new Error('GitHub returned an unexpected response.');
 
     const formatted: Project[] = rawData
       .filter((repo) =>
@@ -99,31 +108,43 @@ export async function fetchLiveGitHubProjects(): Promise<Project[]> {
         };
       });
 
-    return formatted.length > 0 ? formatted : fallbackProjects;
-  } catch (error) {
-    console.warn('GitHub API fetch failed, falling back to static projects list:', error);
-    return fallbackProjects;
-  }
+    return formatted;
+  })().catch((error) => {
+    projectsRequest = null;
+    throw error;
+  });
+
+  return projectsRequest;
 }
 
 export function useGitHubProjects(enabled = true) {
-  const [projectsList, setProjectsList] = useState<Project[]>(fallbackProjects);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [projectsList, setProjectsList] = useState<Project[]>([]);
+  const [loading, setLoading] = useState<boolean>(enabled);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!enabled) return;
 
     let isMounted = true;
-    fetchLiveGitHubProjects().then((data) => {
-      if (isMounted) {
+    setLoading(true);
+    setError(null);
+    fetchLiveGitHubProjects()
+      .then((data) => {
+        if (!isMounted) return;
         setProjectsList(data);
-        setLoading(false);
-      }
-    });
+      })
+      .catch((reason: unknown) => {
+        if (!isMounted) return;
+        setProjectsList([]);
+        setError(reason instanceof Error ? reason.message : 'Unable to load GitHub projects.');
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
     return () => {
       isMounted = false;
     };
   }, [enabled]);
 
-  return { projects: projectsList, loading };
+  return { projects: projectsList, loading, error };
 }

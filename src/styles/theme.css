@@ -1,10 +1,10 @@
 :root {
-  --theme-bg: #080807;
-  --theme-surface: #10100e;
-  --theme-surface-raised: #171715;
+  --theme-bg: #090908;
+  --theme-surface: #11110f;
+  --theme-surface-raised: #191917;
   --theme-text: #f5f3ef;
-  --theme-text-secondary: #aaa59d;
-  --theme-text-muted: #77736d;
+  --theme-text-secondary: #b4afa7;
+  --theme-text-muted: #817c75;
   --theme-accent: #d5b27e;
   --theme-accent-light: #e8d5b5;
   --theme-border: rgba(255, 255, 255, 0.09);

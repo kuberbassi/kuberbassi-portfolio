@@ -77,6 +77,7 @@ export function ScrollVelocity({
       if (trackRef.current) trackRef.current.style.transform = 'translate3d(0, 0, 0)';
       return;
     }
+    if (!active) return;
 
     let frame = 0;
     let previousTime = performance.now();
@@ -140,7 +141,7 @@ export function ScrollVelocity({
 
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, [idleVelocity, shouldReduceMotion]);
+  }, [active, idleVelocity, shouldReduceMotion]);
 
   const sequence = (
     <>

@@ -142,7 +142,7 @@ export async function fetchGitHubRepos(username = 'kuberbassi'): Promise<Project
     const res = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=30`);
     if (!res.ok) throw new Error(`GitHub API HTTP ${res.status}`);
     const data = await res.json();
-    if (!Array.isArray(data)) return projects;
+    if (!Array.isArray(data)) return [];
 
     const formatted: Project[] = data
       .filter((repo: Record<string, unknown>) => !repo.fork && !repo.private)
@@ -175,8 +175,8 @@ export async function fetchGitHubRepos(username = 'kuberbassi'): Promise<Project
         };
       });
 
-    return formatted.length > 0 ? formatted : projects;
+    return formatted;
   } catch {
-    return projects;
+    return [];
   }
 }

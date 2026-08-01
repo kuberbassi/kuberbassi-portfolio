@@ -101,7 +101,7 @@ const rows: readonly Technology[][] = [
   ],
 ];
 
-const rowDurations = ['76s', '104s', '92s'] as const;
+const rowDurations = ['48s', '52s', '44s'] as const;
 
 function LogoSequence({
   technologies,

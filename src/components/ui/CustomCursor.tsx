@@ -9,6 +9,7 @@ export function CustomCursor() {
   const currentRef = useRef({ x: -80, y: -80 });
   const modeRef = useRef<CursorMode>('idle');
   const labelRef = useRef('');
+  const suspendedRef = useRef(false);
   const [mode, setMode] = useState<CursorMode>('idle');
   const [label, setLabel] = useState('');
 
@@ -39,6 +40,7 @@ export function CustomCursor() {
     };
 
     const onPointerMove = (event: PointerEvent) => {
+      if (suspendedRef.current) return;
       positionRef.current = { x: event.clientX, y: event.clientY };
       cursorRef.current?.classList.add('is-visible');
       if (frameRef.current === null) frameRef.current = requestAnimationFrame(paint);
@@ -59,13 +61,20 @@ export function CustomCursor() {
     };
 
     const hide = () => cursorRef.current?.classList.remove('is-visible');
+    const onSuspend = (event: Event) => {
+      suspendedRef.current = Boolean((event as CustomEvent<boolean>).detail);
+      cursorRef.current?.classList.toggle('is-suspended', suspendedRef.current);
+      if (suspendedRef.current) hide();
+    };
     window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('kb:cursorsuspend', onSuspend);
     document.addEventListener('mouseleave', hide);
     window.addEventListener('blur', hide);
 
     return () => {
       delete root.dataset.customCursor;
       window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('kb:cursorsuspend', onSuspend);
       document.removeEventListener('mouseleave', hide);
       window.removeEventListener('blur', hide);
       if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);

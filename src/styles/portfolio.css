@@ -26,6 +26,122 @@
   transition: transform var(--duration-section) var(--ease-section);
 }
 
+.motion-ready .blago-deck-slider,
+.motion-ready .blago-slide > * {
+  transition: none;
+}
+
+.motion-ready .blago-slide.is-active .kb-label,
+.motion-ready .blago-slide.is-active h1,
+.motion-ready .blago-slide.is-active h2 {
+  animation: none;
+}
+
+.portfolio-load-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  background: #050504;
+  animation: kb-curtain-failsafe 0.01s linear 2.2s forwards;
+}
+
+.motion-ready .portfolio-load-curtain {
+  will-change: opacity;
+}
+
+@keyframes kb-curtain-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.motion-ready #home.is-active .kb-art > * {
+  animation: kb-logo-breathe 8.4s ease-in-out infinite;
+}
+
+@keyframes kb-logo-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.008); }
+}
+
+.portfolio-nav-links a {
+  position: relative;
+}
+
+.portfolio-nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 16px;
+  height: 1px;
+  background: var(--gold, #d5b27e);
+  opacity: 0;
+  transform: translate3d(-50%, 4px, 0) scaleX(0.3);
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.portfolio-nav-links a.is-active::after {
+  opacity: 0.9;
+  transform: translate3d(-50%, 0, 0) scaleX(1);
+}
+
+.portfolio-nav-wrap,
+.portfolio-nav {
+  transition: transform 0.28s var(--ease-out), background-color 0.28s var(--ease-out);
+}
+
+.portfolio-nav-wrap.is-scrolling .portfolio-nav {
+  transform: scale(0.98);
+  background-color: rgba(13, 13, 12, 0.68);
+}
+
+.kb-spotify-shell {
+  position: relative;
+  width: 100%;
+  min-height: 152px;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.kb-spotify-shell:hover {
+  transform: translate3d(0, -2px, 0);
+  box-shadow: 0 10px 28px rgba(213, 178, 126, 0.09);
+}
+
+.kb-spotify-skeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, #171715 25%, #24211d 48%, #171715 72%);
+  background-size: 220% 100%;
+  animation: kb-spotify-loading 1.5s linear infinite;
+  transition: opacity 0.25s ease;
+}
+
+.kb-spotify-embed {
+  position: relative;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.kb-spotify-shell.is-ready .kb-spotify-embed { opacity: 1; }
+.kb-spotify-shell.is-ready .kb-spotify-skeleton { opacity: 0; animation: none; }
+
+@keyframes kb-spotify-loading {
+  to { background-position: -220% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-load-curtain { display: none; }
+  .kb-spotify-skeleton { animation: none; }
+  .motion-ready #home.is-active .kb-art > * { animation: none; }
+  .portfolio-nav-links a::after,
+  .kb-spotify-shell { transition-duration: 0.2s; }
+}
+
 /* Individual Full-Screen Viewport Slide */
 .blago-slide {
   width: 100vw;
@@ -1101,7 +1217,7 @@
 }
 
 .kb-art--faded {
-  opacity: 0.82;
+  opacity: 0.86;
 }
 
 .kb-art--faded:hover {
@@ -2628,6 +2744,7 @@
 #about .kb-about-strip {
   border: 0;
   background: transparent;
+  box-shadow: none;
 }
 
 #about .kb-marquee-viewport {
@@ -2635,6 +2752,8 @@
   overflow: hidden;
   mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+  background: transparent;
+  box-shadow: none;
 }
 
 #about .kb-marquee {
@@ -2740,6 +2859,8 @@
   padding-block: clamp(18px, 2.8dvh, 30px);
   mask-image: linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%);
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%);
+  background: transparent;
+  box-shadow: none;
 }
 
 #about .principle-velocity__track {

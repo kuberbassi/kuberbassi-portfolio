@@ -8,6 +8,19 @@ const projectRoot = path.dirname(fileURLToPath(import.meta.url))
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    proxy: {
+      '/api/github-projects': {
+        target: 'https://api.github.com',
+        changeOrigin: true,
+        rewrite: () => '/users/kuberbassi/repos?sort=updated&per_page=100',
+        headers: {
+          Accept: 'application/vnd.github+json',
+          'User-Agent': 'kuberbassi-portfolio',
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(projectRoot, './src'),

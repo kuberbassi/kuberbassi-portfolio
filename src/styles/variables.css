@@ -7,10 +7,10 @@
   /* ── Colors ─────────────────────────────────────────────── */
 
   /* Deep topographic dark background layers */
-  --color-bg:        #080807;
-  --color-surface-1: #10100e;
-  --color-surface-2: #171715;
-  --color-surface-3: #21211e;
+  --color-bg:        #090908;
+  --color-surface-1: #11110f;
+  --color-surface-2: #191917;
+  --color-surface-3: #232320;
 
   /* Borders */
   --color-border:        rgba(255, 255, 255, 0.09);
@@ -19,8 +19,8 @@
 
   /* Text */
   --color-text-primary:   #f5f3ef;
-  --color-text-secondary: #aaa59d;
-  --color-text-muted:     #6a6660;
+  --color-text-secondary: #b4afa7;
+  --color-text-muted:     #78736c;
   --color-text-inverse:   #080807;
 
   /* Accent — Warm Champagne Gold (from download.jpg reference) */

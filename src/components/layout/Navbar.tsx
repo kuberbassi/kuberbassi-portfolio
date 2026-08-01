@@ -1,4 +1,5 @@
 import { ArrowUpRight } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import SpecularButton from '../SpecularButton';
 
 const links = [
@@ -13,8 +14,27 @@ function navigateToSection(index: number) {
 }
 
 export function Navbar() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const wrapRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const onSectionChange = (event: Event) => {
+      setActiveIndex((event as CustomEvent<number>).detail ?? 0);
+    };
+    window.addEventListener('kb:sectionchange', onSectionChange);
+    const onTransitionStart = () => wrapRef.current?.classList.add('is-scrolling');
+    const onTransitionEnd = () => wrapRef.current?.classList.remove('is-scrolling');
+    window.addEventListener('kb:transitionstart', onTransitionStart);
+    window.addEventListener('kb:transitionend', onTransitionEnd);
+    return () => {
+      window.removeEventListener('kb:sectionchange', onSectionChange);
+      window.removeEventListener('kb:transitionstart', onTransitionStart);
+      window.removeEventListener('kb:transitionend', onTransitionEnd);
+    };
+  }, []);
+
   return (
-    <header className="portfolio-nav-wrap">
+    <header className="portfolio-nav-wrap" ref={wrapRef}>
       <nav className="portfolio-nav" aria-label="Main navigation">
         <a
           className="portfolio-brand"
@@ -33,6 +53,8 @@ export function Navbar() {
         <div className="portfolio-nav-links">
           {links.map((link) => (
             <a
+              className={activeIndex === link.index ? 'is-active' : undefined}
+              aria-current={activeIndex === link.index ? 'page' : undefined}
               href={link.href}
               key={link.href}
               onClick={(event) => {
@@ -45,7 +67,7 @@ export function Navbar() {
           ))}
         </div>
         <SpecularButton
-          className="nav-hello"
+          className={`nav-hello${activeIndex === 5 ? ' is-active' : ''}`}
           href="#contact"
           size="md"
           radius={12}

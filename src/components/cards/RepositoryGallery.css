@@ -11,15 +11,7 @@
 }
 
 .repo-gallery-shell::after {
-  content: '';
-  position: absolute;
-  top: 32px;
-  right: 0;
-  bottom: 12px;
-  z-index: 4;
-  width: clamp(54px, 7vw, 110px);
-  background: linear-gradient(90deg, transparent, rgba(5, 5, 4, 0.82));
-  pointer-events: none;
+  content: none;
 }
 
 .repo-gallery-hint {
@@ -164,11 +156,33 @@
 .repo-gallery-track {
   display: flex;
   align-items: center;
-  gap: clamp(16px, 2vw, 28px);
+  gap: clamp(22px, 2.35vw, 36px);
   width: max-content;
   min-width: 100%;
   height: 100%;
   padding: 34px 2px 10px;
+}
+
+.repo-gallery-empty {
+  display: grid;
+  width: min(100%, 680px);
+  min-height: 220px;
+  margin: auto;
+  place-content: center;
+  gap: 8px;
+  padding: 32px;
+  text-align: center;
+}
+
+.repo-gallery-empty strong {
+  color: var(--color-text-primary);
+  font-size: clamp(18px, 2vw, 26px);
+  font-weight: 500;
+}
+
+.repo-gallery-empty span {
+  color: var(--color-text-secondary);
+  font-size: 13px;
 }
 
 .repo-gallery-card {
@@ -181,10 +195,9 @@
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.035), transparent 36%),
     rgba(10, 10, 9, 0.96);
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.34),
-    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
   transition:
+    transform 260ms var(--ease-default),
     border-color var(--duration-base) var(--ease-default),
     box-shadow var(--duration-base) var(--ease-default);
   contain: layout paint style;
@@ -193,9 +206,9 @@
 }
 
 .repo-gallery-card:hover {
+  transform: translate3d(0, -4px, 0);
   border-color: rgba(213, 178, 126, 0.42);
   box-shadow:
-    0 26px 70px rgba(0, 0, 0, 0.44),
     0 0 28px rgba(213, 178, 126, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.055);
 }
@@ -248,6 +261,9 @@
 .repo-gallery-card__media img {
   object-fit: cover;
   object-position: top center;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
   opacity: 0;
   filter: saturate(0.82) contrast(1.02);
   transition:
