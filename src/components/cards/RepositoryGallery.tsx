@@ -28,8 +28,8 @@ function ProjectPreview({ project, eager }: { project: Project; eager: boolean }
   const primary = livePreview(project);
   const remembered = resolvedPreviewSources.get(project.slug) ?? '';
   const rootRef = useRef<HTMLDivElement>(null);
-  const [activated, setActivated] = useState(eager || Boolean(remembered));
-  const [src, setSrc] = useState(remembered || (eager ? primary : ''));
+  const [activated, setActivated] = useState(Boolean(remembered));
+  const [src, setSrc] = useState(remembered);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -38,20 +38,30 @@ function ProjectPreview({ project, eager }: { project: Project; eager: boolean }
   }, [activated, primary]);
 
   useEffect(() => {
-    if (activated) return;
+    if (!eager || activated) return;
+
+    // Let the Work section finish its first composited frames before asking
+    // the browser to download and decode large remote screenshots.
+    const timer = window.setTimeout(() => setActivated(true), 520);
+    return () => window.clearTimeout(timer);
+  }, [activated, eager]);
+
+  useEffect(() => {
+    if (activated || eager) return;
     const root = rootRef.current;
     if (!root || !('IntersectionObserver' in window)) {
       setActivated(true);
       return;
     }
+    const viewport = root.closest<HTMLElement>('.repo-gallery-viewport');
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
       setActivated(true);
       observer.disconnect();
-    }, { rootMargin: '320px' });
+    }, { root: viewport, rootMargin: '0px 320px' });
     observer.observe(root);
     return () => observer.disconnect();
-  }, [activated]);
+  }, [activated, eager]);
 
   return (
     <div className={`repo-gallery-card__preview${loaded ? ' is-loaded' : ''}`} ref={rootRef}>

@@ -265,10 +265,8 @@
   user-select: none;
   -webkit-user-drag: none;
   opacity: 0;
-  filter: saturate(0.82) contrast(1.02);
   transition:
     opacity var(--duration-base) var(--ease-default),
-    filter var(--duration-base) var(--ease-default),
     transform 700ms var(--ease-default);
 }
 
@@ -284,8 +282,7 @@
 }
 
 .repo-gallery-card__preview.is-loaded img {
-  opacity: 0.76;
-  filter: brightness(0.78) saturate(0.76) contrast(1.03);
+  opacity: 0.78;
 }
 
 .repo-gallery-card__preview.is-loaded .repo-gallery-card__preview-placeholder {
@@ -295,7 +292,6 @@
 
 .repo-gallery-card:hover .repo-gallery-card__preview.is-loaded img {
   opacity: 0.98;
-  filter: brightness(1) saturate(1) contrast(1.03);
   transform: scale(1.018);
 }
 

@@ -41,7 +41,9 @@ const sectionMotion: Record<string, MotionStep[]> = {
     { selector: '.kb-work-intro', at: 0.7, duration: 0.64, y: 12 },
     { selector: '.kb-work-orgs > span, .kb-work-org-link', at: 0.78, duration: 0.58, stagger: 0.07, y: 10 },
     { selector: '.project-orbit', at: 0.86, duration: 0.7, y: 18 },
-    { selector: '.repo-gallery-card', at: 0.94, duration: 0.66, stagger: 0.075, x: 18 },
+    // Only the cards visible on entry need choreography. Animating every
+    // off-screen repository forces unnecessary layout/compositing work.
+    { selector: '.repo-gallery-card:nth-child(-n+3)', at: 0.94, duration: 0.66, stagger: 0.075, x: 18 },
     { selector: '.repo-gallery-hint, .repo-gallery-progress', at: 1.04, duration: 0.48, stagger: 0.06, y: 8 },
   ],
   music: [
