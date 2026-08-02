@@ -1,0 +1,567 @@
+/* Responsive contract loaded after the editorial desktop system.
+   Touch-first devices use normal document flow; fine-pointer desktops keep
+   the full-screen deck. This mirrors Home.tsx's deck-mode media query. */
+
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+img,
+svg,
+iframe {
+  max-width: 100%;
+}
+
+@media (max-width: 768px), (pointer: coarse) {
+  html {
+    scroll-behavior: auto !important;
+    scroll-padding-top: calc(76px + env(safe-area-inset-top));
+    height: auto !important;
+    min-height: 100%;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    touch-action: pan-y pinch-zoom !important;
+  }
+
+  body {
+    position: static;
+    height: auto !important;
+    min-height: 100%;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: none;
+    touch-action: pan-y pinch-zoom !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #root,
+  main {
+    position: static;
+    height: auto !important;
+    min-height: 100%;
+    overflow: visible !important;
+    touch-action: pan-y pinch-zoom !important;
+  }
+
+  .blago-deck-container {
+    width: 100%;
+    height: auto;
+    min-height: 100svh;
+    max-height: none;
+    overflow: visible !important;
+    touch-action: pan-y pinch-zoom !important;
+  }
+
+  .blago-deck-slider {
+    height: auto;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  .blago-slide,
+  .blago-slide:not(.is-active) {
+    width: 100%;
+    height: auto;
+    min-height: 100svh;
+    overflow: visible;
+    pointer-events: auto;
+  }
+
+  .blago-slide > * {
+    width: 100%;
+  }
+
+  .blago-slide {
+    content-visibility: visible !important;
+    contain: none !important;
+  }
+
+  .portfolio-nav-wrap {
+    top: max(10px, env(safe-area-inset-top));
+  }
+
+  .portfolio-nav-wrap.is-scrolling .portfolio-nav {
+    transform: none;
+  }
+
+  .portfolio-nav {
+    backdrop-filter: blur(14px) saturate(130%);
+    -webkit-backdrop-filter: blur(14px) saturate(130%);
+  }
+
+  .section-indicator {
+    display: none;
+  }
+
+  .kb-light {
+    opacity: 0.48;
+  }
+
+  .kb-art--faded:hover,
+  .repo-gallery-card:hover,
+  .kb-spotify-shell:hover,
+  .kb-music-platform:hover {
+    transform: none;
+  }
+
+  .kb-hero,
+  .kb-intro,
+  .kb-section,
+  .kb-music,
+  .kb-closing,
+  #contact .kb-closing-card {
+    height: auto;
+    min-height: 100svh;
+    padding-right: max(22px, env(safe-area-inset-right));
+    padding-left: max(22px, env(safe-area-inset-left));
+  }
+
+  #about .kb-about-strip {
+    width: 100vw;
+  }
+
+  .specular-button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Touch tablets: retain the spacious editorial scale without desktop deck
+   clipping or three-column layouts that become cramped in portrait. */
+@media (min-width: 769px) and (max-width: 1180px),
+  (min-width: 769px) and (pointer: coarse) {
+  .kb-hero,
+  .kb-intro,
+  .kb-section,
+  .kb-music,
+  #contact .kb-closing-card {
+    padding-inline: clamp(34px, 5.5vw, 64px);
+  }
+
+  .kb-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 0.78fr);
+    gap: clamp(22px, 3vw, 38px);
+  }
+
+  .kb-hero-copy h1 {
+    font-size: clamp(3.2rem, 6.8vw, 5.6rem);
+  }
+
+  .kb-art {
+    width: 100%;
+    height: min(48svh, 480px);
+    margin: 0;
+  }
+
+  #about .kb-about-content {
+    width: min(100%, 900px);
+  }
+
+  #about .kb-about-statement {
+    width: min(100%, 760px);
+  }
+
+  #toolkit .kb-toolkit-layout {
+    height: auto;
+    min-height: 100svh;
+  }
+
+  .kb-section-head {
+    grid-template-columns: minmax(0, 1.2fr) minmax(250px, 0.8fr);
+    gap: 28px 42px;
+  }
+
+  .kb-section-head > .kb-label {
+    grid-column: 1 / -1;
+  }
+
+  .kb-section-head h2,
+  .kb-work-context {
+    grid-column: auto;
+  }
+
+  .kb-music-listen {
+    width: min(100%, 820px);
+  }
+
+  #contact .kb-closing {
+    padding-bottom: clamp(64px, 9svh, 110px);
+  }
+}
+
+@media (max-width: 768px) {
+  .portfolio-nav-wrap {
+    right: 0;
+    left: 0;
+    padding-inline: max(8px, env(safe-area-inset-left));
+  }
+
+  .portfolio-nav {
+    width: 100% !important;
+    max-width: 620px;
+    justify-content: space-between;
+    gap: clamp(6px, 2vw, 11px);
+  }
+
+  .portfolio-nav-links {
+    min-width: 0;
+    gap: clamp(7px, 2.1vw, 14px);
+  }
+
+  .portfolio-nav-links a {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    min-width: 0;
+    font-size: clamp(8px, 2.35vw, 10px);
+    white-space: nowrap;
+  }
+
+  .portfolio-nav .nav-hello {
+    flex: 0 0 auto;
+    min-height: 40px;
+  }
+
+  .kb-hero,
+  .kb-intro,
+  .kb-section,
+  .kb-music,
+  #contact .kb-closing-card {
+    padding-top: calc(92px + env(safe-area-inset-top));
+    padding-bottom: max(64px, env(safe-area-inset-bottom));
+  }
+
+  #home .kb-hero {
+    min-height: 100svh;
+    padding-top: calc(86px + env(safe-area-inset-top));
+    padding-bottom: max(42px, env(safe-area-inset-bottom));
+  }
+
+  #home .kb-meta {
+    position: static;
+    order: 3;
+    width: 100%;
+    margin-top: 24px;
+    padding: 0;
+    gap: 12px;
+  }
+
+  #home .kb-meta > span:nth-child(2) {
+    display: none;
+  }
+
+  .kb-hero-copy {
+    order: 1;
+    width: auto;
+    max-width: calc(100vw - 44px);
+    min-width: 0;
+    align-self: stretch;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  #home .kb-art {
+    order: 2;
+    width: min(72vw, 310px);
+    height: clamp(180px, 27svh, 270px);
+    margin: 12px auto 0;
+  }
+
+  .kb-hero-copy h1 {
+    width: 100%;
+    max-width: calc(100vw - 44px);
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    line-height: 0.94;
+    overflow-wrap: normal;
+  }
+
+  .kb-hero-intro {
+    width: min(100%, 34rem);
+    max-width: 100%;
+    min-height: 0;
+    font-size: clamp(14px, 4vw, 17px);
+  }
+
+  .kb-hero-copy > p.kb-hero-intro:last-of-type {
+    width: min(100%, 32ch);
+    max-width: calc(100vw - 44px);
+  }
+
+  .kb-hero-intro .blur-text__word {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .kb-reveal-copy {
+    display: block !important;
+    overflow-wrap: anywhere;
+  }
+
+  .kb-reveal-copy .blur-text__space {
+    white-space: normal;
+  }
+
+  #home .kb-circle {
+    width: 46px;
+    height: 46px;
+    min-height: 46px;
+  }
+
+  #about .kb-intro {
+    justify-content: center;
+    gap: clamp(34px, 7svh, 58px);
+  }
+
+  #about .kb-about-content > h2,
+  #toolkit .kb-toolkit-intro h2,
+  .kb-music-copy h2,
+  #contact .kb-contact-heading h2 {
+    font-size: clamp(2.75rem, 13vw, 4.8rem);
+    line-height: 0.96;
+  }
+
+  #about .kb-about-statement {
+    font-size: clamp(18px, 5.4vw, 26px);
+  }
+
+  #about .kb-marquee {
+    padding-block: 14px;
+  }
+
+  #about .principle-velocity {
+    padding-block: 18px;
+  }
+
+  #toolkit .kb-toolkit-layout {
+    display: grid;
+    min-height: 100svh;
+    align-content: center;
+    gap: clamp(28px, 6svh, 48px);
+  }
+
+  .tech-wall {
+    width: calc(100% + 44px);
+    margin-inline: -22px;
+    padding-block: 14px;
+  }
+
+  .tech-wall__sequence {
+    gap: 38px;
+    padding-right: 38px;
+  }
+
+  .tech-wall__logo {
+    width: 50px;
+    height: 62px;
+  }
+
+  .kb-section-head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+
+  .kb-section-head h2 {
+    font-size: clamp(2.7rem, 12vw, 4.5rem);
+    line-height: 0.96;
+  }
+
+  .kb-work-context,
+  .kb-work-intro {
+    max-width: 34rem;
+  }
+
+  .kb-work-orgs > div {
+    display: flex;
+    max-width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .kb-work-org-link {
+    min-height: 38px;
+  }
+
+  .kb-music {
+    justify-content: center;
+  }
+
+  .kb-music-listen {
+    width: 100%;
+  }
+
+  .kb-music-intro {
+    width: min(100%, 32rem);
+    font-size: clamp(14px, 4vw, 17px);
+  }
+
+  .kb-spotify-shell {
+    min-height: 152px;
+  }
+
+  .kb-spotify-embed {
+    display: block;
+    height: 152px;
+  }
+
+  .kb-music-platforms {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kb-music-platform {
+    min-width: 0;
+    min-height: 72px;
+    padding-inline: 14px !important;
+  }
+
+  .kb-music-platform-copy {
+    min-width: 0;
+  }
+
+  .kb-music-platform-copy strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #contact .kb-closing-card {
+    justify-content: center;
+  }
+
+  #contact .kb-closing {
+    padding-bottom: 42px;
+  }
+
+  #contact .kb-contact-actions {
+    width: 100%;
+  }
+
+  #contact .kb-contact-actions a {
+    flex: 1 1 180px;
+  }
+
+  #contact .kb-contact-details {
+    width: 100%;
+  }
+
+  .footer-social-links {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-nav {
+    padding-left: 8px;
+  }
+
+  .portfolio-brand,
+  .portfolio-brand img {
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+  }
+
+  .portfolio-nav-links {
+    gap: clamp(5px, 1.7vw, 8px);
+  }
+
+  .portfolio-nav-links a {
+    font-size: clamp(7px, 2.15vw, 9px);
+  }
+
+  .portfolio-nav .nav-hello {
+    padding-inline: 8px;
+    font-size: 9px;
+  }
+
+  .kb-hero,
+  .kb-intro,
+  .kb-section,
+  .kb-music,
+  #contact .kb-closing-card {
+    padding-right: max(18px, env(safe-area-inset-right));
+    padding-left: max(18px, env(safe-area-inset-left));
+  }
+
+  .kb-hero-copy h1 {
+    font-size: clamp(1.8rem, 7.8vw, 2.5rem);
+  }
+
+  #home .kb-art {
+    width: min(72vw, 280px);
+    height: clamp(170px, 25svh, 240px);
+  }
+
+  .kb-music-platforms {
+    grid-template-columns: 1fr;
+  }
+
+  .kb-music-platforms a:first-child {
+    grid-column: auto;
+  }
+
+  .kb-music-platform {
+    min-height: 64px;
+  }
+
+  .footer-social-link {
+    flex: 1 1 44%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .portfolio-nav-links a:nth-child(2) {
+    display: none;
+  }
+
+  .portfolio-nav .nav-hello {
+    min-height: 38px;
+  }
+
+  .kb-hero-copy h1,
+  .kb-section-head h2,
+  #about .kb-about-content > h2,
+  #toolkit .kb-toolkit-intro h2,
+  .kb-music-copy h2,
+  #contact .kb-contact-heading h2 {
+    font-size: clamp(1.9rem, 9vw, 2.8rem);
+  }
+}
+
+/* Short screens need tighter vertical rhythm but preserve every element. */
+@media (max-height: 700px) and (max-width: 768px) {
+  .kb-hero,
+  .kb-intro,
+  .kb-section,
+  .kb-music,
+  #contact .kb-closing-card {
+    padding-top: calc(80px + env(safe-area-inset-top));
+    padding-bottom: 42px;
+  }
+
+  #home .kb-art {
+    height: clamp(150px, 23svh, 210px);
+  }
+
+  #about .kb-intro,
+  #toolkit .kb-toolkit-layout,
+  .kb-music {
+    gap: 26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blago-slide > *,
+  .repo-gallery-card,
+  .kb-music-platform,
+  .kb-spotify-shell {
+    transition-duration: 0.2s !important;
+  }
+}

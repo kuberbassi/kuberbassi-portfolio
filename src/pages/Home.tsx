@@ -19,6 +19,7 @@ import { LightRays } from '../components/effects/LightRays';
 import { useGitHubProjects } from '../services/githubRepos';
 import { musicChannels } from '../data/music';
 import '../styles/portfolio.css';
+import '../styles/responsive.css';
 import { usePortfolioMotion } from '../hooks/usePortfolioMotion';
 
 const LogoThreeScene = lazy(() =>
@@ -178,6 +179,26 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (deckEnabled || !('IntersectionObserver' in window)) return;
+
+    const sections = SECTIONS
+      .map(({ id }, index) => ({ element: document.getElementById(id), index }))
+      .filter((entry): entry is { element: HTMLElement; index: number } => Boolean(entry.element));
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      const section = sections.find(({ element }) => element === visible.target);
+      if (!section) return;
+      window.dispatchEvent(new CustomEvent('kb:sectionchange', { detail: section.index }));
+    }, { rootMargin: '-28% 0px -52% 0px', threshold: [0, 0.15, 0.35] });
+
+    sections.forEach(({ element }) => observer.observe(element));
+    return () => observer.disconnect();
+  }, [deckEnabled]);
+
+  useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       if (window.matchMedia('(max-width: 768px), (pointer: coarse)').matches) return;
       if (e.defaultPrevented) return;
@@ -303,7 +324,10 @@ export default function Home() {
             </div>
             <div className="kb-hero-copy">
               <h1>
-                Building thoughtful systems that make technology feel <i>effortless.</i>
+                Building thoughtful<br />
+                systems that make<br />
+                technology feel<br />
+                <i>effortless.</i>
               </h1>
               <BlurText
                 text="Turning ideas into clean, useful, and reliable digital products."
