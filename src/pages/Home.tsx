@@ -562,7 +562,7 @@ export default function Home() {
                 </h2>
                 <BlurText
                   text="Let's build something worth using."
-                  animateBy="letters"
+                  animateBy="words"
                   direction="bottom"
                   delay={18}
                   stepDuration={0.38}

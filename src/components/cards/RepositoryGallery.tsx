@@ -44,13 +44,10 @@ function ProjectPreview({ project, eager }: { project: Project; eager: boolean }
   }, [activated, primary]);
 
   useEffect(() => {
-    if (!eager || activated) return;
-
-    // Let the Work section finish its first composited frames before asking
-    // the browser to download and decode large remote screenshots.
-    const timer = window.setTimeout(() => setActivated(true), 520);
-    return () => window.clearTimeout(timer);
-  }, [activated, eager]);
+    if (eager && !activated) {
+      setActivated(true);
+    }
+  }, [eager, activated]);
 
   useEffect(() => {
     if (activated || eager) return;
@@ -240,7 +237,7 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
         }}
         onPointerDown={(event) => {
           if (event.pointerType === 'touch') return;
-          if ((event.target as HTMLElement).closest('a')) return;
+          if ((event.target as HTMLElement).closest('a, button')) return;
           const viewport = viewportRef.current;
           if (!viewport) return;
           stopGlide();
@@ -269,6 +266,7 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
           });
         }}
         onPointerUp={(event) => {
+          if (!dragRef.current.active) return;
           if (dragRef.current.frame) {
             cancelAnimationFrame(dragRef.current.frame);
             dragRef.current.frame = 0;
@@ -286,6 +284,7 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
           }
         }}
         onPointerCancel={() => {
+          if (!dragRef.current.active) return;
           if (dragRef.current.frame) cancelAnimationFrame(dragRef.current.frame);
           dragRef.current.frame = 0;
           dragRef.current.active = false;
@@ -325,7 +324,7 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
                     <p>{project.desc}</p>
 
                     <div className="repo-gallery-card__tech">
-                      {project.tech.slice(0, 3).map((tech) => <span key={tech}>{tech}</span>)}
+                      {project.tech.slice(0, 4).map((tech) => <span key={tech}>{tech}</span>)}
                     </div>
 
                     <div className="repo-gallery-card__actions">

@@ -1,7 +1,7 @@
 .repo-gallery-shell {
   --gallery-progress: 0;
   position: relative;
-  height: clamp(390px, 57dvh, 610px);
+  height: clamp(380px, 52dvh, 480px);
   overflow: hidden;
   border: 0;
   border-radius: 0;
@@ -191,8 +191,8 @@
 
 .repo-gallery-card {
   position: relative;
-  flex: 0 0 clamp(320px, 28vw, 430px);
-  height: min(490px, calc(100% - 10px));
+  flex: 0 0 clamp(320px, 28vw, 420px);
+  height: min(440px, calc(100% - 10px));
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
@@ -206,7 +206,7 @@
     box-shadow var(--duration-base) var(--ease-default);
   contain: layout paint style;
   content-visibility: auto;
-  contain-intrinsic-size: 430px 490px;
+  contain-intrinsic-size: 420px 440px;
 }
 
 .repo-gallery-card:hover {
@@ -219,7 +219,7 @@
 
 .repo-gallery-card__media {
   position: relative;
-  height: 50%;
+  height: 44%;
   overflow: hidden;
   border-bottom: 1px solid rgba(255, 255, 255, 0.09);
   background:
@@ -316,8 +316,8 @@
 .repo-gallery-card__body {
   display: flex;
   flex-direction: column;
-  height: 50%;
-  padding: 18px;
+  height: 56%;
+  padding: 16px 18px 14px;
 }
 
 .repo-gallery-card__heading {
@@ -330,10 +330,10 @@
 .repo-gallery-card__heading h3 {
   margin: 0;
   color: var(--color-text-primary);
-  font-size: clamp(1.3rem, 1.7vw, 1.75rem);
+  font-size: clamp(1.15rem, 1.4vw, 1.45rem);
   font-weight: 500;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
 }
 
 .repo-gallery-card__heading > span {
@@ -346,11 +346,11 @@
 
 .repo-gallery-card__body > p {
   display: -webkit-box;
-  margin-top: 9px;
+  margin-top: 6px;
   overflow: hidden;
   color: var(--color-text-secondary);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 12.5px;
+  line-height: 1.45;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
@@ -446,25 +446,25 @@
   }
 
   .repo-gallery-card {
-    flex-basis: min(calc(100vw - 36px), 320px) !important;
+    flex-basis: min(calc(100vw - 36px), 360px) !important;
     flex-shrink: 0 !important;
-    height: 285px !important;
-    max-height: 285px !important;
+    height: 380px !important;
+    max-height: 380px !important;
     display: flex !important;
     flex-direction: column !important;
     overflow: hidden !important;
-    contain-intrinsic-size: 320px 285px !important;
+    contain-intrinsic-size: 360px 380px !important;
   }
 
   .repo-gallery-card__media {
-    height: 100px !important;
-    flex: 0 0 100px !important;
+    height: 44% !important;
+    flex: 0 0 44% !important;
   }
 
   .repo-gallery-card__body {
-    flex: 1 1 0 !important;
-    min-height: 0 !important;
-    padding: 10px 14px 10px !important;
+    flex: 0 0 56% !important;
+    height: 56% !important;
+    padding: 12px 14px 10px !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-start !important;

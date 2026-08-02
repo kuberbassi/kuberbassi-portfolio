@@ -50,17 +50,16 @@ const sectionMotion: Record<string, MotionStep[]> = {
     { selector: '.kb-label', at: 0.48, duration: 0.56, y: 10 },
     { selector: 'h2', at: 0.56, duration: 0.82, y: 22 },
     { selector: '.kb-music-intro', at: 0.7, duration: 0.62, y: 12 },
-    { selector: '.kb-spotify-shell', at: 0.8, duration: 0.7, y: 16, scale: 0.992 },
-    { selector: '.kb-music-platform', at: 0.9, duration: 0.62, stagger: 0.075, y: 14 },
+    { selector: '.kb-spotify-shell', at: 0.78, duration: 0.68, y: 14 },
+    { selector: '.kb-music-platform', at: 0.86, duration: 0.56, stagger: 0.05, y: 12 },
   ],
   contact: [
     { selector: '.kb-label', at: 0.48, duration: 0.56, y: 10 },
     { selector: 'h2', at: 0.56, duration: 0.82, y: 22 },
-    { selector: 'h2 i', at: 0.72, duration: 0.58, y: 10 },
-    { selector: '.kb-contact-intro', at: 0.8, duration: 0.62, y: 12 },
-    { selector: '.kb-contact-actions > *', at: 0.9, duration: 0.58, stagger: 0.08, y: 12 },
-    { selector: '.portfolio-footer', at: 1, duration: 0.62, y: 14 },
-    { selector: '.portfolio-footer a', at: 1.08, duration: 0.48, stagger: 0.06, y: 8 },
+    { selector: 'h2 i', at: 0.68, duration: 0.54, y: 10 },
+    { selector: '.kb-contact-intro', at: 0.76, duration: 0.58, y: 12 },
+    { selector: '.kb-contact-actions > *', at: 0.84, duration: 0.54, stagger: 0.06, y: 12 },
+    { selector: '.portfolio-footer', at: 0.94, duration: 0.58, y: 12 },
   ],
 };
 
@@ -128,43 +127,45 @@ export function usePortfolioMotion({ rootRef, sliderRef, activeIndex, deckEnable
       cleanupSection = nextSection;
       cleanupPlan = nextPlan;
 
-      if (!initialPlayed.current && activeIndex === 0) {
-        const curtain = root.querySelector('.portfolio-load-curtain');
-        const logo = nextSection.querySelector('.kb-art');
-        const heading = nextSection.querySelector('h1');
-        const italic = nextSection.querySelector('h1 i');
-        const support = nextSection.querySelectorAll('.kb-hero-intro, .kb-circle, .kb-meta');
-        const timeline = gsap.timeline({
-          defaults: { overwrite: 'auto' },
-          onComplete: () => {
-            initialPlayed.current = true;
-          },
-        });
-        timeline.set(nextSection, { autoAlpha: 1 });
-        timeline.set(Array.from(nextSection.children), { autoAlpha: 1, y: 0 });
-        if (curtain) {
-          timeline.fromTo(curtain, { autoAlpha: 1 }, { autoAlpha: 0, duration: reduced ? 0.22 : 0.42, ease: 'power2.out' });
+      if (!initialPlayed.current) {
+        initialPlayed.current = true;
+
+        if (activeIndex === 0) {
+          const curtain = root.querySelector('.portfolio-load-curtain');
+          const logo = nextSection.querySelector('.kb-art');
+          const heading = nextSection.querySelector('h1');
+          const italic = nextSection.querySelector('h1 i');
+          const support = nextSection.querySelectorAll('.kb-hero-intro, .kb-circle, .kb-meta');
+          const timeline = gsap.timeline({
+            defaults: { overwrite: 'auto' },
+          });
+          timeline.set(slider, { y: '0dvh' });
+          timeline.set(nextSection, { autoAlpha: 1 });
+          timeline.set(Array.from(nextSection.children), { autoAlpha: 1, y: 0 });
+          if (curtain) {
+            timeline.fromTo(curtain, { autoAlpha: 1 }, { autoAlpha: 0, duration: reduced ? 0.22 : 0.42, ease: 'power2.out' });
+          }
+          if (terrain) {
+            timeline.fromTo(terrain, { autoAlpha: 0 }, { autoAlpha: 1, duration: reduced ? 0.22 : 0.5, ease: 'power2.out' }, '<');
+          }
+          if (nav) {
+            timeline.fromTo(nav, { y: reduced ? 0 : -18 }, { y: 0, duration: reduced ? 0.25 : 0.58, ease: 'power3.out', clearProps: 'transform' }, '<0.08');
+          }
+          if (logo) {
+            timeline.fromTo(logo, { autoAlpha: 0, scaleY: reduced ? 1 : 0.12, transformOrigin: '50% 100%' }, { autoAlpha: 1, scaleY: 1, duration: reduced ? 0.25 : 0.72, ease: 'power3.out' }, '<0.08');
+          }
+          if (heading) {
+            timeline.fromTo(heading, { autoAlpha: 0, y: reduced ? 0 : 22 }, { autoAlpha: 1, y: 0, duration: reduced ? 0.25 : 0.78, ease: 'power3.out' }, '-=0.35');
+          }
+          if (italic) {
+            timeline.fromTo(italic, { autoAlpha: 0, y: reduced ? 0 : 10 }, { autoAlpha: 1, y: 0, duration: reduced ? 0.2 : 0.52, ease: 'power3.out' }, '-=0.28');
+          }
+          if (support.length) {
+            timeline.fromTo(support, { autoAlpha: 0, y: reduced ? 0 : 12 }, { autoAlpha: 1, y: 0, duration: reduced ? 0.22 : 0.56, stagger: reduced ? 0 : 0.07, ease: 'power3.out' }, '-=0.2');
+          }
+          previousIndex.current = activeIndex;
+          return;
         }
-        if (terrain) {
-          timeline.fromTo(terrain, { autoAlpha: 0 }, { autoAlpha: 1, duration: reduced ? 0.22 : 0.5, ease: 'power2.out' }, '<');
-        }
-        if (nav) {
-          timeline.fromTo(nav, { y: reduced ? 0 : -18 }, { y: 0, duration: reduced ? 0.25 : 0.58, ease: 'power3.out', clearProps: 'transform' }, '<0.08');
-        }
-        if (logo) {
-          timeline.fromTo(logo, { autoAlpha: 0, scaleY: reduced ? 1 : 0.12, transformOrigin: '50% 100%' }, { autoAlpha: 1, scaleY: 1, duration: reduced ? 0.25 : 0.72, ease: 'power3.out' }, '<0.08');
-        }
-        if (heading) {
-          timeline.fromTo(heading, { autoAlpha: 0, y: reduced ? 0 : 22 }, { autoAlpha: 1, y: 0, duration: reduced ? 0.25 : 0.78, ease: 'power3.out' }, '-=0.35');
-        }
-        if (italic) {
-          timeline.fromTo(italic, { autoAlpha: 0, y: reduced ? 0 : 10 }, { autoAlpha: 1, y: 0, duration: reduced ? 0.2 : 0.52, ease: 'power3.out' }, '-=0.28');
-        }
-        if (support.length) {
-          timeline.fromTo(support, { autoAlpha: 0, y: reduced ? 0 : 12 }, { autoAlpha: 1, y: 0, duration: reduced ? 0.22 : 0.56, stagger: reduced ? 0 : 0.07, ease: 'power3.out' }, '-=0.2');
-        }
-        previousIndex.current = activeIndex;
-        return;
       }
 
       const direction = activeIndex >= previousIndex.current ? 1 : -1;

@@ -72,8 +72,14 @@ export function LogoThreeScene() {
     const container = mountRef.current;
     if (!container) return;
 
-    // ── 1. Setup Scene & Renderer ─────────────────────────────────────────────
-    const scene = new THREE.Scene();
+    let destroyed = false;
+    let cleanupFn: (() => void) | null = null;
+
+    const timer = window.setTimeout(() => {
+      if (destroyed || !container) return;
+
+      // ── 1. Setup Scene & Renderer ─────────────────────────────────────────────
+      const scene = new THREE.Scene();
 
     let w = container.clientWidth || 600;
     let h = container.clientHeight || 500;
@@ -342,31 +348,37 @@ export function LogoThreeScene() {
 
     renderer.render(scene, camera);
 
-    // ── 8. Cleanup ───────────────────────────────────────────────────────────
-    return () => {
-      if (animId) cancelAnimationFrame(animId);
-      window.dispatchEvent(new CustomEvent('kb:logohover', { detail: false }));
-      container.removeEventListener('mouseenter', handleMouseEnter);
-      container.removeEventListener('mousemove', handleMouseMove);
-      container.removeEventListener('mouseleave', handleMouseLeave);
-      window.removeEventListener('resize', handleResize);
+      cleanupFn = () => {
+        if (animId) cancelAnimationFrame(animId);
+        window.dispatchEvent(new CustomEvent('kb:logohover', { detail: false }));
+        container.removeEventListener('mouseenter', handleMouseEnter);
+        container.removeEventListener('mousemove', handleMouseMove);
+        container.removeEventListener('mouseleave', handleMouseLeave);
+        window.removeEventListener('resize', handleResize);
 
-      lineQuadGeo.dispose();
-      Object.values(groupTextures).forEach((t) => t.dispose());
-      instancedMeshes.forEach(({ mesh }) => {
-        mesh.geometry.dispose();
-        if (Array.isArray(mesh.material)) {
-          mesh.material.forEach((m) => m.dispose());
-        } else {
-          mesh.material.dispose();
+        lineQuadGeo.dispose();
+        Object.values(groupTextures).forEach((t) => t.dispose());
+        instancedMeshes.forEach(({ mesh }) => {
+          mesh.geometry.dispose();
+          if (Array.isArray(mesh.material)) {
+            mesh.material.forEach((m) => m.dispose());
+          } else {
+            mesh.material.dispose();
+          }
+        });
+        renderer.dispose();
+        renderer.forceContextLoss();
+
+        if (renderer.domElement && container.contains(renderer.domElement)) {
+          container.removeChild(renderer.domElement);
         }
-      });
-      renderer.dispose();
-      renderer.forceContextLoss();
+      };
+    }, 16);
 
-      if (renderer.domElement && container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
+    return () => {
+      destroyed = true;
+      window.clearTimeout(timer);
+      cleanupFn?.();
     };
   }, []);
 

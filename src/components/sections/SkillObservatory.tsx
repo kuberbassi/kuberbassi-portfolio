@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { IconType } from 'react-icons';
 import {
   SiCss,
@@ -106,9 +106,11 @@ const rowDurations = ['48s', '52s', '44s'] as const;
 function LogoSequence({
   technologies,
   duplicate = false,
+  shouldLoad = false,
 }: {
   technologies: readonly Technology[];
   duplicate?: boolean;
+  shouldLoad?: boolean;
 }) {
   return (
     <div className="tech-wall__sequence" aria-hidden={duplicate || undefined}>
@@ -126,7 +128,7 @@ function LogoSequence({
             <Icon aria-hidden="true" data-tone={tone} style={{ color }} />
           ) : (
             <img
-              src={src ?? `/brands/wall/${logo}.svg`}
+              src={shouldLoad ? (src ?? `/brands/wall/${logo}.svg`) : undefined}
               alt=""
               loading="lazy"
               decoding="async"
@@ -141,8 +143,39 @@ function LogoSequence({
 }
 
 export function SkillObservatory({ active = true }: { active?: boolean }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    if (active && !shouldLoad) {
+      setShouldLoad(true);
+      return;
+    }
+
+    if (shouldLoad) return;
+    const container = containerRef.current;
+    if (!container || !('IntersectionObserver' in window)) {
+      setShouldLoad(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '350px' },
+    );
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [active, shouldLoad]);
+
   return (
     <div
+      ref={containerRef}
       className={`tech-wall${active ? ' is-active' : ''}`}
       aria-label="Technology toolkit"
     >
@@ -154,8 +187,8 @@ export function SkillObservatory({ active = true }: { active?: boolean }) {
           style={{ '--wall-duration': rowDurations[index] } as CSSProperties}
         >
           <div className="tech-wall__track">
-            <LogoSequence technologies={technologies} />
-            <LogoSequence technologies={technologies} duplicate />
+            <LogoSequence technologies={technologies} shouldLoad={shouldLoad} />
+            <LogoSequence technologies={technologies} duplicate shouldLoad={shouldLoad} />
           </div>
         </div>
       ))}

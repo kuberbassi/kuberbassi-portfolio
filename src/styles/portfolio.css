@@ -891,19 +891,19 @@
   display: grid;
   width: 100%;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .kb-music-platforms a {
   display: flex;
   min-width: 0;
-  min-height: 72px;
+  min-height: 84px;
   grid-column: span 2;
   align-items: center;
-  gap: 13px;
-  padding: 14px 16px;
+  gap: 15px;
+  padding: 18px 20px;
   border: 1px solid rgba(213, 178, 126, 0.2);
-  border-radius: 12px;
+  border-radius: 14px;
   color: var(--color-text-primary);
   background:
     linear-gradient(135deg, rgba(213, 178, 126, 0.055), transparent 58%),
@@ -927,8 +927,8 @@
 }
 
 .kb-music-platform-icon {
-  width: 23px;
-  height: 23px;
+  width: 25px;
+  height: 25px;
   flex: none;
   color: var(--color-accent);
 }
@@ -936,34 +936,40 @@
 .kb-music-platforms a > .specular-button__content {
   width: 100%;
   justify-content: flex-start;
-  gap: 13px;
+  gap: 15px;
 }
 
 .kb-music-platform-copy {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
-  gap: 3px;
+  gap: 4px;
+  padding-block: 2px;
 }
 
 .kb-music-platforms small {
   color: var(--color-text-muted);
   font-family: var(--font-mono);
-  font-size: 7px;
-  letter-spacing: 0.12em;
+  font-size: 7.5px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  line-height: 1;
 }
 
 .kb-music-platforms strong {
+  display: block;
   overflow: hidden;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 550;
+  line-height: 1.38;
+  padding-bottom: 2px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .kb-music-platform-arrow {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   margin-left: auto;
   flex: none;
   color: var(--color-text-muted);
