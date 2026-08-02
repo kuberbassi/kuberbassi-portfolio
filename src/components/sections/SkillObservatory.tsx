@@ -83,7 +83,7 @@ const rows: readonly Technology[][] = [
   // AI, tools, and design
   [
     { label: 'ChatGPT', logo: 'openai', href: 'https://help.openai.com/', tone: 'light' },
-    { label: 'OpenAI Codex', icon: TbCodeAi, color: '#EDEDED', href: 'https://developers.openai.com/codex/' },
+    { label: 'OpenAI Codex', logo: 'codex', href: 'https://developers.openai.com/codex/' },
     { label: 'GitHub Copilot', logo: 'copilot', href: 'https://docs.github.com/copilot', tone: 'light' },
     { label: 'Gemini', logo: 'gemini', href: 'https://ai.google.dev/gemini-api/docs' },
     { label: 'Claude', logo: 'claude', href: 'https://platform.claude.com/docs/' },

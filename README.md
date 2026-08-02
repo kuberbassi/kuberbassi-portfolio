@@ -1,77 +1,62 @@
-# Kuber Bassi — Personal Engineering Portfolio
-
-The official digital space and portfolio of **Kuber Bassi**, an independent engineer based in New Delhi, India.
-
-Built with **React 19**, **TypeScript**, **Vite**, **Three.js**, **GSAP**, and **Lenis**, featuring a dark topographic canvas theme, kinetic micro-interactions, custom Web Audio synthesis, and dynamic GitHub repository integration.
+<div align="center">
+  <img src="./public/favicon.svg" width="96" height="96" alt="Kuber Bassi Logo" />
+  <h1>Kuber Bassi</h1>
+  <p><strong>Independent Engineer — Personal Portfolio & Interactive Workspace</strong></p>
+  <p>
+    <a href="https://kuberbassi.com">kuberbassi.com</a>
+  </p>
+</div>
 
 ---
 
-## 🚀 Key Highlights & Features
+## ⚡ Overview
 
-- **Topographic Canvas Base:** Interactive WebGL/Canvas topographic relief mesh that responds smoothly to scroll position and pointer dynamics.
-- **Dynamic Skill Observatory & Tech Wall:** Endless kinetic marquee displaying languages, tools, and platforms with official documentation links.
-- **Live Repository Gallery:** Integrated with GitHub API to pull live statistics, languages, star counts, and direct repository links.
-- **Skeuomorphic Audio Player:** Web Audio API sound engine providing interactive audio previews and ambient audio controls.
-- **Custom Dot-Matrix 404 Page:** Bespoke dot-matrix animated error page styled with gold accent lighting, scanlines, and site-matching specular buttons.
-- **Optimized Favicon & PWA:** Squircle-framed logo favicon (iOS/ChatGPT style) cropped tightly for max visibility in browser tabs, along with complete PWA webmanifest support.
-- **High-Performance OG Image:** Ultra-optimized 1200×630 Open Graph preview image (95 KB JPEG) with rich social meta coverage across iMessage, Discord, LinkedIn, Slack, and X/Twitter.
+The official personal website of **Kuber Bassi**, an independent engineer based in New Delhi, India. Designed with dark topographic visuals, smooth section motion, dynamic 3D elements, live GitHub repository feeds, interactive music streaming integration, and Vercel Analytics.
+
+---
+
+## ✨ Features
+
+- **Interactive Topographic Background:** Canvas/WebGL topographic contour lines that respond to user scrolling and pointer movement.
+- **Dynamic 3D Hero Logo:** Custom Three.js 3D logo scene with smooth drag/rotate interactions.
+- **Live GitHub Repository Gallery:** Auto-syncs projects, star counts, tech tags, and live repository links using the GitHub API.
+- **Skill Observatory & Tech Wall:** Marquee of tools, languages, and frameworks with official documentation links.
+- **Music Catalog & Streaming Integration:** Dedicated music section featuring Spotify iFrame embeds, original releases, and direct links to Spotify, Apple Music, Amazon Music, and YouTube Music.
+- **Vercel Analytics & Speed Insights:** Built-in real-time visitor web analytics and core web vitals performance monitoring.
+- **Dot-Matrix 404 Page:** Custom retro 404 page styled with gold accents, scanlines, and animated particle matrix.
+- **PWA & Search Optimized:** Full PWA manifest support, crisp squircle favicon, and rich Open Graph social previews.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Framework:** React 19 + TypeScript + Vite
-- **Styling:** Vanilla CSS design tokens (`variables.css`, `globals.css`, `portfolio.css`)
-- **3D & Canvas:** Three.js / Custom HTML5 Canvas rendering
-- **Animation:** GSAP (ScrollTrigger) & Framer Motion
-- **Audio:** Web Audio API
-- **Deployment:** Vercel
+| Category | Technologies |
+| :--- | :--- |
+| **Frontend** | React 19, TypeScript, Vite |
+| **Styling** | Vanilla CSS Tokens (`variables.css`, `portfolio.css`, `responsive.css`) |
+| **3D & Canvas** | Three.js, WebGL, HTML5 Canvas |
+| **Animations** | GSAP (ScrollTrigger) |
+| **Media & Audio** | Spotify Embed API, Web Media API |
+| **Analytics & Hosting** | Vercel, `@vercel/analytics`, `@vercel/speed-insights` |
 
 ---
 
-## 📁 Project Structure
-
-```
-kuberbassi.com/
-├── public/                # Static assets, favicons, OG image, manifest & 404
-│   ├── assets/            # Main topographic mesh & logo SVG
-│   ├── brands/wall/       # Tech wall brand icons
-│   ├── 404.html           # Custom dot-matrix error page
-│   ├── favicon.svg        # Optimized squircle SVG favicon
-│   ├── og-image.jpg       # 1200×630 optimized Open Graph social preview
-│   └── manifest.webmanifest
-├── src/
-│   ├── app/               # Root App component
-│   ├── components/        # Layout, canvas, sections, cards, and UI components
-│   ├── data/              # Music catalog and profile data
-│   ├── hooks/             # Motion, sound, and responsive hooks
-│   ├── layouts/           # Page and root layouts
-│   ├── pages/             # Home page view
-│   ├── services/          # GitHub API integration service
-│   └── styles/            # CSS tokens, animations, and global styles
-├── scripts/               # Icon generation & image optimization tools
-├── vercel.json            # Deployment routing & immutable header rules
-└── vite.config.js         # Vite bundler & proxy configuration
-```
-
----
-
-## 📦 Local Development
+## 🚀 Quick Start
 
 ```bash
-# Install dependencies
+# 1. Install dependencies
 npm install
 
-# Start development server
+# 2. Start local dev server
 npm run dev
 
-# Production build
+# 3. Build for production
 npm run build
 
-# Preview production build
+# 4. Preview production build locally
 npm run preview
 ```
 
 ---
 
-© 2025-2026 Kuber Bassi. All Rights Reserved.
+© 2026 **Kuber Bassi**. All rights reserved.

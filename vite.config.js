@@ -31,6 +31,10 @@ export default defineConfig({
     react()
   ],
   build: {
+    target: 'es2022',
+    cssCodeSplit: true,
+    cssMinify: true,
+    modulePreload: { polyfill: false },
     chunkSizeWarningLimit: 800,
     rollupOptions: {
       input: {
@@ -41,6 +45,15 @@ export default defineConfig({
         manualChunks(id) {
           if (id.includes('node_modules/three')) {
             return 'vendor-three';
+          }
+          if (id.includes('node_modules/gsap')) {
+            return 'vendor-gsap';
+          }
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+            return 'vendor-react';
+          }
+          if (id.includes('node_modules/react-icons') || id.includes('node_modules/lucide-react')) {
+            return 'vendor-icons';
           }
         }
       }

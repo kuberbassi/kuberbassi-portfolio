@@ -13,14 +13,20 @@ interface RepositoryGalleryProps {
 const resolvedPreviewSources = new Map<string, string>();
 
 const githubPreview = (project: Project) => {
+  if (project.img && !project.img.includes('opengraph.githubassets.com')) {
+    return project.img;
+  }
   const repository = project.github?.match(/github\.com\/([^/]+\/[^/#?]+)/i)?.[1]
     ?? `kuberbassi/${project.slug}`;
   return `https://opengraph.githubassets.com/1/${repository}`;
 };
 
 const livePreview = (project: Project) => {
+  if (project.img && !project.img.includes('opengraph.githubassets.com')) {
+    return project.img;
+  }
   if (!project.link) return githubPreview(project);
-  return `https://s.wordpress.com/mshots/v1/${encodeURIComponent(project.link)}?w=1200&h=750`;
+  return `https://s.wordpress.com/mshots/v1/${encodeURIComponent(project.link)}?w=1200&h=750&v=2`;
 };
 
 function ProjectPreview({ project, eager }: { project: Project; eager: boolean }) {
@@ -194,11 +200,13 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
 
   return (
     <div className="repo-gallery-shell" ref={shellRef}>
-      {!error && projects.length > 0 && <span className="repo-gallery-hint">
-        <MoveHorizontal size={14} aria-hidden="true" />
-        <strong>Drag or scroll to explore</strong>
-        <span>Arrow keys also work</span>
-      </span>}
+      {!error && projects.length > 0 && (
+        <span className="repo-gallery-hint">
+          <MoveHorizontal size={14} aria-hidden="true" />
+          <strong>Drag or scroll to explore</strong>
+          <span>Arrow keys also work</span>
+        </span>
+      )}
       <div
         className="repo-gallery-viewport"
         data-cursor="Drag"
@@ -293,88 +301,92 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
               <span>{error ?? 'No public GitHub projects are available right now.'}</span>
             </div>
           )}
-          {(loading ? Array.from({ length: 4 }) : projects).map((project, index) =>
-            loading ? (
-              <div className="repo-gallery-card repo-gallery-card--loading" key={index} />
-            ) : (
-              <article className="repo-gallery-card" key={project.slug}>
-                <div className="repo-gallery-card__media">
-                  <ProjectPreview project={project} eager={index < 2} />
-                  <div className="repo-gallery-card__status">
-                    <span>{project.stat}</span>
-                    <span>{project.year}</span>
-                  </div>
-                </div>
-
-                <div className="repo-gallery-card__body">
-                  <div className="repo-gallery-card__heading">
-                    <h3>{project.title}</h3>
-                    {typeof project.stars === 'number' && project.stars > 0 && (
-                      <span><Star size={11} /> {project.stars}</span>
-                    )}
-                  </div>
-                  <p>{project.desc}</p>
-
-                  <div className="repo-gallery-card__tech">
-                    {project.tech.slice(0, 3).map((tech) => <span key={tech}>{tech}</span>)}
+          {loading
+            ? Array.from({ length: 4 }).map((_, index) => (
+                <div className="repo-gallery-card repo-gallery-card--loading" key={index} />
+              ))
+            : projects.map((project, index) => (
+                <article className="repo-gallery-card" key={project.slug}>
+                  <div className="repo-gallery-card__media">
+                    <ProjectPreview project={project} eager={index < 2} />
+                    <div className="repo-gallery-card__status">
+                      <span>{project.stat}</span>
+                      <span>{project.year}</span>
+                    </div>
                   </div>
 
-                  <div className="repo-gallery-card__actions">
-                    {project.github && (
-                      <SpecularButton
-                        className="repo-gallery-action"
-                        href={project.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        size="sm"
-                        radius={8}
-                        tint="#090908"
-                        tintOpacity={0.62}
-                        lineColor="#d5b27e"
-                        baseColor="#403629"
-                        intensity={0.86}
-                        shineSize={14}
-                        shineFade={34}
-                      >
-                        <Code2 size={14} /> Source
-                      </SpecularButton>
-                    )}
-                    {project.link && (
-                      <SpecularButton
-                        className="repo-gallery-action is-primary"
-                        href={project.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        size="sm"
-                        radius={8}
-                        tint="#d5b27e"
-                        tintOpacity={0.94}
-                        textColor="#080807"
-                        lineColor="#fff0d0"
-                        baseColor="#755a35"
-                        intensity={1.05}
-                        shineSize={14}
-                        shineFade={34}
-                      >
-                        <ExternalLink size={14} /> Live
-                      </SpecularButton>
-                    )}
+                  <div className="repo-gallery-card__body">
+                    <div className="repo-gallery-card__heading">
+                      <h3>{project.title}</h3>
+                      {typeof project.stars === 'number' && project.stars > 0 && (
+                        <span><Star size={11} /> {project.stars}</span>
+                      )}
+                    </div>
+                    <p>{project.desc}</p>
+
+                    <div className="repo-gallery-card__tech">
+                      {project.tech.slice(0, 3).map((tech) => <span key={tech}>{tech}</span>)}
+                    </div>
+
+                    <div className="repo-gallery-card__actions">
+                      {project.github && (
+                        <SpecularButton
+                          className="repo-gallery-action"
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          size="sm"
+                          radius={8}
+                          tint="#090908"
+                          tintOpacity={0.62}
+                          lineColor="#d5b27e"
+                          baseColor="#403629"
+                          intensity={0.86}
+                          shineSize={14}
+                          shineFade={34}
+                        >
+                          <Code2 size={14} /> Source
+                        </SpecularButton>
+                      )}
+                      {project.link && (
+                        <SpecularButton
+                          className="repo-gallery-action is-primary"
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          size="sm"
+                          radius={8}
+                          tint="#d5b27e"
+                          tintOpacity={0.94}
+                          textColor="#080807"
+                          lineColor="#fff0d0"
+                          baseColor="#755a35"
+                          intensity={1.05}
+                          shineSize={14}
+                          shineFade={34}
+                        >
+                          <ExternalLink size={14} /> Live
+                        </SpecularButton>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </article>
-            )
-          )}
+                </article>
+              ))}
         </div>
       </div>
-      {!error && projects.length > 0 && <span
-        className={`repo-gallery-cue${hasExplored ? ' is-hidden' : ''}`}
-        aria-hidden="true"
-      >
-        <ArrowRight className="repo-gallery-cue__arrow" strokeWidth={1.3} />
-      </span>}
-      {!error && projects.length > 0 && <div className="repo-gallery-progress" aria-hidden="true">
-        <span />
-      </div>}
+      {!error && projects.length > 0 && (
+        <span
+          className={`repo-gallery-cue${hasExplored ? ' is-hidden' : ''}`}
+          aria-hidden="true"
+        >
+          <ArrowRight className="repo-gallery-cue__arrow" strokeWidth={1.3} />
+        </span>
+      )}
+      {!error && projects.length > 0 && (
+        <div className="repo-gallery-progress" aria-hidden="true">
+          <span />
+        </div>
+      )}
     </div>
   );
 }

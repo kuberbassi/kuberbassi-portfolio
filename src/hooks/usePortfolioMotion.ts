@@ -16,7 +16,7 @@ type MotionStep = {
 
 const sectionMotion: Record<string, MotionStep[]> = {
   home: [
-    { selector: '.kb-art', at: 0.48, duration: 0.82, x: -16, scale: 0.985 },
+    { selector: '.kb-art', at: 0.48, duration: 0.52, y: 12 },
     { selector: '.kb-hero-copy h1', at: 0.56, duration: 0.82, y: 22 },
     { selector: '.kb-hero-copy h1 i', at: 0.74, duration: 0.58, y: 10 },
     { selector: '.kb-hero-intro', at: 0.86, duration: 0.62, y: 12 },
@@ -191,15 +191,7 @@ export function usePortfolioMotion({ rootRef, sliderRef, activeIndex, deckEnable
           y: `${-activeIndex * 100}dvh`,
           duration: reduced ? 0.25 : 1.02,
           ease: 'power2.inOut',
-        }, reduced ? 0 : 0.12)
-      if (terrainMiddle) timeline.to(terrainMiddle, {
-          x: direction * -8,
-          y: direction * 5,
-          duration: reduced ? 0.2 : 0.5,
-          yoyo: true,
-          repeat: 1,
-          ease: 'power2.inOut',
-        }, 0.12);
+        }, reduced ? 0 : 0.12);
 
       nextPlan.forEach((step) => {
         const targets = gsap.utils.toArray<HTMLElement>(step.selector, nextSection);
