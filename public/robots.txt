@@ -2,4 +2,3 @@ User-agent: *
 Allow: /
 
 Sitemap: https://kuberbassi.com/sitemap.xml
-Sitemap: https://www.kuberbassi.com/sitemap.xml

@@ -142,12 +142,15 @@ const SpecularButton = ({
   );
 
   if (href) {
+    const safeRel = target === '_blank'
+      ? Array.from(new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\s+/))).join(' ')
+      : rel;
     return (
       <a
         ref={(node) => { surfaceRef.current = node; }}
         href={href}
         target={target}
-        rel={rel}
+        rel={safeRel}
         aria-label={ariaLabel}
         onClick={onClick}
         className={classes}

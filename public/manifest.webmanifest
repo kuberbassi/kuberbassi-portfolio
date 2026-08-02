@@ -1,0 +1,33 @@
+{
+  "id": "/",
+  "name": "Kuber Bassi",
+  "short_name": "Kuber Bassi",
+  "description": "Portfolio of Kuber Bassi — an independent engineer building useful software, products, and creative tools.",
+  "lang": "en-IN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#080806",
+  "theme_color": "#080806",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,80 +1,112 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-IN">
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/assets/icons/KuberBassi.svg" />
-  <link rel="preload" href="/assets/topographic-bg.webp" as="image" type="image/webp" fetchpriority="high" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Default meta tags - dynamically updated by SEO component -->
   <title>Kuber Bassi | Independent Engineer</title>
   <meta name="description" content="Portfolio of Kuber Bassi — an independent engineer building useful software, products, and creative tools." />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="author" content="Kuber Bassi" />
+  <meta name="theme-color" content="#080806" />
+  <meta name="color-scheme" content="dark" />
+
+  <link rel="canonical" href="https://kuberbassi.com/" />
+  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kuber Bassi" />
+  <meta property="og:locale" content="en_IN" />
+  <meta property="og:url" content="https://kuberbassi.com/" />
   <meta property="og:title" content="Kuber Bassi | Independent Engineer" />
   <meta property="og:description" content="Portfolio of Kuber Bassi — an independent engineer building useful software, products, and creative tools." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://kuberbassi.com/" />
+  <meta property="og:image" content="https://kuberbassi.com/og-image.png" />
+  <meta property="og:image:alt" content="Kuber Bassi independent engineer portfolio" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Kuber Bassi | Independent Engineer" />
   <meta name="twitter:description" content="Portfolio of Kuber Bassi — an independent engineer building useful software, products, and creative tools." />
+  <meta name="twitter:image" content="https://kuberbassi.com/og-image.png" />
+  <meta name="twitter:image:alt" content="Kuber Bassi independent engineer portfolio" />
 
-  <!-- Music-specific Metadata -->
-  <meta property="music:musician" content="https://kuberbassi.com">
-
-  <!-- Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "MusicGroup",
-    "name": "Kuber Bassi",
-    "alternateName": ["KUβER βΔSSI", "KUBER BASSI", "KuberB"],
-    "genre": ["Rock", "Instrumental", "Guitar", "Electronic"],
-    "url": "https://kuberbassi.com",
-    "sameAs": [
-      "https://www.youtube.com/channel/UCcw12FyihnsK7TEHFBVHApw",
-      "https://music.youtube.com/channel/UCnom0oKiYYa_PLEUpczvOVQ",
-      "https://music.apple.com/in/artist/ku%CE%B2er-%CE%B2%CE%B4ssi/1763841556",
-      "https://music.amazon.in/artists/B0DDQ7M12J"
-    ],
-    "description": "Rock guitarist, music producer and sound designer crafting high-energy instrumentals and cinematic soundscapes.",
-    "image": "https://kuberbassi.com/artist-photo.jpg"
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Kuber Bassi",
-    "url": "https://kuberbassi.com",
-    "jobTitle": "Independent Engineer",
-    "alumniOf": {
-      "@type": "CollegeOrUniversity",
-      "name": "Guru Gobind Singh Indraprastha University"
-    },
-    "sameAs": [
-      "https://www.linkedin.com/in/kuberbassi/",
-      "https://github.com/kuberbassi",
-      "https://www.instagram.com/kuber.bassi/",
-      "https://www.youtube.com/channel/UCcw12FyihnsK7TEHFBVHApw",
-      "https://music.youtube.com/channel/UCnom0oKiYYa_PLEUpczvOVQ",
-      "https://music.apple.com/in/artist/ku%CE%B2er-%CE%B2%CE%B4ssi/1763841556",
-      "https://music.amazon.in/artists/B0DDQ7M12J"
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://kuberbassi.com/#person",
+        "name": "Kuber Bassi",
+        "url": "https://kuberbassi.com/",
+        "image": "https://kuberbassi.com/og-image.png",
+        "jobTitle": "Independent Engineer",
+        "description": "Independent engineer building useful software, products, creative tools, and original music.",
+        "email": "mailto:me@kuberbassi.com",
+        "homeLocation": {
+          "@type": "Place",
+          "name": "New Delhi, India"
+        },
+        "knowsAbout": [
+          "Software engineering",
+          "Full-stack development",
+          "Product engineering",
+          "Browser applications",
+          "Artificial intelligence",
+          "Automation",
+          "Interface design",
+          "Music production"
+        ],
+        "sameAs": [
+          "https://github.com/kuberbassi",
+          "https://www.linkedin.com/in/kuberbassi/",
+          "https://www.instagram.com/kuber.bassi/",
+          "https://open.spotify.com/artist/1hVnV9LmM1EJpA8Gj0iT0H",
+          "https://www.youtube.com/channel/UCcw12FyihnsK7TEHFBVHApw",
+          "https://music.youtube.com/channel/UCnom0oKiYYa_PLEUpczvOVQ",
+          "https://music.apple.com/in/artist/ku%CE%B2er-%CE%B2%CE%B4ssi/1763841556",
+          "https://music.amazon.in/artists/B0DDQ7M12J"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://kuberbassi.com/#website",
+        "url": "https://kuberbassi.com/",
+        "name": "Kuber Bassi",
+        "description": "Portfolio of Kuber Bassi — an independent engineer building useful software, products, and creative tools.",
+        "inLanguage": "en-IN",
+        "publisher": { "@id": "https://kuberbassi.com/#person" }
+      },
+      {
+        "@type": "ProfilePage",
+        "@id": "https://kuberbassi.com/#webpage",
+        "url": "https://kuberbassi.com/",
+        "name": "Kuber Bassi | Independent Engineer",
+        "description": "Portfolio of Kuber Bassi — an independent engineer building useful software, products, and creative tools.",
+        "isPartOf": { "@id": "https://kuberbassi.com/#website" },
+        "mainEntity": { "@id": "https://kuberbassi.com/#person" },
+        "inLanguage": "en-IN"
+      }
     ]
   }
   </script>
 
-  <!-- CDN Preconnects -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <!-- The live design uses one family; avoid downloading four unused families. -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <link rel="preload" href="/assets/topographic-bg.webp" as="image" type="image/webp" fetchpriority="high" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 
 <body>
   <div id="root"></div>
+  <noscript>
+    <p>Kuber Bassi is an independent engineer based in New Delhi, India, building useful software, products, and creative tools.</p>
+    <p><a href="mailto:me@kuberbassi.com">Contact Kuber Bassi</a> or visit <a href="https://github.com/kuberbassi">his public GitHub profile</a>.</p>
+  </noscript>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 

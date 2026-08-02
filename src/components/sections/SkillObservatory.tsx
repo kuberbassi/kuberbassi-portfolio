@@ -118,7 +118,7 @@ function LogoSequence({
           href={href}
           key={`${duplicate ? 'duplicate-' : ''}${label}`}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           aria-label={duplicate ? undefined : `${label} official documentation`}
           tabIndex={duplicate ? -1 : undefined}
         >

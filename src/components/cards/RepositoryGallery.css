@@ -57,8 +57,9 @@
   overflow-y: hidden;
   scrollbar-width: none;
   cursor: grab;
-  overscroll-behavior: contain;
-  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
+  touch-action: pan-x pan-y;
 }
 
 .repo-gallery-viewport::-webkit-scrollbar {

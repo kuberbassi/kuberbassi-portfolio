@@ -85,21 +85,20 @@ const SECTIONS = [
 export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [leavingIndex, setLeavingIndex] = useState<number | null>(null);
-  const [deckEnabled, setDeckEnabled] = useState(() => !window.matchMedia('(max-width: 768px), (pointer: coarse)').matches);
-  const workIsActive = !deckEnabled || activeIndex === 3;
-  const heroIsActive = !deckEnabled || activeIndex === 0;
-  const aboutIsActive = !deckEnabled || activeIndex === 1;
-  const toolkitIsActive = !deckEnabled || activeIndex === 2;
-  const musicIsActive = !deckEnabled || activeIndex === 4;
+  const [deckEnabled, setDeckEnabled] = useState(() => !window.matchMedia('(max-width: 1023px), (pointer: coarse)').matches);
+  const workIsActive = activeIndex === 3;
+  const heroIsActive = activeIndex === 0;
+  const aboutIsActive = activeIndex === 1;
+  const toolkitIsActive = activeIndex === 2;
+  const musicIsActive = activeIndex === 4;
   const heroPresent = heroIsActive || leavingIndex === 0;
   const aboutPresent = aboutIsActive || leavingIndex === 1;
   const toolkitPresent = toolkitIsActive || leavingIndex === 2;
   const musicPresent = musicIsActive || leavingIndex === 4;
-  const [workMounted, setWorkMounted] = useState(() => !deckEnabled);
+  const [workMounted, setWorkMounted] = useState(false);
   const { projects, loading, error: projectsError } = useGitHubProjects(workMounted);
   const activeIndexRef = useRef(0);
   const isAnimatingRef = useRef(false);
-  const touchStartYRef = useRef(0);
   const wheelDeltaRef = useRef(0);
   const wheelResetRef = useRef(0);
   const leavingTimerRef = useRef(0);
@@ -172,7 +171,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const query = window.matchMedia('(max-width: 768px), (pointer: coarse)');
+    const query = window.matchMedia('(max-width: 1023px), (pointer: coarse)');
     const updateMode = () => setDeckEnabled(!query.matches);
     query.addEventListener('change', updateMode);
     return () => query.removeEventListener('change', updateMode);
@@ -191,6 +190,8 @@ export default function Home() {
       if (!visible) return;
       const section = sections.find(({ element }) => element === visible.target);
       if (!section) return;
+      activeIndexRef.current = section.index;
+      setActiveIndex(section.index);
       window.dispatchEvent(new CustomEvent('kb:sectionchange', { detail: section.index }));
     }, { rootMargin: '-28% 0px -52% 0px', threshold: [0, 0.15, 0.35] });
 
@@ -200,7 +201,7 @@ export default function Home() {
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
-      if (window.matchMedia('(max-width: 768px), (pointer: coarse)').matches) return;
+      if (window.matchMedia('(max-width: 1023px), (pointer: coarse)').matches) return;
       if (e.defaultPrevented) return;
 
       const target = e.target as HTMLElement | null;
@@ -238,7 +239,7 @@ export default function Home() {
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (window.matchMedia('(max-width: 768px)').matches) return;
+      if (window.matchMedia('(max-width: 1023px)').matches) return;
       if (e.defaultPrevented) return;
       if (['ArrowDown', 'PageDown', 'Space'].includes(e.code)) {
         e.preventDefault();
@@ -249,34 +250,12 @@ export default function Home() {
       }
     };
 
-    const handleTouchStart = (e: TouchEvent) => {
-      touchStartYRef.current = e.touches[0].clientY;
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      if (window.matchMedia('(max-width: 768px), (pointer: coarse)').matches) return;
-      const touchEndY = e.changedTouches[0].clientY;
-      const deltaY = touchStartYRef.current - touchEndY;
-
-      if (Math.abs(deltaY) > 40) {
-        if (deltaY > 0) {
-          goToSection(activeIndexRef.current + 1);
-        } else {
-          goToSection(activeIndexRef.current - 1);
-        }
-      }
-    };
-
     window.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     return () => {
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchend', handleTouchEnd);
       window.clearTimeout(wheelResetRef.current);
     };
   }, [goToSection]);
@@ -303,7 +282,7 @@ export default function Home() {
               <LightRays
                 className="kb-light"
                 raysColor="#d5b27e"
-                followMouse
+                followMouse={deckEnabled}
                 mouseInfluence={0.05}
               />
             )}
@@ -356,7 +335,7 @@ export default function Home() {
                 shineSize={18}
                 shineFade={38}
                 ariaLabel="Explore selected work"
-                onClick={() => goToSection(1)}
+                onClick={() => window.dispatchEvent(new CustomEvent('kb:navigate', { detail: 1 }))}
               >
                 <ArrowDownRight />
               </SpecularButton>
@@ -463,7 +442,7 @@ export default function Home() {
                         href={organization.href}
                         key={organization.handle}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         size="sm"
                         radius={999}
                         tint="#090908"
@@ -543,7 +522,7 @@ export default function Home() {
                       href={channel.url}
                       key={channel.name}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       ariaLabel={`Open Kuber Bassi on ${channel.name}`}
                       size="sm"
                       radius={12}
@@ -614,7 +593,7 @@ export default function Home() {
                   <SpecularButton
                     href="https://github.com/kuberbassi"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     size="md"
                     radius={12}
                     tint="#080807"

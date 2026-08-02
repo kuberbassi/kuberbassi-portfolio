@@ -106,18 +106,14 @@ export function usePortfolioMotion({ rootRef, sliderRef, activeIndex, deckEnable
         sections.forEach((section) => {
           const plan = sectionMotion[section.id] ?? [];
           const targets = getPlanTargets(section, plan);
-          if (!targets.length) return;
-          gsap.fromTo(targets, { autoAlpha: 0, y: reduced ? 0 : 18 }, {
+          gsap.set(section, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
+          gsap.set(Array.from(section.children), { autoAlpha: 1, clearProps: 'transform,opacity,visibility,willChange' });
+          if (targets.length) gsap.set(targets, {
             autoAlpha: 1,
+            x: 0,
             y: 0,
-            duration: reduced ? 0.25 : 0.72,
-            stagger: reduced ? 0 : 0.07,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top 78%',
-              once: true,
-            },
+            scale: 1,
+            clearProps: 'transform,opacity,visibility,willChange',
           });
         });
         return;

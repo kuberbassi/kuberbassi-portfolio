@@ -167,6 +167,31 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
     return () => window.removeEventListener('keydown', onWindowKeyDown);
   }, [scrollByCard]);
 
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    const onGalleryWheel = (event: WheelEvent) => {
+      if (window.matchMedia('(max-width: 1023px), (pointer: coarse)').matches) return;
+      const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY)
+        ? event.deltaX
+        : event.deltaY;
+      if (!delta) return;
+
+      event.preventDefault();
+      const unit = event.deltaMode === WheelEvent.DOM_DELTA_LINE
+        ? 16
+        : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+          ? viewport.clientWidth
+          : 1;
+      const base = glideRef.current.frame ? glideRef.current.target : viewport.scrollLeft;
+      glideTo(base + delta * unit * 0.72);
+    };
+
+    viewport.addEventListener('wheel', onGalleryWheel, { passive: false });
+    return () => viewport.removeEventListener('wheel', onGalleryWheel);
+  }, [glideTo]);
+
   return (
     <div className="repo-gallery-shell" ref={shellRef}>
       {!error && projects.length > 0 && <span className="repo-gallery-hint">
@@ -195,22 +220,6 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
             }
           });
         }}
-        onWheel={(event) => {
-          const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY)
-            ? event.deltaX
-            : event.deltaY;
-          if (!delta) return;
-          event.preventDefault();
-          const viewport = viewportRef.current;
-          if (!viewport) return;
-          const unit = event.deltaMode === WheelEvent.DOM_DELTA_LINE
-            ? 16
-            : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
-              ? viewport.clientWidth
-              : 1;
-          const base = glideRef.current.frame ? glideRef.current.target : viewport.scrollLeft;
-          glideTo(base + delta * unit * 0.72);
-        }}
         onKeyDown={(event) => {
           if (event.key === 'ArrowRight') {
             event.preventDefault();
@@ -222,6 +231,7 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
           }
         }}
         onPointerDown={(event) => {
+          if (event.pointerType === 'touch') return;
           if ((event.target as HTMLElement).closest('a')) return;
           const viewport = viewportRef.current;
           if (!viewport) return;
@@ -315,7 +325,7 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
                         className="repo-gallery-action"
                         href={project.github}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         size="sm"
                         radius={8}
                         tint="#090908"
@@ -334,7 +344,7 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
                         className="repo-gallery-action is-primary"
                         href={project.link}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         size="sm"
                         radius={8}
                         tint="#d5b27e"

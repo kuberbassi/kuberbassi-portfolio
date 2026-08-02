@@ -1,0 +1,17 @@
+/* TEAM */
+
+Name: Kuber Bassi
+Role: Independent Engineer
+Location: New Delhi, India
+Website: https://kuberbassi.com/
+GitHub: https://github.com/kuberbassi
+Contact: me@kuberbassi.com
+
+/* SITE */
+
+Name: Kuber Bassi Portfolio
+URL: https://kuberbassi.com/
+Language: English
+Design and engineering: Kuber Bassi
+Built with: React, TypeScript, Vite, GSAP, and Three.js
+Last meaningful update: 2026-08-02
