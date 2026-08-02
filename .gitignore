@@ -7,23 +7,31 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies & Build
 node_modules
 dist
 dist-ssr
 *.local
 
-# Environment variables (API keys)
+# Environment variables
 .env
 .env.local
 .env.*.local
 
-# Editor directories and files
+# Editor & OS files
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Temporary media & dump artifacts
+dump/
+scripts/*.png
+*.tmp
+*.tmp.*

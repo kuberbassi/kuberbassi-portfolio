@@ -1,58 +1,77 @@
-# Kuber Bassi — Unified Resonance Portfolio
+# Kuber Bassi — Personal Engineering Portfolio
 
-A high-performance, multi-dimensional digital space for **Kuber Bassi**, representing the convergence of **Software Engineering** and **Music Production** (Systems and Resonance). 
+The official digital space and portfolio of **Kuber Bassi**, an independent engineer based in New Delhi, India.
 
-This website has been modernized and unified into a single, state-of-the-art interactive experience. Legacy features and old codebase directories have been neatly archived in the `legacy/` directory.
-
----
-
-## 🌌 Core Features
-
-### 1. Unified Resonance Experience (`ModernPortfolio.jsx`)
-Instead of separate interfaces, the entire portfolio is presented as a single, coherent narrative that adapts dynamically to the selected filter focus (Synthesis, Systems, or Music).
-
-### 2. Dynamic 3D Arcane Ledger (The Project Book)
-- **Automatic Index Pagination:** Automatically chunks large GitHub repository lists into batches of 10, generating dynamic index pages ("The Inventory") on parchment paper before showing individual project cards.
-- **3D Page Flipping:** Seamless, interactive 3D leaf animations that respond dynamically to user navigation.
-- **GitHub Integration:** Fetches and enriches repository cards with live language statistics and project details.
-
-### 3. Skeuomorphic Resonance Terminal (Audio Control)
-- **Interactive Vinyl Player:** A custom rotating vinyl graphic that speeds up/slows down depending on the playback state.
-- **Vacuum Tube VU Meter:** Analog vacuum tubes that glow in response to playback, complete with a responsive mechanical VU indicator needle.
-- **Direct Streaming Integration:** Skeuomorphic frequency bands for tuning directly into release channels (Spotify, Apple Music, YouTube, Amazon Music).
-
-### 4. Custom Ambient Synth Engine (`audioSynth.js`)
-- **Centralized Singleton Engine:** Leverages the Web Audio API to handle the ambient soundtrack (`Codex Over Observatory.mp3`) and interactive chimes.
-- **Dynamic Interaction Chimes:** Triggers pentatonic chime notes (synthesized sine waves with bandpass guitar-like formants) during scroll, page flips, and hover states.
-- **Robust Lifecycle Control:** Automatically halts stray elements, handles Chrome autoplay restrictions, and clears duplicates.
+Built with **React 19**, **TypeScript**, **Vite**, **Three.js**, **GSAP**, and **Lenis**, featuring a dark topographic canvas theme, kinetic micro-interactions, custom Web Audio synthesis, and dynamic GitHub repository integration.
 
 ---
 
-## ⚡ Performance & Mobile Optimizations
-- **Layout-Thrashing Prevention:** Layout-measuring calculations (`getBoundingClientRect`) are disabled on touch screen devices to prevent scroll stuttering.
-- **Responsive Custom Cursor:** Uses a canvas-based particle trail system that is automatically disabled on mobile/tablet devices to prevent DOM clutter and CPU overhead.
-- **Reduced Animation Overhead:** Heavy SVG background layouts are automatically hidden on smaller screens.
-- **Mobile View Rendering Fix:** Corrected typography CSS styling on the mobile portal page to resolve blurry text rendering on the name heading.
-- **Vite Chunk Splitting:** Added manual chunk allocation for major dependencies (`three.js`, `gsap`, `framer-motion`), improving caching efficiency.
-- **Vercel Asset Caching:** Configured `vercel.json` with `Cache-Control` immutable headers to speed up repeat loads of static assets.
+## 🚀 Key Highlights & Features
+
+- **Topographic Canvas Base:** Interactive WebGL/Canvas topographic relief mesh that responds smoothly to scroll position and pointer dynamics.
+- **Dynamic Skill Observatory & Tech Wall:** Endless kinetic marquee displaying languages, tools, and platforms with official documentation links.
+- **Live Repository Gallery:** Integrated with GitHub API to pull live statistics, languages, star counts, and direct repository links.
+- **Skeuomorphic Audio Player:** Web Audio API sound engine providing interactive audio previews and ambient audio controls.
+- **Custom Dot-Matrix 404 Page:** Bespoke dot-matrix animated error page styled with gold accent lighting, scanlines, and site-matching specular buttons.
+- **Optimized Favicon & PWA:** Squircle-framed logo favicon (iOS/ChatGPT style) cropped tightly for max visibility in browser tabs, along with complete PWA webmanifest support.
+- **High-Performance OG Image:** Ultra-optimized 1200×630 Open Graph preview image (95 KB JPEG) with rich social meta coverage across iMessage, Discord, LinkedIn, Slack, and X/Twitter.
 
 ---
 
-## 🛠️ Technology Stack
+## 🛠️ Tech Stack
 
-- **Core:** [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
-- **Animation & Transitions:** [GSAP](https://greensock.com/) (ScrollTrigger) & [Framer Motion](https://www.framer.com/motion/)
-- **Smooth Scroll:** [Lenis](https://lenis.darkroom.engineering/)
-- **3D Graphics:** [Three.js](https://threejs.org/) / React Three Fiber
-- **Analytics:** Vercel Speed Insights
-- **Hosting:** Vercel
+- **Framework:** React 19 + TypeScript + Vite
+- **Styling:** Vanilla CSS design tokens (`variables.css`, `globals.css`, `portfolio.css`)
+- **3D & Canvas:** Three.js / Custom HTML5 Canvas rendering
+- **Animation:** GSAP (ScrollTrigger) & Framer Motion
+- **Audio:** Web Audio API
+- **Deployment:** Vercel
+
+---
+
+## 📁 Project Structure
+
+```
+kuberbassi.com/
+├── public/                # Static assets, favicons, OG image, manifest & 404
+│   ├── assets/            # Main topographic mesh & logo SVG
+│   ├── brands/wall/       # Tech wall brand icons
+│   ├── 404.html           # Custom dot-matrix error page
+│   ├── favicon.svg        # Optimized squircle SVG favicon
+│   ├── og-image.jpg       # 1200×630 optimized Open Graph social preview
+│   └── manifest.webmanifest
+├── src/
+│   ├── app/               # Root App component
+│   ├── components/        # Layout, canvas, sections, cards, and UI components
+│   ├── data/              # Music catalog and profile data
+│   ├── hooks/             # Motion, sound, and responsive hooks
+│   ├── layouts/           # Page and root layouts
+│   ├── pages/             # Home page view
+│   ├── services/          # GitHub API integration service
+│   └── styles/            # CSS tokens, animations, and global styles
+├── scripts/               # Icon generation & image optimization tools
+├── vercel.json            # Deployment routing & immutable header rules
+└── vite.config.js         # Vite bundler & proxy configuration
+```
 
 ---
 
-## 📂 Repository Structure & Archive
-- `/src/pages/ModernPortfolio.jsx` — The unified codebase file.
-- `/src/utils/audioSynth.js` — The custom audio and synthesizer controller.
-- `/legacy/` — Contains all old components, styles, static HTML directories, and unused code files, safely archived.
+## 📦 Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Production build
+npm run build
+
+# Preview production build
+npm run preview
+```
 
 ---
+
 © 2025-2026 Kuber Bassi. All Rights Reserved.

@@ -33,6 +33,10 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 800,
     rollupOptions: {
+      input: {
+        main: path.resolve(projectRoot, 'index.html'),
+        404: path.resolve(projectRoot, 'public/404.html'),
+      },
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/three')) {

@@ -1,5 +1,9 @@
 {
   "cleanUrls": true,
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/404.html", "status": 404, "dest": "/404.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
