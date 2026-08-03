@@ -6,7 +6,8 @@
 @import "tailwindcss";
 @import './variables.css';
 @import './theme.css';
-@import './font.css';
+@import '@fontsource-variable/plus-jakarta-sans';
+
 @import './size.css';
 @import './typography.css';
 @import './animations.css';
@@ -28,6 +29,19 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+
+:root {
+  --font-sans: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', sans-serif;
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
+  --font-mono: var(--font-sans);
+  --font-serif: Georgia, 'Times New Roman', serif;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
 }
 
 body {

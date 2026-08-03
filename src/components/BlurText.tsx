@@ -73,8 +73,8 @@ const BlurText = ({
       ref={ref}
       className={`blur-text blur-text--segmented${inView ? ' is-visible' : ''} ${className}`.trim()}
       style={style}
-      aria-label={text}
     >
+      <span className="sr-only">{text}</span>
       {words.map((word, wordIndex) => {
         if (/^\s+$/.test(word)) {
           return <span key={`space-${wordIndex}`} className="blur-text__space" aria-hidden="true">{word}</span>;

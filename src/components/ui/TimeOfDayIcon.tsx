@@ -107,6 +107,7 @@ export function TimeOfDayIcon() {
   return (
     <span
       className="kb-time-zone"
+      role="img"
       aria-label={label}
       title={label}
       data-period={ownerTime.period satisfies TimePeriod}

@@ -51,10 +51,7 @@
 }
 
 @keyframes kb-curtain-failsafe {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
+  to { opacity: 0; }
 }
 
 .motion-ready #home.is-active .kb-art > * {
@@ -2644,6 +2641,11 @@
   contain: layout paint style;
 }
 
+/* will-change only while the animation is pending — released automatically once is-visible is added. */
+.blur-text--segmented:not(.is-visible) .blur-text__segment {
+  will-change: filter, opacity, transform;
+}
+
 .blur-text__segment {
   display: inline-block;
   opacity: 0;
@@ -2687,9 +2689,17 @@
   animation: kb-text-settle 0.58s var(--ease-out) 0.08s both;
 }
 
+/* Promote to compositor layer before the slide becomes active. */
+.blago-slide:not(.is-active) h1,
+.blago-slide:not(.is-active) h2,
+.blago-slide:not(.is-active) .kb-label {
+  will-change: filter, opacity, transform;
+}
+
 .blago-slide.is-active h1,
 .blago-slide.is-active h2 {
   animation: kb-text-settle 0.72s var(--ease-section) 0.16s both;
+  will-change: auto;
 }
 
 @keyframes kb-text-settle {

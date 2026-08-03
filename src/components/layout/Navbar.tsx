@@ -44,7 +44,7 @@ export function Navbar() {
             navigateToSection(0);
           }}
         >
-          <img src="/assets/icons/KuberBassi.svg?v=2" alt="" />
+          <img src="/assets/icons/KuberBassi.svg?v=2" alt="Kuber Bassi" />
           <div>
             <strong>Kuber Bassi</strong>
             <small>Independent engineer</small>
