@@ -324,7 +324,7 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
                     <p>{project.desc}</p>
 
                     <div className="repo-gallery-card__tech">
-                      {project.tech.slice(0, 4).map((tech) => <span key={tech}>{tech}</span>)}
+                      {project.tech.slice(0, 3).map((tech) => <span key={tech}>{tech}</span>)}
                     </div>
 
                     <div className="repo-gallery-card__actions">

@@ -1175,8 +1175,8 @@ iframe {
 
   .repo-gallery-card {
     flex-basis: min(calc(100vw - 36px), 340px);
-    height: 380px !important;
-    max-height: 380px !important;
+    height: min(380px, calc(100% - 14px)) !important;
+    max-height: calc(100% - 14px) !important;
     scroll-snap-align: center;
     contain-intrinsic-size: 340px 380px;
   }
