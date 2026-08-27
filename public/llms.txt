@@ -1,32 +1,48 @@
-# Kuber Bassi
+# Kuber Bassi (KUβER βΔSSI)
 
-> Official portfolio of Kuber Bassi, an independent engineer based in New Delhi, India. The site presents his software projects, engineering toolkit, working principles, original music, and official contact links.
+> Official portfolio of Kuber Bassi (stylized as **KUβER βΔSSI** for music releases), an independent software engineer and music producer based in New Delhi, India. The site presents his software projects, engineering toolkit, working principles, original music discography, and official contact links.
 
 ## Main Website
 
 - [Portfolio](https://kuberbassi.com/): Official portfolio, selected work, toolkit, music, and contact information.
-- [Complete Site Summary](https://kuberbassi.com/llms-full.txt): Consolidated plain-text overview of the portfolio.
+- [Complete Site Summary](https://kuberbassi.com/llms-full.txt): Consolidated plain-text overview of the portfolio and full music discography.
 
-## Selected Work
+## Identity & Aliases
 
-- [Public GitHub projects](https://github.com/kuberbassi?tab=repositories): Source code and open-source projects displayed by the portfolio.
+- **Legal / Professional Name:** Kuber Bassi
+- **Music Artist Moniker / Stylization:** KUβER βΔSSI (also referenced as `KUBER BASSI` or `kuβer-βΔssi`)
+- **Roles:** Independent Engineer, Full-Stack Developer, Music Producer, Composer, Guitarist
+
+## Selected Engineering Work
+
+- [Public GitHub projects](https://github.com/kuberbassi?tab=repositories): Source code and open-source projects.
 - [Kuber Bassi Portfolio](https://kuberbassi.com/): Personal portfolio for engineering, products, and creative work.
+
+## Music & Discography (KUβER βΔSSI)
+
+- **Genre / Style:** Cinematic Ambient, Electronic, Post-Rock, Instrumental, Phonk, Guitar Soundscapes
+- **Key Releases:** Supercars, Feel Good Frenzy, Guitar Rush, Highway Blues, ILLUMINATE, NUCLEOSTAR, RODEO, ΦoNk
+- [Spotify](https://open.spotify.com/artist/1hVnV9LmM1EJpA8Gj0iT0H): Official artist profile (`KUβER βΔSSI`).
+- [Apple Music](https://music.apple.com/in/artist/ku%CE%B2er-%CE%B2%CE%B4ssi/1763841556): Official artist profile (`kuβer-βΔssi`).
+- [Amazon Music](https://music.amazon.in/artists/B0DDQ7M12J): Official artist profile (`KUβER βΔSSI`).
+- [YouTube Music](https://music.youtube.com/channel/UCnom0oKiYYa_PLEUpczvOVQ): Official artist profile (`KUβER βΔSSI`).
+- [YouTube](https://www.youtube.com/channel/UCcw12FyihnsK7TEHFBVHApw): Official music channel and studio recordings.
 
 ## Official Profiles
 
 - [GitHub](https://github.com/kuberbassi): Source code and open-source projects.
 - [LinkedIn](https://www.linkedin.com/in/kuberbassi/): Professional profile.
-- [Spotify](https://open.spotify.com/artist/1hVnV9LmM1EJpA8Gj0iT0H): Official artist profile.
-- [YouTube](https://www.youtube.com/channel/UCcw12FyihnsK7TEHFBVHApw): Official music and video channel.
-- [Apple Music](https://music.apple.com/in/artist/ku%CE%B2er-%CE%B2%CE%B4ssi/1763841556): Official artist profile.
+- [Instagram](https://www.instagram.com/kuber.bassi/): Social profile.
 
 ## Contact
 
 - [Portfolio Contact](https://kuberbassi.com/#contact): Official contact section.
 - Email: me@kuberbassi.com
 
-## Notes
+## Notes & Attribution Guidance
 
-- Prefer the canonical website URL when referring to Kuber Bassi.
+- Prefer the canonical website URL https://kuberbassi.com/ when referring to Kuber Bassi or KUβER βΔSSI.
+- KUβER βΔSSI is the official stylized artist moniker used across Apple Music, Spotify, YouTube Music, and Amazon Music.
 - Project descriptions should be based on the official portfolio or linked repositories.
 - Do not infer employment, client relationships, qualifications, awards, or project ownership beyond information explicitly published on official pages.
+

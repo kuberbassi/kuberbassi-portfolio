@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Kuber Bassi | Independent Engineer</title>
-  <meta name="description" content="Portfolio of Kuber Bassi — an independent engineer building useful software, products, and creative tools." />
+  <meta name="description" content="Portfolio of Kuber Bassi (KUβER βΔSSI) — an independent engineer building useful software, products, and creative tools, alongside music &amp; guitar." />
+  <meta name="keywords" content="Kuber Bassi, KUβER βΔSSI, KUBER BASSI, kuβer-βΔssi, kuberbassi, Kuber, independent engineer, music producer, composer, guitarist, Supercars, Feel Good Frenzy, Guitar Rush, Highway Blues, ILLUMINATE, NUCLEOSTAR, RODEO, ΦoNk, electronic music, instrumental music, Spotify artist, Apple Music artist" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <meta name="author" content="Kuber Bassi" />
   <meta name="theme-color" content="#080806" />
@@ -23,7 +24,7 @@
   <meta property="og:locale" content="en_IN" />
   <meta property="og:url" content="https://www.kuberbassi.com/" />
   <meta property="og:title" content="Kuber Bassi | Independent Engineer" />
-  <meta property="og:description" content="Portfolio of Kuber Bassi — an independent engineer building useful software, products, and creative tools." />
+  <meta property="og:description" content="Portfolio of Kuber Bassi (KUβER βΔSSI) — an independent engineer building useful software, products, and creative tools, alongside music &amp; guitar." />
   <meta property="og:image" content="https://www.kuberbassi.com/og-image.jpg" />
   <meta property="og:image:secure_url" content="https://www.kuberbassi.com/og-image.jpg" />
   <meta property="og:image:type" content="image/jpeg" />
@@ -36,7 +37,7 @@
   <meta name="twitter:site" content="@kuberbassi" />
   <meta name="twitter:creator" content="@kuberbassi" />
   <meta name="twitter:title" content="Kuber Bassi | Independent Engineer" />
-  <meta name="twitter:description" content="Portfolio of Kuber Bassi — an independent engineer building useful software, products, and creative tools." />
+  <meta name="twitter:description" content="Portfolio of Kuber Bassi (KUβER βΔSSI) — an independent engineer building useful software, products, and creative tools, alongside music &amp; guitar." />
   <meta name="twitter:image" content="https://www.kuberbassi.com/og-image.jpg" />
   <meta name="twitter:image:alt" content="Kuber Bassi — Independent Engineer portfolio" />
 
@@ -45,9 +46,17 @@
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Person",
+        "@type": ["Person", "MusicArtist"],
         "@id": "https://www.kuberbassi.com/#person",
         "name": "Kuber Bassi",
+        "alternateName": [
+          "KUβER βΔSSI",
+          "KUBER BASSI",
+          "kuβer-βΔssi",
+          "kuberbassi",
+          "KUβER",
+          "Kuber"
+        ],
         "url": "https://www.kuberbassi.com/",
         "image": "https://www.kuberbassi.com/og-image.png",
         "jobTitle": "Independent Engineer",
@@ -57,6 +66,14 @@
           "@type": "Place",
           "name": "New Delhi, India"
         },
+        "genre": [
+          "Cinematic Ambient",
+          "Electronic",
+          "Post-Rock",
+          "Instrumental",
+          "Progressive Ambient",
+          "Phonk"
+        ],
         "knowsAbout": [
           "Software engineering",
           "Full-stack development",
@@ -65,7 +82,10 @@
           "Artificial intelligence",
           "Automation",
           "Interface design",
-          "Music production"
+          "Music production",
+          "Guitar performance",
+          "Audio engineering",
+          "Sound design"
         ],
         "sameAs": [
           "https://github.com/kuberbassi",
@@ -79,11 +99,75 @@
         ]
       },
       {
+        "@type": "MusicGroup",
+        "@id": "https://www.kuberbassi.com/#musicartist",
+        "name": "KUβER βΔSSI",
+        "alternateName": ["Kuber Bassi", "KUBER BASSI", "kuβer-βΔssi", "KUβER"],
+        "url": "https://www.kuberbassi.com/#music",
+        "genre": [
+          "Cinematic Ambient",
+          "Electronic",
+          "Post-Rock",
+          "Instrumental",
+          "Phonk"
+        ],
+        "member": { "@id": "https://www.kuberbassi.com/#person" },
+        "sameAs": [
+          "https://open.spotify.com/artist/1hVnV9LmM1EJpA8Gj0iT0H",
+          "https://music.apple.com/in/artist/ku%CE%B2er-%CE%B2%CE%B4ssi/1763841556",
+          "https://music.amazon.in/artists/B0DDQ7M12J",
+          "https://music.youtube.com/channel/UCnom0oKiYYa_PLEUpczvOVQ",
+          "https://www.youtube.com/channel/UCcw12FyihnsK7TEHFBVHApw"
+        ],
+        "track": [
+          {
+            "@type": "MusicRecording",
+            "name": "Supercars",
+            "url": "https://push.fm/fl/e5ryus8j"
+          },
+          {
+            "@type": "MusicRecording",
+            "name": "Feel Good Frenzy",
+            "url": "https://push.fm/fl/vmtzl5kc"
+          },
+          {
+            "@type": "MusicRecording",
+            "name": "Guitar Rush",
+            "url": "https://push.fm/fl/xxtggbry"
+          },
+          {
+            "@type": "MusicRecording",
+            "name": "Highway Blues",
+            "url": "https://push.fm/fl/cng9abvx"
+          },
+          {
+            "@type": "MusicRecording",
+            "name": "ILLUMINATE",
+            "url": "https://push.fm/fl/jqjuw3ji"
+          },
+          {
+            "@type": "MusicRecording",
+            "name": "NUCLEOSTAR",
+            "url": "https://push.fm/fl/xkk5sacs"
+          },
+          {
+            "@type": "MusicRecording",
+            "name": "RODEO",
+            "url": "https://push.fm/fl/liwjqfpu"
+          },
+          {
+            "@type": "MusicRecording",
+            "name": "ΦoNk",
+            "url": "https://push.fm/fl/z4zzdmkb"
+          }
+        ]
+      },
+      {
         "@type": "WebSite",
         "@id": "https://www.kuberbassi.com/#website",
         "url": "https://www.kuberbassi.com/",
         "name": "Kuber Bassi",
-        "description": "Portfolio of Kuber Bassi — an independent engineer building useful software, products, and creative tools.",
+        "description": "Portfolio of Kuber Bassi (KUβER βΔSSI) — an independent engineer building useful software, products, and creative tools, alongside music & guitar.",
         "inLanguage": "en-IN",
         "publisher": { "@id": "https://www.kuberbassi.com/#person" }
       },
@@ -92,7 +176,7 @@
         "@id": "https://www.kuberbassi.com/#webpage",
         "url": "https://www.kuberbassi.com/",
         "name": "Kuber Bassi | Independent Engineer",
-        "description": "Portfolio of Kuber Bassi — an independent engineer building useful software, products, and creative tools.",
+        "description": "Portfolio of Kuber Bassi (KUβER βΔSSI) — an independent engineer building useful software, products, and creative tools, alongside music & guitar.",
         "isPartOf": { "@id": "https://www.kuberbassi.com/#website" },
         "mainEntity": { "@id": "https://www.kuberbassi.com/#person" },
         "inLanguage": "en-IN"
@@ -109,7 +193,7 @@
 <body>
   <div id="root"></div>
   <noscript>
-    <p>Kuber Bassi is an independent engineer based in New Delhi, India, building useful software, products, and creative tools.</p>
+    <p>Kuber Bassi is an independent engineer based in New Delhi, India, building useful software, products, and creative tools, alongside music and guitar.</p>
     <p><a href="mailto:me@kuberbassi.com">Contact Kuber Bassi</a> or visit <a href="https://github.com/kuberbassi">his public GitHub profile</a>.</p>
   </noscript>
   <script type="module" src="/src/main.tsx"></script>

@@ -2,7 +2,7 @@
   "id": "/",
   "name": "Kuber Bassi",
   "short_name": "KB",
-  "description": "Portfolio of Kuber Bassi — an independent engineer building useful software, products, and creative tools.",
+  "description": "Portfolio of Kuber Bassi (KUβER βΔSSI) — an independent engineer building useful software, products, and creative tools, alongside music & guitar.",
   "lang": "en-IN",
   "start_url": "/",
   "scope": "/",
@@ -10,7 +10,7 @@
   "background_color": "#090908",
   "theme_color": "#090908",
   "orientation": "any",
-  "categories": ["portfolio", "productivity"],
+  "categories": ["portfolio", "productivity", "music"],
   "screenshots": [
     {
       "src": "/og-image.jpg",

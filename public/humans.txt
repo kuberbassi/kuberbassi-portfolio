@@ -1,7 +1,7 @@
 /* TEAM */
 
-Name: Kuber Bassi
-Role: Independent Engineer
+Name: Kuber Bassi (KUβER βΔSSI)
+Role: Independent Engineer & Music Producer
 Location: New Delhi, India
 Website: https://kuberbassi.com/
 GitHub: https://github.com/kuberbassi
@@ -13,5 +13,6 @@ Name: Kuber Bassi Portfolio
 URL: https://kuberbassi.com/
 Language: English
 Design and engineering: Kuber Bassi
+Music production: KUβER βΔSSI
 Built with: React, TypeScript, Vite, GSAP, and Three.js
-Last meaningful update: 2026-08-02
+Last meaningful update: 2026-08-28
