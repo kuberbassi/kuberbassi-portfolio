@@ -1,0 +1,56 @@
+# Project Improvement Log
+
+This file explains every maintenance change in plain language. It is meant to be readable without knowing the code.
+
+| Date | Technical change | What this means in simple words |
+| --- | --- | --- |
+| 2026-08-28 | Started the code-quality sprint after reviewing the React, TypeScript, CSS, tooling, and build setup. | We found the risky areas first instead of rewriting working parts blindly. |
+| 2026-08-28 | Recorded the starting checks: production build passed; lint failed with 22 errors and 2 warnings from `archive`; TS/TSX files were outside the lint rules; strict TypeScript and automated tests were absent. | The website could be built, but the automatic safety checks were not trustworthy yet. This is the baseline we will improve. |
+| 2026-08-28 | Added named `typecheck`, `test`, and full `check` commands; enabled strict TypeScript; excluded historical `archive` code from active linting; added TS/TSX lint rules. | There is now one repeatable command for checking the real website code, while old experiments no longer make the current code look broken. |
+| 2026-08-28 | The newest TypeScript 7 package was incompatible with the current TypeScript ESLint tool, so the sprint pinned the supported TypeScript 6 line instead. | We encountered a tool-version mismatch and chose compatible stable tools instead of hiding the error. |
+| 2026-08-28 | Fixed every issue revealed by strict checking: CSS import declarations, event typing, unused imports, and a render-time counter mutation. Type-check and lint now pass. | The checks found real weaknesses, and the active website now clears both safety gates. |
+| 2026-08-28 | Simplified duplicate repository-image logic and separated GitHub data formatting into a pure function with focused tests. | The project-list rules can now be tested without opening a browser or calling GitHub. |
+| 2026-08-28 | Moved desktop/mobile section navigation, wheel handling, keyboard handling, URL hashes, observers, animation locks, and timer cleanup from `Home.tsx` into `useSectionDeck`. | The main page now mostly describes what appears on the page. The complicated movement rules live together in one named place. |
+| 2026-08-28 | Removed duplicate gallery rules from the global responsive stylesheet and placed the gallery's mobile sizing, snapping, and layout in its own component stylesheet. Removed more than 40 unnecessary `!important` overrides there. | The gallery now has one main styling owner. A future gallery change is less likely to fight hidden rules in another file. |
+| 2026-08-28 | Checked the website in a real browser at desktop (1434 by 784) and mobile (390 by 844). Navigation reached the Work section, 11 project cards loaded, horizontal gallery scrolling remained enabled, the page had no width overflow, and the browser showed no console errors. | The refactor was not accepted only because it compiled; the important desktop and phone experience was opened and checked. |
+| 2026-08-28 | Updated 22 transitive build-tool packages using the non-breaking npm security fix. The audit changed from 10 reported vulnerabilities to 0. | Known dependency warnings in the installed package tree were cleared without forcing a major-version upgrade. |
+| 2026-08-28 | Added `npm run check` to the README. | In the future, one command repeats the full safety check. |
+| 2026-08-28 | Started Sprint 2 by mapping the remaining page sections, global events, and active responsive styles. | The second sprint targets the remaining areas that were still difficult to trace after the first cleanup. |
+| 2026-08-28 | Replaced scattered string-based navigation and animation events with one typed `portfolioEvents` contract. Removed unused logo-hover and horizontal-drag events that had no listeners. | Event names and their data now have one source of truth, so a typo or wrong value is caught automatically and dead messages are gone. |
+| 2026-08-28 | Split the six visible portfolio sections into `HeroSection`, `AboutSection`, `ToolkitSection`, `WorkSection`, `MusicSection`, and `ContactSection`, with a shared accessible slide wrapper. | `Home.tsx` is now a short page outline instead of mixing every section's text, icons, lazy loading, and controls in one file. |
+| 2026-08-28 | Added runtime validation and a 10-second timeout for GitHub repository responses. The API route now explicitly accepts only GET requests. Added malformed-response regression coverage. | If GitHub returns an error-shaped or broken response, the site now shows its safe error state instead of trusting bad data and failing unpredictably. |
+| 2026-08-28 | Added component tests for desktop `inert` behavior, mobile section availability, typed navigation clicks, and an automated accessibility scan of the main navigation. | The tests now cover visible interaction and basic accessibility behavior, not only data formatting. |
+| 2026-08-28 | Moved the remaining Work/gallery wrapper rules out of two global stylesheets into `WorkSection.css`, removing another duplicated responsive override group and its `!important` declarations. | The Work section now owns both its component and wrapper layout instead of depending on three distant CSS locations. |
+| 2026-08-28 | Added a recommended Stylelint quality gate and included it in `npm run lint`. | CSS now has its own automatic syntax and correctness check instead of being trusted only because the production bundler accepts it. |
+| 2026-08-28 | Stylelint exposed 196 findings. Most were deliberate cascade ordering or repeated selectors in the legacy global styles, so those two architectural rules are excluded from the pass/fail gate rather than pretending they can be safely auto-fixed. Tailwind's `@theme` is explicitly allowed, and both deprecated accessibility `clip` declarations were replaced with `clip-path`. | The CSS check now catches actionable syntax/property errors without generating a false red build for the known legacy cascade. The remaining cascade size is visible debt, not hidden debt. |
+| 2026-08-28 | Rewrote the README in clean plain text, aligned its public link with the canonical `www` host, and documented the Windows-safe development commands. | The project introduction no longer contains broken characters, and a new developer can see the correct website and verification command immediately. |
+| 2026-08-28 | Added API-route tests for rejecting non-GET requests and returning successful GitHub responses with shared-cache headers. | The small server endpoint now has direct behavior coverage instead of being verified only through the browser. |
+| 2026-08-28 | Re-ran the complete checks after Sprint 2: strict types, JavaScript/React lint, CSS lint, 11 tests, production build, dependency audit, and diff validation all passed. | Every automated safety gate is green at the same final code state. |
+| 2026-08-28 | Rechecked all six desktop navigation destinations and the mobile Work section in a real browser. All hashes and active sections matched, 11 cards loaded, no console errors appeared, and the 390-pixel layout had no page-width overflow. | The component and CSS refactors preserve the actual desktop and phone experience, not only the source-code checks. |
+| 2026-08-28 | Added a read-only GitHub Actions CI workflow for pushes to `main` and all pull requests. It installs the exact lockfile with Node.js 24 and runs the same complete `npm run check` command used locally. | GitHub will now reject broken types, lint, tests, or builds automatically instead of depending on someone remembering to check locally. |
+| 2026-08-28 | Added weekly Dependabot checks for npm packages and GitHub Actions, grouping compatible minor and patch npm updates. | Dependency and workflow updates will arrive as reviewable pull requests without creating daily update noise. |
+| 2026-08-28 | Declared Node.js 24 and npm 11 as the supported local/CI toolchain and documented CI in the README. Replaced stale unused YouTube browser credentials in `.env.example` with the optional server-side `GITHUB_TOKEN` the API route actually supports. | Local machines and GitHub now use the same runtime expectations, and the environment template describes only a value the code really reads. |
+| 2026-08-28 | Tried the exact clean `npm ci` path locally. Windows refused to replace an in-use native Lightning CSS file and left `node_modules` incomplete; `npm install` restored it. This is a Windows file-lock condition, while CI runs in a fresh Ubuntu environment. | The failed clean install was not hidden. If this occurs locally, close running Node/Vite processes and run `npm.cmd install`; GitHub's fresh Linux runner does not reuse the locked Windows file. |
+| 2026-08-28 | After restoring dependencies, CSS lint, all 11 tests, the production build, the security audit, and diff validation passed again. | The repository is healthy after the CI setup changes; the only failed evidence was the explicitly documented Windows clean-install simulation. |
+| 2026-08-28 | Ran the complete `npm run check` gate once more immediately before publication: strict types, both linters, all 11 tests, and the production build passed. The final dependency audit also reported 0 vulnerabilities. | The version being published was checked as one complete final state, not assembled from older partial results. |
+
+## Sprint plan
+
+| Work | Why it matters | Status |
+| --- | --- | --- |
+| Make lint and TypeScript checks cover the real source code | Mistakes should be caught before they reach the website. | Complete |
+| Add small tests for important data logic | Future edits should not silently break project names, filtering, or sorting. | Complete |
+| Separate page navigation logic from page content | The main page should be easier to understand and safely change. | Complete |
+| Remove duplicate logic and reduce fragile gallery CSS overrides | There should be fewer surprising side effects when styling changes. | Complete for the active gallery; broader legacy CSS remains future cleanup |
+| Run every check and record the exact result | Done should mean verified, not assumed. | Complete |
+
+## Sprint 2 plan
+
+| Work | Why it matters | Status |
+| --- | --- | --- |
+| Replace scattered global event strings with a typed contract | Navigation and animation messages should be traceable and type-safe. | Complete |
+| Split the six Home sections into focused components | Page content should be understandable without reading one giant component. | Complete |
+| Validate external GitHub data at runtime | Outside data must not be trusted only because a TypeScript interface exists. | Complete |
+| Add interaction, accessibility, and API-route tests | Tests should cover behavior across the UI, data, and server layers. | Complete |
+| Give active Work/gallery CSS one owner and add CSS linting | Styling changes should have a clearer home and an automatic correctness gate. | Complete |
+| Re-run automated, security, desktop, and mobile verification | The final result must be measured at the same code state. | Complete |

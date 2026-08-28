@@ -6,7 +6,7 @@ interface Section {
 }
 
 interface Props {
-  sections: Section[];
+  sections: readonly Section[];
   activeIndex?: number;
   onSelectSection?: (index: number) => void;
 }

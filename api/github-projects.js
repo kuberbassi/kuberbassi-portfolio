@@ -1,6 +1,11 @@
 const GITHUB_REPOS_URL = 'https://api.github.com/users/kuberbassi/repos?sort=updated&per_page=100';
 
-export default async function handler(_request, response) {
+export default async function handler(request, response) {
+  if (request.method !== 'GET') {
+    response.setHeader('Allow', 'GET');
+    return response.status(405).json({ message: 'Method not allowed.' });
+  }
+
   try {
     const headers = {
       Accept: 'application/vnd.github+json',
@@ -21,8 +26,8 @@ export default async function handler(_request, response) {
         ? 'public, s-maxage=900, stale-while-revalidate=3600'
         : 'no-store',
     );
-    response.status(githubResponse.status).json(body);
+    return response.status(githubResponse.status).json(body);
   } catch {
-    response.status(502).json({ message: 'Unable to reach GitHub.' });
+    return response.status(502).json({ message: 'Unable to reach GitHub.' });
   }
 }

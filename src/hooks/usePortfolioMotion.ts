@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { emitPortfolioEvent, portfolioEvents } from '../utils/portfolioEvents';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -171,8 +172,8 @@ export function usePortfolioMotion({ rootRef, sliderRef, activeIndex, deckEnable
       const direction = activeIndex >= previousIndex.current ? 1 : -1;
       const timeline = gsap.timeline({
         defaults: { overwrite: 'auto' },
-        onStart: () => window.dispatchEvent(new CustomEvent('kb:transitionstart')),
-        onComplete: () => window.dispatchEvent(new CustomEvent('kb:transitionend')),
+        onStart: () => emitPortfolioEvent(portfolioEvents.transitionStart),
+        onComplete: () => emitPortfolioEvent(portfolioEvents.transitionEnd),
       });
 
       if (oldSection && oldSection !== nextSection) {
@@ -243,7 +244,7 @@ export function usePortfolioMotion({ rootRef, sliderRef, activeIndex, deckEnable
       if (nav) gsap.set(nav, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
       if (terrain) gsap.set(terrain, { autoAlpha: 1, clearProps: 'opacity,visibility' });
       if (terrainMiddle) gsap.set(terrainMiddle, { x: 0, y: 0, clearProps: 'transform' });
-      window.dispatchEvent(new CustomEvent('kb:transitionend'));
+      emitPortfolioEvent(portfolioEvents.transitionEnd);
     };
   }, [activeIndex, deckEnabled, rootRef, sliderRef]);
 

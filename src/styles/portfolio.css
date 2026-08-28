@@ -635,10 +635,6 @@
   line-height: 1.6;
 }
 
-.project-orbit {
-  position: relative;
-}
-
 #work .kb-section {
   max-width: none;
   display: flex;
@@ -1285,10 +1281,6 @@
   grid-template-columns: clamp(120px, 12vw, 180px) minmax(0, 1fr) minmax(240px, 310px);
   gap: clamp(24px, 3vw, 48px);
   margin-bottom: clamp(20px, 3dvh, 34px);
-}
-
-.project-orbit {
-  width: 100%;
 }
 
 .kb-music {

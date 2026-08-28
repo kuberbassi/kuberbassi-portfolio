@@ -34,28 +34,17 @@ function ProjectPreview({ project, eager }: { project: Project; eager: boolean }
   const primary = livePreview(project);
   const remembered = resolvedPreviewSources.get(project.slug) ?? '';
   const rootRef = useRef<HTMLDivElement>(null);
-  const [activated, setActivated] = useState(Boolean(remembered));
+  const [activated, setActivated] = useState(
+    () => eager || Boolean(remembered) || !('IntersectionObserver' in window),
+  );
   const [src, setSrc] = useState(remembered);
   const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    if (!activated) return;
-    setSrc((current) => current || primary);
-  }, [activated, primary]);
-
-  useEffect(() => {
-    if (eager && !activated) {
-      setActivated(true);
-    }
-  }, [eager, activated]);
+  const visibleSrc = src || (activated ? primary : '');
 
   useEffect(() => {
     if (activated || eager) return;
     const root = rootRef.current;
-    if (!root || !('IntersectionObserver' in window)) {
-      setActivated(true);
-      return;
-    }
+    if (!root || !('IntersectionObserver' in window)) return;
     const viewport = root.closest<HTMLElement>('.repo-gallery-viewport');
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
@@ -69,21 +58,21 @@ function ProjectPreview({ project, eager }: { project: Project; eager: boolean }
   return (
     <div className={`repo-gallery-card__preview${loaded ? ' is-loaded' : ''}`} ref={rootRef}>
       <span className="repo-gallery-card__preview-placeholder" aria-hidden="true" />
-      {src ? (
+      {visibleSrc ? (
         <img
-          src={src}
+          src={visibleSrc}
           draggable={false}
           alt={`${project.title} project preview`}
           loading={eager ? 'eager' : 'lazy'}
           decoding="async"
           onDragStart={(event) => event.preventDefault()}
           onLoad={() => {
-            resolvedPreviewSources.set(project.slug, src);
+            resolvedPreviewSources.set(project.slug, visibleSrc);
             setLoaded(true);
           }}
           onError={() => {
             setLoaded(false);
-            if (src === fallback) return;
+            if (visibleSrc === fallback) return;
             setSrc(fallback);
           }}
         />
@@ -250,7 +239,6 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
             frame: 0,
           };
           viewport.dataset.dragging = 'true';
-          window.dispatchEvent(new CustomEvent('kb:horizontaldrag', { detail: true }));
           viewport.setPointerCapture(event.pointerId);
         }}
         onPointerMove={(event) => {
@@ -278,7 +266,6 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
           dragRef.current.active = false;
           if (viewportRef.current) glideRef.current.target = viewportRef.current.scrollLeft;
           delete viewportRef.current?.dataset.dragging;
-          window.dispatchEvent(new CustomEvent('kb:horizontaldrag', { detail: false }));
           if (viewportRef.current?.hasPointerCapture(event.pointerId)) {
             viewportRef.current.releasePointerCapture(event.pointerId);
           }
@@ -290,7 +277,6 @@ export function RepositoryGallery({ projects, loading = false, error = null }: R
           dragRef.current.active = false;
           if (viewportRef.current) glideRef.current.target = viewportRef.current.scrollLeft;
           delete viewportRef.current?.dataset.dragging;
-          window.dispatchEvent(new CustomEvent('kb:horizontaldrag', { detail: false }));
         }}
       >
         <div className="repo-gallery-track">

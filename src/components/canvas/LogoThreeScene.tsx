@@ -269,11 +269,9 @@ export function LogoThreeScene() {
     const handleMouseLeave = () => {
       mouse2D.set(9999, 9999, 0);
       startAnimation();
-      window.dispatchEvent(new CustomEvent('kb:logohover', { detail: false }));
     };
 
     const handleMouseEnter = () => {
-      window.dispatchEvent(new CustomEvent('kb:logohover', { detail: true }));
     };
 
     container.addEventListener('mouseenter', handleMouseEnter);
@@ -350,7 +348,6 @@ export function LogoThreeScene() {
 
       cleanupFn = () => {
         if (animId) cancelAnimationFrame(animId);
-        window.dispatchEvent(new CustomEvent('kb:logohover', { detail: false }));
         container.removeEventListener('mouseenter', handleMouseEnter);
         container.removeEventListener('mousemove', handleMouseMove);
         container.removeEventListener('mouseleave', handleMouseLeave);

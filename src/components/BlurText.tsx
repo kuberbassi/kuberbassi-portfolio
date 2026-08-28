@@ -66,7 +66,14 @@ const BlurText = ({
     '--blur-text-stagger': `${Math.min(Math.max(delay, 8), 72)}ms`,
     '--blur-text-duration': `${Math.min(Math.max(stepDuration * 1000, 280), 620)}ms`,
   } as CSSProperties;
-  let animatedIndex = -1;
+  const segmentIndexAt = (wordIndex: number, characterIndex?: number) => {
+    let index = 0;
+    for (let currentWord = 0; currentWord < wordIndex; currentWord += 1) {
+      if (/^\s+$/.test(words[currentWord])) continue;
+      index += animateBy === 'words' ? 1 : Array.from(words[currentWord]).length;
+    }
+    return index + (characterIndex ?? 0);
+  };
 
   return (
     <p
@@ -81,8 +88,7 @@ const BlurText = ({
         }
 
         if (animateBy === 'words') {
-          animatedIndex += 1;
-          const index = animatedIndex;
+          const index = segmentIndexAt(wordIndex);
           return (
             <span key={`${word}-${wordIndex}`} className="blur-text__segment blur-text__word" aria-hidden="true"
               style={{ '--blur-text-index': index } as CSSProperties}
@@ -95,8 +101,7 @@ const BlurText = ({
         return (
           <span key={`${word}-${wordIndex}`} className="blur-text__word" aria-hidden="true">
             {Array.from(word).map((character, characterIndex) => {
-              animatedIndex += 1;
-              const index = animatedIndex;
+              const index = segmentIndexAt(wordIndex, characterIndex);
               return (
                 <span key={`${character}-${characterIndex}`} className="blur-text__segment"
                   style={{ '--blur-text-index': index } as CSSProperties}

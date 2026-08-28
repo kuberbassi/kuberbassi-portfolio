@@ -783,19 +783,6 @@ iframe {
     margin-bottom: 6px !important;
   }
 
-  .project-orbit {
-    flex: 1 1 0 !important;
-    min-height: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-  }
-
-  .repo-gallery-shell {
-    flex: 1 1 0 !important;
-    height: 100% !important;
-    min-height: 0 !important;
-  }
 }
 
 @media (max-width: 768px) {
@@ -1144,57 +1131,6 @@ iframe {
     display: flex !important;
     justify-content: center !important;
     width: fit-content !important;
-  }
-
-  .project-orbit {
-    width: 100%;
-    margin-inline: 0;
-    padding-inline: 0;
-    flex: 1 1 0 !important;
-    min-height: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch;
-    margin-top: 6px;
-    overflow: hidden;
-  }
-
-  .repo-gallery-shell {
-    flex: 1 1 0 !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    width: 100%;
-    margin: 0;
-  }
-
-  .repo-gallery-track {
-    gap: 12px;
-    padding: 6px 10px 8px;
-    align-items: flex-start;
-  }
-
-  .repo-gallery-card {
-    flex-basis: min(calc(100vw - 36px), 340px);
-    height: min(380px, calc(100% - 14px)) !important;
-    max-height: calc(100% - 14px) !important;
-    scroll-snap-align: center;
-    contain-intrinsic-size: 340px 380px;
-  }
-
-  .repo-gallery-viewport {
-    scroll-snap-type: x proximity;
-    scroll-padding-inline: 12px;
-  }
-
-  .repo-gallery-shell .repo-gallery-cue {
-    right: 8px;
-    width: 76px;
-    height: 76px;
-  }
-
-  .repo-gallery-cue > svg {
-    width: 64px;
-    height: 64px;
   }
 
   .kb-music {

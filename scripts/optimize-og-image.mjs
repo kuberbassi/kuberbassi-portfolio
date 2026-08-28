@@ -4,7 +4,7 @@
  * Outputs both PNG (fallback) and a highly optimized JPEG for OG use.
  */
 import sharp from 'sharp';
-import { existsSync, renameSync, unlinkSync } from 'fs';
+import { existsSync, renameSync } from 'fs';
 
 const SRC = 'public/og-image.png';
 const OUT_PNG = 'public/og-image.png';

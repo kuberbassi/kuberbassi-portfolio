@@ -1,12 +1,21 @@
 {
-  "name": "temp-app",
+  "name": "kuberbassi-portfolio",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "npm@11.9.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
+    "lint": "npm run lint:code && npm run lint:css",
+    "lint:code": "eslint .",
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --config vitest.config.ts",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -24,16 +33,25 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^25.0.3",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.185.1",
     "@vitejs/plugin-react": "^5.1.1",
+    "axe-core": "^4.13.0",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "jsdom": "^29.1.1",
     "sharp": "^0.35.3",
-    "vite": "^7.2.4"
+    "stylelint": "^17.14.1",
+    "stylelint-config-recommended": "^18.0.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.68.0",
+    "vite": "^7.2.4",
+    "vitest": "^4.1.11"
   }
 }

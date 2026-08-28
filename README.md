@@ -1,32 +1,31 @@
 <div align="center">
-  <img src="./public/favicon.svg" width="96" height="96" alt="Kuber Bassi Logo" />
+  <img src="./public/favicon.svg" width="96" height="96" alt="Kuber Bassi logo" />
   <h1>Kuber Bassi</h1>
-  <p><strong>Independent Engineer — Personal Portfolio & Interactive Workspace</strong></p>
-  <p>
-    <a href="https://kuberbassi.com">kuberbassi.com</a>
-  </p>
+  <p><strong>Independent engineer - personal portfolio and interactive workspace</strong></p>
+  <p><a href="https://www.kuberbassi.com">www.kuberbassi.com</a></p>
 </div>
 
----
+[![CI](https://github.com/kuberbassi/kuber-bassi-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/kuberbassi/kuber-bassi-portfolio/actions/workflows/ci.yml)
 
-Personal website and portfolio of Kuber Bassi — independent engineer building software, creative tools, and systems.
+Personal website and portfolio of Kuber Bassi: an independent engineer building software, creative tools, and systems.
 
-### 🛠️ Tech Stack
+## Technology
 
-- **Core:** React 19, TypeScript, Vite
-- **Styling & Fonts:** Tailwind CSS v4, Custom CSS Tokens, `@fontsource-variable/plus-jakarta-sans`
-- **3D & Motion:** Three.js (WebGL), GSAP
-- **Media & Integrations:** GitHub API, Spotify Embed, Lucide Icons
-- **Deployment & Analytics:** Vercel, `@vercel/analytics`
+- Core: React 19, TypeScript, and Vite
+- Styling: Tailwind CSS v4, custom CSS, and Plus Jakarta Sans
+- 3D and motion: Three.js and GSAP
+- Integrations: GitHub API, Spotify embeds, and Vercel Analytics
 
-### 🚀 Development
+## Development
 
-```bash
-npm install    # Install dependencies
-npm run dev    # Start dev server
-npm run build  # Production build
+```powershell
+npm.cmd install
+npm.cmd run dev
+npm.cmd run check
 ```
 
----
+`npm.cmd run check` runs strict TypeScript checking, JavaScript and CSS linting, tests, and the production build.
 
-© 2026 **Kuber Bassi**
+GitHub Actions runs the same command automatically for pull requests and pushes to `main` using Node.js 24.
+
+Copyright 2026 Kuber Bassi.

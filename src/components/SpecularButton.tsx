@@ -95,10 +95,11 @@ const SpecularButton = ({
   useEffect(() => {
     const surface = surfaceRef.current;
     if (!surface || !glowVisible) return;
-    const onPointerMove = (event: PointerEvent) => {
+    const onPointerMove = (event: Event) => {
+      const pointerEvent = event as PointerEvent;
       const rect = surface.getBoundingClientRect();
-      surface.style.setProperty('--sb-pointer-x', `${event.clientX - rect.left}px`);
-      surface.style.setProperty('--sb-pointer-y', `${event.clientY - rect.top}px`);
+      surface.style.setProperty('--sb-pointer-x', `${pointerEvent.clientX - rect.left}px`);
+      surface.style.setProperty('--sb-pointer-y', `${pointerEvent.clientY - rect.top}px`);
       surface.style.setProperty('--sb-glow-opacity', '1');
     };
     const onPointerLeave = () => surface.style.setProperty('--sb-glow-opacity', '0.54');

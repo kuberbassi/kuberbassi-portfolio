@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { listenForPortfolioEvent, portfolioEvents } from '../../utils/portfolioEvents';
 
 const ASSET = '/assets/topographic-bg.webp';
 
@@ -14,16 +15,15 @@ export function TopographicBackground() {
       clearTimeout(interactionTimer);
       interactionTimer = window.setTimeout(() => { root.dataset.interacting = 'false'; }, 720);
     };
-    const onSectionChange = (event: Event) => {
-      const index = (event as CustomEvent<number>).detail ?? 0;
+    const onSectionChange = (index: number) => {
       root.dataset.section = String(index);
       markInteraction();
     };
 
-    window.addEventListener('kb:sectionchange', onSectionChange);
+    const removeSectionListener = listenForPortfolioEvent(portfolioEvents.sectionChange, onSectionChange);
     return () => {
       clearTimeout(interactionTimer);
-      window.removeEventListener('kb:sectionchange', onSectionChange);
+      removeSectionListener();
     };
   }, []);
 

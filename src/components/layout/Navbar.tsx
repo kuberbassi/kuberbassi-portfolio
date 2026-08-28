@@ -1,6 +1,7 @@
 import { ArrowUpRight } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import SpecularButton from '../SpecularButton';
+import { emitPortfolioEvent, listenForPortfolioEvent, portfolioEvents } from '../../utils/portfolioEvents';
 
 const links = [
   { href: '#about', label: 'About', index: 1 },
@@ -10,7 +11,7 @@ const links = [
 ];
 
 function navigateToSection(index: number) {
-  window.dispatchEvent(new CustomEvent('kb:navigate', { detail: index }));
+  emitPortfolioEvent(portfolioEvents.navigate, index);
 }
 
 export function Navbar() {
@@ -18,18 +19,15 @@ export function Navbar() {
   const wrapRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const onSectionChange = (event: Event) => {
-      setActiveIndex((event as CustomEvent<number>).detail ?? 0);
-    };
-    window.addEventListener('kb:sectionchange', onSectionChange);
+    const removeSectionListener = listenForPortfolioEvent(portfolioEvents.sectionChange, setActiveIndex);
     const onTransitionStart = () => wrapRef.current?.classList.add('is-scrolling');
     const onTransitionEnd = () => wrapRef.current?.classList.remove('is-scrolling');
-    window.addEventListener('kb:transitionstart', onTransitionStart);
-    window.addEventListener('kb:transitionend', onTransitionEnd);
+    const removeTransitionStart = listenForPortfolioEvent(portfolioEvents.transitionStart, onTransitionStart);
+    const removeTransitionEnd = listenForPortfolioEvent(portfolioEvents.transitionEnd, onTransitionEnd);
     return () => {
-      window.removeEventListener('kb:sectionchange', onSectionChange);
-      window.removeEventListener('kb:transitionstart', onTransitionStart);
-      window.removeEventListener('kb:transitionend', onTransitionEnd);
+      removeSectionListener();
+      removeTransitionStart();
+      removeTransitionEnd();
     };
   }, []);
 

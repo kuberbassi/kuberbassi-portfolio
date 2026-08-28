@@ -92,14 +92,14 @@ export function ScrollVelocity({
       let closest: HTMLElement | null = null;
       let closestDistance = Number.POSITIVE_INFINITY;
 
-      root.querySelectorAll<HTMLElement>('.principle-velocity__item').forEach((item) => {
+      for (const item of root.querySelectorAll<HTMLElement>('.principle-velocity__item')) {
         const rect = item.getBoundingClientRect();
         const distance = Math.abs(rect.left + rect.width / 2 - center);
         if (distance < closestDistance) {
           closest = item;
           closestDistance = distance;
         }
-      });
+      }
 
       if (closest === lastCenterItemRef.current) return;
       lastCenterItemRef.current?.classList.remove('is-center');

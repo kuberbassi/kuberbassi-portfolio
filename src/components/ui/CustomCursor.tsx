@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { listenForPortfolioEvent, portfolioEvents } from '../../utils/portfolioEvents';
 
 type CursorMode = 'idle' | 'interactive' | 'label';
 
@@ -61,20 +62,20 @@ export function CustomCursor() {
     };
 
     const hide = () => cursorRef.current?.classList.remove('is-visible');
-    const onSuspend = (event: Event) => {
-      suspendedRef.current = Boolean((event as CustomEvent<boolean>).detail);
+    const onSuspend = (suspended: boolean) => {
+      suspendedRef.current = suspended;
       cursorRef.current?.classList.toggle('is-suspended', suspendedRef.current);
       if (suspendedRef.current) hide();
     };
     window.addEventListener('pointermove', onPointerMove, { passive: true });
-    window.addEventListener('kb:cursorsuspend', onSuspend);
+    const removeSuspendListener = listenForPortfolioEvent(portfolioEvents.cursorSuspend, onSuspend);
     document.addEventListener('mouseleave', hide);
     window.addEventListener('blur', hide);
 
     return () => {
       delete root.dataset.customCursor;
       window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('kb:cursorsuspend', onSuspend);
+      removeSuspendListener();
       document.removeEventListener('mouseleave', hide);
       window.removeEventListener('blur', hide);
       if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);

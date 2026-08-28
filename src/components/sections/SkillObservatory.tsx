@@ -21,7 +21,6 @@ import {
 import {
   TbApi,
   TbBrandOffice,
-  TbCodeAi,
   TbPrompt,
   TbRipple,
 } from 'react-icons/tb';
