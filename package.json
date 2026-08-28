@@ -49,7 +49,7 @@
     "sharp": "^0.35.3",
     "stylelint": "^17.14.1",
     "stylelint-config-recommended": "^18.0.0",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "typescript-eslint": "^8.68.0",
     "vite": "7.3.6",
     "vitest": "^4.1.11"
