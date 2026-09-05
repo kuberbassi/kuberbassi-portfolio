@@ -11,7 +11,7 @@ export function ToolkitSection({ activeIndex, leavingIndex, deckEnabled }: {
   deckEnabled: boolean;
 }) {
   const active = activeIndex === 2;
-  const present = active || leavingIndex === 2;
+  const present = !deckEnabled || active || leavingIndex === 2 || Math.abs(activeIndex - 2) <= 1;
   return (
     <PortfolioSlide id="toolkit" index={2} activeIndex={activeIndex} deckEnabled={deckEnabled}>
       <div className="kb-section kb-arsenal kb-toolkit-layout">

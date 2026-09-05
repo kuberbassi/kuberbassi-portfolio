@@ -1499,8 +1499,8 @@ button::before,
 }
 
 /* Shared gold boundary language for native controls across the site. */
-button:not(.section-indicator__item):not(.specular-button),
-[role='button']:not(.section-indicator__item):not(.specular-button) {
+button:not(.section-indicator__item):not(.specular-button):not(.kb-meta-tap),
+[role='button']:not(.section-indicator__item):not(.specular-button):not(.kb-meta-tap) {
   outline: 1px solid color-mix(in srgb, var(--color-accent) 48%, transparent);
   outline-offset: -1px;
   box-shadow:
@@ -1513,10 +1513,10 @@ button:not(.section-indicator__item):not(.specular-button),
   transition-timing-function: var(--ease-out);
 }
 
-button:not(.section-indicator__item):not(.specular-button):hover,
-button:not(.section-indicator__item):not(.specular-button):focus-visible,
-[role='button']:not(.section-indicator__item):not(.specular-button):hover,
-[role='button']:not(.section-indicator__item):not(.specular-button):focus-visible {
+button:not(.section-indicator__item):not(.specular-button):not(.kb-meta-tap):hover,
+button:not(.section-indicator__item):not(.specular-button):not(.kb-meta-tap):focus-visible,
+[role='button']:not(.section-indicator__item):not(.specular-button):not(.kb-meta-tap):hover,
+[role='button']:not(.section-indicator__item):not(.specular-button):not(.kb-meta-tap):focus-visible {
   outline-color: color-mix(in srgb, var(--color-accent) 88%, transparent);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.075),

@@ -101,6 +101,13 @@ const BlurText = ({
         return (
           <span key={`${word}-${wordIndex}`} className="blur-text__word" aria-hidden="true">
             {Array.from(word).map((character, characterIndex) => {
+              if (/^\s+$/.test(character)) {
+                return (
+                  <span key={`space-${wordIndex}-${characterIndex}`} className="blur-text__space" aria-hidden="true">
+                    {character}
+                  </span>
+                );
+              }
               const index = segmentIndexAt(wordIndex, characterIndex);
               return (
                 <span key={`${character}-${characterIndex}`} className="blur-text__segment"

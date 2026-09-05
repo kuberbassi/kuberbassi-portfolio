@@ -297,7 +297,7 @@ iframe {
   }
 
   .kb-reveal-copy .blur-text__space {
-    white-space: normal;
+    white-space: pre !important;
   }
 
   #home .kb-circle {
@@ -722,46 +722,54 @@ iframe {
   }
 
   #home .kb-hero-copy {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      "title title"
-      "intro circle";
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px 16px;
-    max-width: min(90%, 36rem);
+    max-width: min(94%, 42rem);
     margin-inline: auto;
+    text-align: center;
+    gap: 16px;
   }
 
   #home .kb-hero-copy h1 {
-    grid-area: title;
-    font-size: clamp(1.85rem, 4.5vw, 2.6rem) !important;
+    font-size: clamp(2rem, 5vw, 2.8rem) !important;
     line-height: 0.96;
     text-align: center;
+    margin: 0;
+  }
+
+  #home .kb-hero-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    margin-inline: auto;
   }
 
   #home .kb-hero-intro {
-    grid-area: intro;
-    margin-top: 0 !important;
-    text-align: left;
-    font-size: clamp(13.5px, 2.8vw, 15.5px) !important;
+    margin: 0 !important;
+    text-align: right;
+    font-size: clamp(14px, 2.4vw, 16px) !important;
+    line-height: 1.45;
+    max-width: 32ch;
+    width: auto;
   }
 
   #home .kb-circle {
-    grid-area: circle;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    width: 40px !important;
-    min-width: 40px !important;
-    height: 40px !important;
-    min-height: 40px !important;
+    margin: 0 !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    flex-shrink: 0;
   }
 
   #home .kb-art {
-    width: min(32vw, 170px) !important;
-    height: clamp(110px, 15svh, 150px) !important;
-    margin-top: 10px !important;
-    margin-bottom: 4px !important;
+    width: min(65vw, 320px) !important;
+    height: clamp(180px, 26svh, 260px) !important;
+    margin-top: 16px !important;
+    margin-bottom: 8px !important;
     margin-inline: auto;
   }
 
@@ -923,6 +931,13 @@ iframe {
     letter-spacing: -0.055em;
   }
 
+  #home .kb-hero-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
   #home .kb-hero-intro {
     width: min(100%, 29ch);
     margin: 10px auto 0;
@@ -936,18 +951,18 @@ iframe {
     min-width: 44px;
     height: 44px;
     min-height: 44px;
-    margin-top: 24px !important;
-    margin-bottom: 12px !important;
+    margin-top: 16px !important;
+    margin-bottom: 8px !important;
     margin-inline: auto;
   }
 
   #home .kb-art {
     order: 2;
-    width: min(58vw, 230px);
-    height: clamp(150px, 22svh, 200px);
+    width: min(76vw, 310px);
+    height: clamp(190px, 28svh, 270px);
     flex: 0 1 auto;
-    margin-top: 32px !important;
-    margin-bottom: 16px !important;
+    margin-top: 14px !important;
+    margin-bottom: 8px !important;
     margin-inline: auto;
     display: flex;
     align-items: center;
@@ -1084,10 +1099,11 @@ iframe {
     padding-top: calc(92px + env(safe-area-inset-top));
     padding-bottom: max(24px, env(safe-area-inset-bottom));
     overflow: hidden;
-    gap: 6px;
+    gap: 4px;
     box-sizing: border-box;
   }
 
+  /* Other sections keep the centered stacked layout */
   .kb-section-head {
     margin-bottom: 2px;
     flex: 0 0 auto;
@@ -1132,8 +1148,82 @@ iframe {
     justify-content: center !important;
     width: fit-content !important;
   }
+}
 
+/* Two-column Work header for tablet (640px–768px) — saves vertical space for cards */
+@media (min-width: 640px) and (max-width: 768px) {
+  #work .kb-section {
+    align-items: stretch;
+    text-align: left;
+  }
+
+  #work .kb-section-head {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(200px, 340px) !important;
+    grid-template-areas:
+      'label context'
+      'title context' !important;
+    align-items: end !important;
+    column-gap: clamp(20px, 4vw, 48px) !important;
+    row-gap: 6px !important;
+    margin-bottom: 4px !important;
+    text-align: left !important;
+    width: 100%;
+    flex: 0 0 auto;
+    padding-left: 8px;
+  }
+
+  #work .kb-section-head > .kb-label {
+    grid-area: label;
+    margin: 0;
+    text-align: left;
+  }
+
+  #work .kb-section-head > h2 {
+    grid-area: title;
+    text-align: left;
+    font-size: clamp(2.2rem, 9.5vw, 3.2rem);
+  }
+
+  #work .kb-work-context {
+    grid-area: context;
+    align-self: end;
+    text-align: left;
+    margin-inline: 0;
+    padding-bottom: 2px;
+  }
+
+  #work .kb-work-intro {
+    text-align: left;
+    margin-inline: 0;
+    font-size: clamp(12px, 3.2vw, 14px);
+  }
+
+  #work .kb-work-orgs {
+    display: grid;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 8px;
+    text-align: left;
+  }
+
+  #work .kb-work-orgs > span,
+  #work .kb-work-orgs .kb-label {
+    text-align: left;
+    margin-inline: 0;
+  }
+
+  #work .kb-work-orgs > div {
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-inline: 0;
+  }
+}
+
+@media (max-width: 768px) {
   .kb-music {
+
     height: 100svh !important;
     max-height: 100svh !important;
     padding-top: calc(92px + env(safe-area-inset-top));

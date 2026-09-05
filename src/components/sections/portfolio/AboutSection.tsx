@@ -11,7 +11,7 @@ export function AboutSection({ activeIndex, leavingIndex, deckEnabled }: {
   deckEnabled: boolean;
 }) {
   const active = activeIndex === 1;
-  const present = active || leavingIndex === 1;
+  const present = !deckEnabled || active || leavingIndex === 1 || Math.abs(activeIndex - 1) <= 1;
   return (
     <PortfolioSlide id="about" index={1} activeIndex={activeIndex} deckEnabled={deckEnabled}>
       <div className="kb-intro">

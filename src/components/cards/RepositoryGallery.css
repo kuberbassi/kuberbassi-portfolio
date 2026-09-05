@@ -532,6 +532,12 @@
   }
 }
 
+@media (min-width: 640px) and (max-width: 768px) {
+  .repo-gallery-card__tech {
+    display: none;
+  }
+}
+
 @media (max-height: 760px) and (min-width: 769px) {
   .repo-gallery-shell {
     height: 48dvh;

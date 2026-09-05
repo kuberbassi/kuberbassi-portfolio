@@ -104,17 +104,10 @@ export function usePortfolioMotion({ rootRef, sliderRef, activeIndex, deckEnable
         gsap.set(slider, { clearProps: 'transform' });
         const sections = gsap.utils.toArray<HTMLElement>('.blago-slide');
         sections.forEach((section) => {
-          const plan = sectionMotion[section.id] ?? [];
-          const targets = getPlanTargets(section, plan);
           gsap.set(section, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
-          gsap.set(Array.from(section.children), { autoAlpha: 1, clearProps: 'transform,opacity,visibility,willChange' });
-          if (targets.length) gsap.set(targets, {
-            autoAlpha: 1,
-            x: 0,
-            y: 0,
-            scale: 1,
-            clearProps: 'transform,opacity,visibility,willChange',
-          });
+          gsap.set(Array.from(section.children), { clearProps: 'transform,willChange' });
+          // Do NOT clear plan targets here — child components (e.g. BlurText) manage
+          // their own opacity/transform state via IntersectionObserver animations.
         });
         return;
       }
@@ -139,6 +132,12 @@ export function usePortfolioMotion({ rootRef, sliderRef, activeIndex, deckEnable
           const support = nextSection.querySelectorAll('.kb-hero-intro, .kb-circle, .kb-meta');
           const timeline = gsap.timeline({
             defaults: { overwrite: 'auto' },
+            onComplete: () => {
+              if (!deckEnabled) {
+                // Ensure clearProps on mobile once entrance is done so native scroll/touch operates unrestricted
+                gsap.set([nextSection, Array.from(nextSection.children)], { clearProps: 'transform,willChange' });
+              }
+            }
           });
           timeline.set(slider, { y: '0dvh' });
           timeline.set(nextSection, { autoAlpha: 1 });
@@ -167,6 +166,18 @@ export function usePortfolioMotion({ rootRef, sliderRef, activeIndex, deckEnable
           previousIndex.current = activeIndex;
           return;
         }
+      }
+
+      if (!deckEnabled) {
+        gsap.set(slider, { clearProps: 'transform' });
+        const sections = gsap.utils.toArray<HTMLElement>('.blago-slide');
+        sections.forEach((section) => {
+          gsap.set(section, { autoAlpha: 1, clearProps: 'transform,opacity,visibility' });
+          gsap.set(Array.from(section.children), { clearProps: 'transform,willChange' });
+          // Do NOT clear plan targets here — child components (e.g. BlurText) manage
+          // their own opacity/transform state via IntersectionObserver animations.
+        });
+        return;
       }
 
       const direction = activeIndex >= previousIndex.current ? 1 : -1;

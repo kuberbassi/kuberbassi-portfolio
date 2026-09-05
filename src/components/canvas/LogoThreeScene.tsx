@@ -120,12 +120,13 @@ export function LogoThreeScene() {
       camera.aspect = aspect;
 
       const fovRad = (camera.fov * Math.PI) / 180;
-      const fitZHeight = (logoH / 2) / Math.tan(fovRad / 2);
-      const fitZWidth  = (logoW / 2) / Math.tan(fovRad / 2) / aspect;
+      // Add tight headroom for hover displacement (+1.4 units) so logo stays large and bold
+      const fitZHeight = ((logoH + 2.8) / 2) / Math.tan(fovRad / 2);
+      const fitZWidth  = ((logoW + 2.0) / 2) / Math.tan(fovRad / 2) / aspect;
 
-      // Fit camera Z with tight 1.04 margin for hero impact
-      const targetZ = Math.max(fitZHeight, fitZWidth) * 1.04;
-      camera.position.set(0, 0, Math.max(65, targetZ));
+      // Fit camera Z with balanced multiplier to maximize size without clipping top/bottom tips
+      const targetZ = Math.max(fitZHeight, fitZWidth) * 1.02;
+      camera.position.set(0, 0, Math.max(63, targetZ));
       camera.lookAt(0, 0, 0);
       camera.updateProjectionMatrix();
     };
@@ -311,12 +312,22 @@ export function LogoThreeScene() {
           if (dist < HOVER_RADIUS) {
             const factor = Math.pow(1 - dist / HOVER_RADIUS, 2);
 
+            // Natural edge dampening: if a line is already near the extreme top, dampen upward shift, and vice-versa
+            const halfH = logoH / 2;
+            let dir = item.upDownDirection;
+            if (item.origY > halfH * 0.72 && dir > 0) {
+              dir *= Math.max(0, 1 - (item.origY - halfH * 0.72) / (halfH * 0.28));
+            } else if (item.origY < -halfH * 0.72 && dir < 0) {
+              dir *= Math.max(0, 1 - (-item.origY - halfH * 0.72) / (halfH * 0.28));
+            }
+
             // Shift lines physically UP or DOWN depending on direction
-            targetShiftY = item.upDownDirection * factor * HOVER_Y_SHIFT;
+            targetShiftY = dir * factor * HOVER_Y_SHIFT;
 
             // Increase line thickness & height on hover for bold reaction
+            const scaleYBoost = (Math.abs(item.origY) > halfH * 0.8) ? 0.15 : 0.45;
             targetScaleX = item.baseScaleX + factor * 0.35;
-            targetScaleY = item.baseScaleY + factor * 0.50;
+            targetScaleY = item.baseScaleY + factor * scaleYBoost;
           }
 
           // Smooth spring lerp for vertical up/down movement

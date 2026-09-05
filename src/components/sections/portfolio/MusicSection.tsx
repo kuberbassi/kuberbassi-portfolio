@@ -21,7 +21,8 @@ export function MusicSection({ activeIndex, leavingIndex, deckEnabled }: {
   leavingIndex: number | null;
   deckEnabled: boolean;
 }) {
-  const present = activeIndex === 4 || leavingIndex === 4;
+  const active = activeIndex === 4;
+  const present = !deckEnabled || active || leavingIndex === 4 || Math.abs(activeIndex - 4) <= 1;
   return (
     <PortfolioSlide id="music" index={4} activeIndex={activeIndex} deckEnabled={deckEnabled}>
       <div className="kb-music">

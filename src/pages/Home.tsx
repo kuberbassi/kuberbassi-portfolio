@@ -34,6 +34,20 @@ export default function Home() {
 
   useEffect(() => {
     if (activeIndex === 3) setWorkMounted(true);
+    if (activeIndex >= 2) {
+      setWorkMounted(true);
+      return;
+    }
+    // On mobile or idle browser, pre-load work repositories after initial entrance completes
+    if (typeof window !== 'undefined') {
+      const handle = (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback
+        ? (window as unknown as { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback(() => setWorkMounted(true), { timeout: 2000 })
+        : window.setTimeout(() => setWorkMounted(true), 1500);
+
+      return () => {
+        if (typeof handle === 'number') window.clearTimeout(handle);
+      };
+    }
   }, [activeIndex]);
 
   return (
