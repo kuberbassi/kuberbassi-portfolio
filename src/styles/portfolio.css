@@ -248,6 +248,17 @@
   height: 100%;
 }
 
+/* .kb-hero is capped at 1440px and its slide transform makes it the containing
+   block for .kb-light, so on wider viewports the rays stopped short of the
+   edges. Break the light out to the full viewport width (slide clips overflow). */
+@media (min-width: 1441px) {
+  .kb-light {
+    right: auto;
+    left: calc(50% - 50vw);
+    width: 100vw;
+  }
+}
+
 .kb-light--static {
   background:
     conic-gradient(
