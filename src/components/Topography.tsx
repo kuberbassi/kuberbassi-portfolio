@@ -9,9 +9,8 @@ const FAR = 160;
 const HEIGHT = 1.7;
 const FREQUENCY = 0.45;
 const INTRO_SECONDS = 2.8;
-const FRAME_INTERVAL = 1000 / 30;
 const MAX_PULSES = 4;
-const BLOOM_LEVELS = 2;
+const BLOOM_LEVELS = 4;
 const SCULPT_SIZE = 256;
 const SCULPT_SPAN = 48;
 const MAX_CELLS = 200000;
@@ -51,6 +50,7 @@ export interface TopographyProps {
   intro?: boolean;
   lightMode?: boolean;
   dpr?: number;
+  paused?: boolean;
   className?: string;
   style?: CSSProperties;
 }
@@ -605,6 +605,8 @@ const COMPOSITE = `#version 300 es
 precision highp float;
 uniform sampler2D uBloom0;
 uniform sampler2D uBloom1;
+uniform sampler2D uBloom2;
+uniform sampler2D uBloom3;
 uniform vec2 uView;
 uniform float uGlow;
 uniform float uLightMode;
@@ -612,8 +614,10 @@ out vec4 outColor;
 
 void main() {
   vec2 uv = gl_FragCoord.xy / uView;
-  vec4 halo = texture(uBloom0, uv) * 0.65;
-  halo += texture(uBloom1, uv) * 0.35;
+  vec4 halo = texture(uBloom0, uv) * 0.4;
+  halo += texture(uBloom1, uv) * 0.3;
+  halo += texture(uBloom2, uv) * 0.2;
+  halo += texture(uBloom3, uv) * 0.1;
   if (uLightMode > 0.5) {
     outColor = halo * uGlow * 0.35;
     return;
@@ -799,6 +803,7 @@ const Topography = ({
   intro = true,
   lightMode = false,
   dpr,
+  paused = false,
   className = '',
   style
 }: TopographyProps) => {
@@ -835,7 +840,8 @@ const Topography = ({
     glitch: clamp(glitch, 0, 1),
     intro,
     lightMode,
-    dpr
+    dpr,
+    paused,
   };
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
@@ -850,14 +856,15 @@ const Topography = ({
       antialias: ratio < 1.5,
       depth: true,
       stencil: false,
-      powerPreference: 'low-power'
+      powerPreference: 'high-performance'
     });
     if (!container || !canvas || !gl) return undefined;
 
     const floatTargets = !!gl.getExtension('EXT_color_buffer_float');
     const terrain = link(gl, terrainVertex(floatTargets), terrainFragment(floatTargets));
     const fieldProgram = floatTargets ? link(gl, FULLSCREEN, FIELD) : null;
-    const sculptProgram = floatTargets ? link(gl, FULLSCREEN, SCULPT) : null;
+    const needsSculpt = (settingsRef.current.mouseInteraction && settingsRef.current.hoverEffect === 'lift') || settingsRef.current.clickEffect === 'peak';
+    const sculptProgram = floatTargets && needsSculpt ? link(gl, FULLSCREEN, SCULPT) : null;
     const downProgram = link(gl, FULLSCREEN, DOWNSAMPLE);
     const blurProgram = link(gl, FULLSCREEN, BLUR);
     const compositeProgram = link(gl, FULLSCREEN, COMPOSITE);
@@ -909,7 +916,7 @@ const Topography = ({
 
     const source = createTarget();
     const levels = Array.from({ length: BLOOM_LEVELS }, () => [createTarget(), createTarget()]);
-    const sculpt = sculptProgram
+    const sculpt = sculptProgram && needsSculpt
       ? [0, 1].map(() => {
           const texture = createTexture(SCULPT_SIZE, SCULPT_SIZE, gl.RG16F, gl.REPEAT);
           const framebuffer = gl.createFramebuffer();
@@ -991,6 +998,7 @@ const Topography = ({
     state.rise = smoother(state.intro);
     let raf = 0;
     let last = 0;
+    let lastPick = 0;
     let visible = true;
     let quiet = 0;
 
@@ -1388,11 +1396,8 @@ const Topography = ({
     const frame = (now: number) => {
       raf = 0;
       if (!visible || document.hidden) return;
-      if (last && now - last < FRAME_INTERVAL) {
-        raf = requestAnimationFrame(frame);
-        return;
-      }
       const s = settingsRef.current;
+      if (s.paused) return;
       if (s.dpr !== sizedDpr) resize();
       const dt = last ? clamp((now - last) / 1000, 0, 1 / 20) : 1 / 60;
       last = now;
@@ -1450,7 +1455,10 @@ const Topography = ({
 
       const cam = camera();
       if (engaged) {
-        state.hit = pick(cam, s, nx, ny);
+        if (now - lastPick >= 1000 / 30) {
+          state.hit = pick(cam, s, nx, ny);
+          lastPick = now;
+        }
         if (state.hit && state.brushFrom) {
           const jump = Math.hypot(state.hit.x - state.brushFrom.x, state.hit.z - state.brushFrom.z);
           if (jump > 3 * s.mouseRadius) state.brushFrom = null;
@@ -1461,7 +1469,7 @@ const Topography = ({
       }
 
       const tracing = state.hit && s.mouseInteraction && s.hoverEffect === 'trace' ? state.presence : 0;
-      if (state.hit) {
+      if (state.hit && s.hoverEffect === 'trace') {
         const frequency = FREQUENCY / state.scale;
         const target =
           relief(state.hit.x, state.hit.z, frequency, state.morph * 0.37, state.morph * 0.23) +
@@ -1503,7 +1511,7 @@ const Topography = ({
 
     function wake() {
       quiet = 0;
-      if (!raf && visible && !document.hidden) {
+      if (!settingsRef.current.paused && !raf && visible && !document.hidden) {
         last = 0;
         raf = requestAnimationFrame(frame);
       }
@@ -1570,11 +1578,13 @@ const Topography = ({
       if (visible) wake();
     });
     intersection.observe(container);
-    window.addEventListener('pointermove', onPointerMove, { passive: true });
-    window.addEventListener('pointerdown', onPointerDown, { passive: true });
-    window.addEventListener('pointerup', onPointerUp, { passive: true });
-    window.addEventListener('pointercancel', onPointerUp, { passive: true });
-    document.documentElement.addEventListener('pointerleave', onPointerLeave);
+    if (settingsRef.current.mouseInteraction || settingsRef.current.glitch > 0) {
+      window.addEventListener('pointermove', onPointerMove, { passive: true });
+      window.addEventListener('pointerdown', onPointerDown, { passive: true });
+      window.addEventListener('pointerup', onPointerUp, { passive: true });
+      window.addEventListener('pointercancel', onPointerUp, { passive: true });
+      document.documentElement.addEventListener('pointerleave', onPointerLeave);
+    }
     document.addEventListener('visibilitychange', onVisibility);
     resize();
     wakeRef.current = wake;

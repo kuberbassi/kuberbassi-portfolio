@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { IconType } from 'react-icons';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { SiGmail } from 'react-icons/si';
 import { ArrowUpRight } from 'lucide-react';
 import SpecularButton from '../SpecularButton';
@@ -17,6 +17,12 @@ const links: { label: string; href: string; icon: IconType; color: string }[] = 
     href: 'https://www.linkedin.com/in/kuberbassi/',
     icon: FaLinkedin,
     color: '#0A66C2',
+  },
+  {
+    label: 'Instagram',
+    href: 'https://www.instagram.com/kuber.bassi/',
+    icon: FaInstagram,
+    color: '#E1306C',
   },
   {
     label: 'Email',

@@ -31,41 +31,101 @@ const terrainProps = {
   glitch: 0,
   dpr: 1.15,
 };
+const compactTerrainProps = {
+  ...terrainProps,
+  dpr: 1,
+  mouseInteraction: false,
+  parallax: 0,
+  speed: 0.009,
+  morph: 0.018,
+};
+const upperTerrainProps = { ...terrainProps, mouseInteraction: false };
+const compactUpperTerrainProps = { ...compactTerrainProps };
 
 export function TopographicBackground() {
   const rootRef = useRef<HTMLDivElement>(null);
   const [webglEnabled, setWebglEnabled] = useState(false);
+  const [upperTerrainEnabled, setUpperTerrainEnabled] = useState(false);
+  const [desktopTerrainEnabled, setDesktopTerrainEnabled] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const currentSectionRef = useRef(0);
 
   useEffect(() => {
-    const pointerQuery = window.matchMedia('(min-width: 769px) and (hover: hover) and (pointer: fine)');
+    const desktopQuery = window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const updateCapability = () => setWebglEnabled(pointerQuery.matches && !motionQuery.matches);
-    updateCapability();
-    pointerQuery.addEventListener('change', updateCapability);
-    motionQuery.addEventListener('change', updateCapability);
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+    let idleHandle: number | null = null;
+    let fallbackTimer = 0;
+    let upperTimer = 0;
+    const cancelPendingLoads = () => {
+      if (idleHandle !== null) idleWindow.cancelIdleCallback?.(idleHandle);
+      idleHandle = null;
+      clearTimeout(fallbackTimer);
+      clearTimeout(upperTimer);
+    };
+    const scheduleTerrainLoad = () => {
+      cancelPendingLoads();
+      setWebglEnabled(false);
+      setUpperTerrainEnabled(false);
+      setDesktopTerrainEnabled(desktopQuery.matches);
+      if (motionQuery.matches) return;
+
+      const mountLowerTerrain = () => {
+        idleHandle = null;
+        setWebglEnabled(true);
+        upperTimer = window.setTimeout(() => setUpperTerrainEnabled(true), 700);
+      };
+      if (idleWindow.requestIdleCallback) {
+        idleHandle = idleWindow.requestIdleCallback(mountLowerTerrain, { timeout: 1200 });
+      } else {
+        fallbackTimer = window.setTimeout(mountLowerTerrain, 320);
+      }
+    };
+
+    scheduleTerrainLoad();
+    desktopQuery.addEventListener('change', scheduleTerrainLoad);
+    motionQuery.addEventListener('change', scheduleTerrainLoad);
     return () => {
-      pointerQuery.removeEventListener('change', updateCapability);
-      motionQuery.removeEventListener('change', updateCapability);
+      cancelPendingLoads();
+      desktopQuery.removeEventListener('change', scheduleTerrainLoad);
+      motionQuery.removeEventListener('change', scheduleTerrainLoad);
     };
   }, []);
 
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    let interactionTimer = 0;
-    const markInteraction = () => {
-      root.dataset.interacting = 'true';
-      clearTimeout(interactionTimer);
-      interactionTimer = window.setTimeout(() => { root.dataset.interacting = 'false'; }, 720);
-    };
+    let sectionTimer = 0;
+    let scrollTimer = 0;
     const onSectionChange = (index: number) => {
+      currentSectionRef.current = index;
       root.dataset.section = String(index);
-      markInteraction();
+      clearTimeout(sectionTimer);
+      setPaused(true);
+      sectionTimer = window.setTimeout(
+        () => setPaused(currentSectionRef.current === 2 || currentSectionRef.current === 3),
+        1750,
+      );
+    };
+    const onScroll = () => {
+      if (!window.matchMedia('(max-width: 1023px), (pointer: coarse)').matches) return;
+      setPaused(true);
+      clearTimeout(scrollTimer);
+      scrollTimer = window.setTimeout(
+        () => setPaused(currentSectionRef.current === 2 || currentSectionRef.current === 3),
+        180,
+      );
     };
 
     const removeSectionListener = listenForPortfolioEvent(portfolioEvents.sectionChange, onSectionChange);
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
-      clearTimeout(interactionTimer);
+      clearTimeout(sectionTimer);
+      clearTimeout(scrollTimer);
+      window.removeEventListener('scroll', onScroll);
       removeSectionListener();
     };
   }, []);
@@ -74,14 +134,24 @@ export function TopographicBackground() {
     <div className="topographic-background" ref={rootRef} data-section="0" aria-hidden="true">
       {webglEnabled && (
         <>
-          <div className="topographic-background__terrain topographic-background__terrain--upper">
-            <Suspense fallback={null}>
-              <Topography {...terrainProps} className="topographic-background__terrain-canvas" />
-            </Suspense>
-          </div>
+          {upperTerrainEnabled && (
+            <div className="topographic-background__terrain topographic-background__terrain--upper">
+              <Suspense fallback={null}>
+                <Topography
+                  {...(desktopTerrainEnabled ? upperTerrainProps : compactUpperTerrainProps)}
+                  paused={paused}
+                  className="topographic-background__terrain-canvas"
+                />
+              </Suspense>
+            </div>
+          )}
           <div className="topographic-background__terrain topographic-background__terrain--lower">
             <Suspense fallback={null}>
-              <Topography {...terrainProps} className="topographic-background__terrain-canvas" />
+              <Topography
+                {...(desktopTerrainEnabled ? terrainProps : compactTerrainProps)}
+                paused={paused}
+                className="topographic-background__terrain-canvas"
+              />
             </Suspense>
           </div>
         </>

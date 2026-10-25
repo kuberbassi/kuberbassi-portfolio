@@ -272,12 +272,11 @@ export function LogoThreeScene() {
       startAnimation();
     };
 
-    const handleMouseEnter = () => {
-    };
-
-    container.addEventListener('mouseenter', handleMouseEnter);
-    container.addEventListener('mousemove', handleMouseMove);
-    container.addEventListener('mouseleave', handleMouseLeave);
+    const hoverQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+    if (hoverQuery.matches) {
+      container.addEventListener('mousemove', handleMouseMove);
+      container.addEventListener('mouseleave', handleMouseLeave);
+    }
 
     // ── 6. Resize Listener ───────────────────────────────────────────────────
     const handleResize = () => {
@@ -359,9 +358,10 @@ export function LogoThreeScene() {
 
       cleanupFn = () => {
         if (animId) cancelAnimationFrame(animId);
-        container.removeEventListener('mouseenter', handleMouseEnter);
-        container.removeEventListener('mousemove', handleMouseMove);
-        container.removeEventListener('mouseleave', handleMouseLeave);
+        if (hoverQuery.matches) {
+          container.removeEventListener('mousemove', handleMouseMove);
+          container.removeEventListener('mouseleave', handleMouseLeave);
+        }
         window.removeEventListener('resize', handleResize);
 
         lineQuadGeo.dispose();

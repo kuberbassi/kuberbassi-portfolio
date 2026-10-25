@@ -8,6 +8,7 @@ export function CustomCursor() {
   const frameRef = useRef<number | null>(null);
   const positionRef = useRef({ x: -80, y: -80 });
   const currentRef = useRef({ x: -80, y: -80 });
+  const lastFrameTimeRef = useRef(0);
   const modeRef = useRef<CursorMode>('idle');
   const labelRef = useRef('');
   const suspendedRef = useRef(false);
@@ -22,11 +23,14 @@ export function CustomCursor() {
     const root = document.documentElement;
     root.dataset.customCursor = 'true';
 
-    const paint = () => {
+    const paint = (now: number) => {
       const current = currentRef.current;
       const target = positionRef.current;
-      current.x += (target.x - current.x) * 0.2;
-      current.y += (target.y - current.y) * 0.2;
+      const elapsed = lastFrameTimeRef.current ? now - lastFrameTimeRef.current : 1000 / 60;
+      const smoothing = 1 - Math.exp(-elapsed / 0.018);
+      lastFrameTimeRef.current = now;
+      current.x += (target.x - current.x) * smoothing;
+      current.y += (target.y - current.y) * smoothing;
       cursorRef.current?.style.setProperty(
         'transform',
         `translate3d(${current.x}px, ${current.y}px, 0) translate(-50%, -50%)`,
@@ -36,13 +40,15 @@ export function CustomCursor() {
       } else {
         current.x = target.x;
         current.y = target.y;
+        lastFrameTimeRef.current = 0;
         frameRef.current = null;
       }
     };
 
     const onPointerMove = (event: PointerEvent) => {
       if (suspendedRef.current) return;
-      positionRef.current = { x: event.clientX, y: event.clientY };
+      positionRef.current.x = event.clientX;
+      positionRef.current.y = event.clientY;
       cursorRef.current?.classList.add('is-visible');
       if (frameRef.current === null) frameRef.current = requestAnimationFrame(paint);
 
@@ -79,6 +85,7 @@ export function CustomCursor() {
       document.removeEventListener('mouseleave', hide);
       window.removeEventListener('blur', hide);
       if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+      lastFrameTimeRef.current = 0;
     };
   }, []);
 

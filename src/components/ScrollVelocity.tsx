@@ -131,7 +131,7 @@ export function ScrollVelocity({
         }
       }
 
-      if (time - lastCenterCheck > 72) {
+      if (time - lastCenterCheck > 180) {
         updateCenterItem();
         lastCenterCheck = time;
       }

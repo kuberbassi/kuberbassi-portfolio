@@ -1394,3 +1394,44 @@ iframe {
     font-size: clamp(2.05rem, 10.1vw, 2.45rem);
   }
 }
+
+/* Keep touch scrolling native when a swipe starts over the decorative hero canvas. */
+@media (max-width: 1023px), (pointer: coarse) {
+  .blago-deck-container,
+  .blago-deck-slider,
+  .blago-slide,
+  #home .kb-art,
+  #home .kb-art > div,
+  #home .kb-art canvas {
+    touch-action: pan-y pinch-zoom !important;
+  }
+
+  #home .kb-art canvas {
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 900px) {
+  #contact .portfolio-footer-inner {
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px !important;
+  }
+
+  #contact .footer-social-links {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  #contact .footer-social-link {
+    min-height: 40px;
+  }
+
+  #contact .footer-copyright {
+    padding-right: 0;
+    text-align: center;
+    transform: none;
+  }
+}

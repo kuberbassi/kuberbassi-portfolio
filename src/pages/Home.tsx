@@ -33,21 +33,29 @@ export default function Home() {
   const { projects, loading, error } = useGitHubProjects(workMounted);
 
   useEffect(() => {
-    if (activeIndex === 3) setWorkMounted(true);
-    if (activeIndex >= 2) {
-      setWorkMounted(true);
-      return;
-    }
-    // On mobile or idle browser, pre-load work repositories after initial entrance completes
-    if (typeof window !== 'undefined') {
-      const handle = (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback
-        ? (window as unknown as { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback(() => setWorkMounted(true), { timeout: 2000 })
-        : window.setTimeout(() => setWorkMounted(true), 1500);
-
+    if (activeIndex === 3) {
+      const idleWindow = window as Window & {
+        requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+        cancelIdleCallback?: (handle: number) => void;
+      };
+      let timer = 0;
+      let idleHandle: number | null = null;
+      const mountWork = () => {
+        timer = window.setTimeout(() => {
+          if (idleWindow.requestIdleCallback) {
+            idleHandle = idleWindow.requestIdleCallback(() => setWorkMounted(true), { timeout: 900 });
+          } else {
+            setWorkMounted(true);
+          }
+        }, 360);
+      };
+      mountWork();
       return () => {
-        if (typeof handle === 'number') window.clearTimeout(handle);
+        clearTimeout(timer);
+        if (idleHandle !== null) idleWindow.cancelIdleCallback?.(idleHandle);
       };
     }
+    // Keep repository data, image decoding, and the gallery out of the initial section transitions.
   }, [activeIndex]);
 
   return (

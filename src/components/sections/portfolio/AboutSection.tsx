@@ -20,7 +20,7 @@ export function AboutSection({ activeIndex, leavingIndex, deckEnabled }: {
           <h2>Useful things.<br /><i>Carefully made.</i></h2>
           <BlurText
             text="I build software, products, and creative tools with simplicity, performance, and long-term thinking."
-            animateBy="letters" direction="bottom" delay={18} stepDuration={0.38} threshold={0.2}
+            animateBy="words" direction="bottom" delay={72} stepDuration={0.38} threshold={0.2}
             animationFrom={{ filter: 'blur(8px)', opacity: 0, y: 12 }}
             animationTo={[{ filter: 'blur(3px)', opacity: 0.55, y: 3 }, { filter: 'blur(0px)', opacity: 1, y: 0 }]}
             easing={(value: number) => 1 - Math.pow(1 - value, 3)} className="kb-about-statement"

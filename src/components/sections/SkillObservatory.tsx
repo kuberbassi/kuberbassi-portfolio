@@ -142,39 +142,35 @@ function LogoSequence({
 }
 
 export function SkillObservatory({ active = true }: { active?: boolean }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [shouldLoad, setShouldLoad] = useState(false);
+  const [loadedRowCount, setLoadedRowCount] = useState(0);
+  const loadedRowCountRef = useRef(0);
 
   useEffect(() => {
-    if (active && !shouldLoad) {
-      setShouldLoad(true);
-      return;
-    }
-
-    if (shouldLoad) return;
-    const container = containerRef.current;
-    if (!container || !('IntersectionObserver' in window)) {
-      setShouldLoad(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoad(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '350px' },
-    );
-
-    observer.observe(container);
-    return () => observer.disconnect();
-  }, [active, shouldLoad]);
+    if (!active || loadedRowCountRef.current >= rows.length) return;
+    let frame = 0;
+    let timer = 0;
+    let nextRowCount = Math.max(1, loadedRowCountRef.current);
+    const loadNextRow = () => {
+      nextRowCount += 1;
+      loadedRowCountRef.current = nextRowCount;
+      setLoadedRowCount(nextRowCount);
+      if (nextRowCount < rows.length) timer = window.setTimeout(loadNextRow, 180);
+    };
+    frame = window.requestAnimationFrame(() => {
+      if (loadedRowCountRef.current === 0) {
+        loadedRowCountRef.current = 1;
+        setLoadedRowCount(1);
+      }
+      timer = window.setTimeout(loadNextRow, 180);
+    });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
+  }, [active]);
 
   return (
     <div
-      ref={containerRef}
       className={`tech-wall${active ? ' is-active' : ''}`}
       aria-label="Technology toolkit"
     >
@@ -186,8 +182,8 @@ export function SkillObservatory({ active = true }: { active?: boolean }) {
           style={{ '--wall-duration': rowDurations[index] } as CSSProperties}
         >
           <div className="tech-wall__track">
-            <LogoSequence technologies={technologies} shouldLoad={shouldLoad} />
-            <LogoSequence technologies={technologies} duplicate shouldLoad={shouldLoad} />
+          <LogoSequence technologies={technologies} shouldLoad={loadedRowCount > index} />
+          <LogoSequence technologies={technologies} duplicate shouldLoad={loadedRowCount > index} />
           </div>
         </div>
       ))}
