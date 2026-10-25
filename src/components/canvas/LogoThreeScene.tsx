@@ -272,6 +272,12 @@ export function LogoThreeScene() {
       startAnimation();
     };
 
+    const handleTouchPointerDown = (event: PointerEvent) => {
+      if (event.pointerType === 'touch') handleMouseMove(event);
+    };
+
+    container.addEventListener('pointerdown', handleTouchPointerDown);
+
     const hoverQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
     if (hoverQuery.matches) {
       container.addEventListener('mousemove', handleMouseMove);
@@ -362,6 +368,7 @@ export function LogoThreeScene() {
           container.removeEventListener('mousemove', handleMouseMove);
           container.removeEventListener('mouseleave', handleMouseLeave);
         }
+        container.removeEventListener('pointerdown', handleTouchPointerDown);
         window.removeEventListener('resize', handleResize);
 
         lineQuadGeo.dispose();

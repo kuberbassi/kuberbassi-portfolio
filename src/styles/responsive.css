@@ -1395,7 +1395,7 @@ iframe {
   }
 }
 
-/* Keep touch scrolling native when a swipe starts over the decorative hero canvas. */
+/* Keep vertical swipes native while leaving the logo canvas available for touch interactions. */
 @media (max-width: 1023px), (pointer: coarse) {
   .blago-deck-container,
   .blago-deck-slider,
@@ -1407,7 +1407,7 @@ iframe {
   }
 
   #home .kb-art canvas {
-    pointer-events: none;
+    pointer-events: auto;
   }
 }
 
