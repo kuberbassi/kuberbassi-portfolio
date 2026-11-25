@@ -18,7 +18,12 @@ Personal website and portfolio of Kuber Bassi: an independent engineer building 
 
 ## Development
 
+Requires **Node.js 24+**.
+
 ```powershell
+git clone https://github.com/kuberbassi/kuberbassi-portfolio.git
+cd kuberbassi-portfolio
+copy .env.example .env   # optional, fill API keys if needed
 npm.cmd install
 npm.cmd run dev
 npm.cmd run check
