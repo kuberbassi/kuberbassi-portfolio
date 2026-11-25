@@ -12,8 +12,16 @@ interface RepositoryGalleryProps {
 
 const resolvedPreviewSources = new Map<string, string>();
 
+const isGithubOpenGraphImage = (value: string) => {
+  try {
+    return new URL(value, window.location.origin).hostname === 'opengraph.githubassets.com';
+  } catch {
+    return false;
+  }
+};
+
 const githubPreview = (project: Project) => {
-  if (project.img && !project.img.includes('opengraph.githubassets.com')) {
+  if (project.img && !isGithubOpenGraphImage(project.img)) {
     return project.img;
   }
   const repository = project.github?.match(/github\.com\/([^/]+\/[^/#?]+)/i)?.[1]
@@ -22,7 +30,7 @@ const githubPreview = (project: Project) => {
 };
 
 const livePreview = (project: Project) => {
-  if (project.img && !project.img.includes('opengraph.githubassets.com')) {
+  if (project.img && !isGithubOpenGraphImage(project.img)) {
     return project.img;
   }
   if (!project.link) return githubPreview(project);

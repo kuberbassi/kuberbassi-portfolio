@@ -16,7 +16,7 @@ async function fetchWithCache(url, cacheKey, ttl = 3600000) { // 1 hour TTL
 
   // Determine proxy URL or fallback to original URL
   let fetchUrl = url;
-  if (url.startsWith(GITHUB_API)) {
+  if (url.startsWith(`${GITHUB_API}/`)) {
     const path = url.replace(GITHUB_API, '');
     let endpoint = '';
     let username = '';
